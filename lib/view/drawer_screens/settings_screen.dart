@@ -6,7 +6,6 @@ import 'package:project/constants_languages.dart';
 import 'package:project/locale_language/dropdown_languages.dart';
 import 'package:project/locale_language/localization_delegate.dart';
 import 'package:project/main.dart';
-import 'package:project/view/drawer_screens/aboutus_screen.dart';
 import 'package:project/view/drawer_screens/profile_screen.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
@@ -113,24 +112,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 onTap: () {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context) => ProfileScreen()));
-                },
-              ),
-              ListTile(
-                title: Text(
-                  AppLocalization.of(context).getTranslated("text_about"),
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.w400),
-                ),
-                trailing: Icon(
-                  Icons.help,
-                  color: primaryColor,
-                ),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => AboutUsScreen(),
-                    ),
-                  );
                 },
               ),
               ListTile(
