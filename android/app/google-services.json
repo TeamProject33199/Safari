@@ -1,0 +1,63 @@
+{
+  "project_info": {
+    "project_number": "846609191050",
+    "project_id": "safari-726f0",
+    "storage_bucket": "safari-726f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:846609191050:android:0aac2c2c653559e7341d73",
+        "android_client_info": {
+          "package_name": "com.safari.project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "846609191050-784ikil6k2nfpdj05jcjilm8lo8cp64r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.safari.project",
+            "certificate_hash": "455c1ce3b24e678629858a13693c8322d524f2c1"
+          }
+        },
+        {
+          "client_id": "846609191050-7iagdhqcfd720poggdaq8q3j87kfa6sn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.safari.project",
+            "certificate_hash": "c10bb2df1c6c4baf38f35fe2c907327b0c24dc67"
+          }
+        },
+        {
+          "client_id": "846609191050-p1fv1492a5etr48sncl8l5nnle9tpp3h.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.safari.project",
+            "certificate_hash": "a20bac3e126e17ccf2aee0042bc547cc150ba413"
+          }
+        },
+        {
+          "client_id": "846609191050-74b43rjqkb3ntq0huigj1g3oos1l2ojv.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCgYhC18eiBUEV_LiGWV96w6p5oPs8jHok"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "846609191050-74b43rjqkb3ntq0huigj1g3oos1l2ojv.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
