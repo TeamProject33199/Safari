@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -98,13 +99,19 @@ class _ServicesScreenState extends State<ServicesScreen>
                             return Text(snapshot.error);
                           } else if (snapshot.hasData) {
                             var data=snapshot.data;
-                            return CircleAvatar(
-                              backgroundColor: transparent,
-                              backgroundImage: NetworkImage(data["image"] ==
-                                  null
+                            return CachedNetworkImage(
+                              imageUrl: data["image"] == null
                                   ? "https://png.pngtree.com/png-clipart/20190516/original/pngtree-users-vector-icon-png-image_3723374.jpg"
-                                  : data["image"]),
-                              radius: 21.5,
+                                  : data["image"],
+                              placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                              errorWidget: (context, url, error) => Icon(Icons.error),
+                              width: 42,
+                              height: 42,
+                              imageBuilder:(context, imageProvider)=> CircleAvatar(
+                                backgroundColor: transparent,
+                                backgroundImage: imageProvider,
+                                radius: 21.5,
+                              ),
                             );
                           }else
                             return Center(child: CircularProgressIndicator(),);

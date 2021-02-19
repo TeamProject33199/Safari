@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:project/Controllers/firestore/DataBase.dart';
@@ -30,73 +31,73 @@ class HotelStream extends StatelessWidget {
 
                   return InkWell(
                     child: Container(
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: NetworkImage(currentHotel.images[0]),
-                          fit: BoxFit.cover,
-                        ),
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-
-                          Container(
-                            width: MediaQuery.of(context).size.width,
-                            height: MediaQuery.of(context).size.height * 0.08,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                bottomRight: Radius.circular(10),
-                                bottomLeft: Radius.circular(10),
-                              ),
-                              color: blackColor.withOpacity(0.4),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: AppLocalization.of(context)
-                                              .locale
-                                              .languageCode ==
-                                          'ar'
-                                      ? const EdgeInsets.only(right: 8, top: 4)
-                                      : const EdgeInsets.only(left: 8, top: 4),
-                                  child: Text(
-                                    currentHotel.hotelName,
-                                    style: TextStyle(
-                                        color: whiteColor, fontSize: 13),
-                                  ),
-                                ),
-                                Padding(
-                                  padding: AppLocalization.of(context)
-                                              .locale
-                                              .languageCode ==
-                                          'ar'
-                                      ? const EdgeInsets.only(right: 5, top: 2)
-                                      : const EdgeInsets.only(left: 5, top: 2),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.location_on_sharp,
-                                        color: redAccentColor,
-                                        size: 16,
-                                      ),
-                                      Text(
-                                        currentHotel.hotelCity,
-                                        style: TextStyle(
-                                            color: whiteColor, fontSize: 11),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: NetworkImage(currentHotel.images[0]),
+                            fit: BoxFit.cover,
                           ),
-                        ],
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+
+                            Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height * 0.08,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.only(
+                                  bottomRight: Radius.circular(10),
+                                  bottomLeft: Radius.circular(10),
+                                ),
+                                color: blackColor.withOpacity(0.4),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: AppLocalization.of(context)
+                                                .locale
+                                                .languageCode ==
+                                            'ar'
+                                        ? const EdgeInsets.only(right: 8, top: 4)
+                                        : const EdgeInsets.only(left: 8, top: 4),
+                                    child: Text(
+                                      currentHotel.hotelName,
+                                      style: TextStyle(
+                                          color: whiteColor, fontSize: 13),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: AppLocalization.of(context)
+                                                .locale
+                                                .languageCode ==
+                                            'ar'
+                                        ? const EdgeInsets.only(right: 5, top: 2)
+                                        : const EdgeInsets.only(left: 5, top: 2),
+                                    child: Row(
+                                      children: [
+                                        Icon(
+                                          Icons.location_on_sharp,
+                                          color: redAccentColor,
+                                          size: 16,
+                                        ),
+                                        Text(
+                                          currentHotel.hotelCity,
+                                          style: TextStyle(
+                                              color: whiteColor, fontSize: 11),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
                     onTap: () {
                       Navigator.push(
                           context,

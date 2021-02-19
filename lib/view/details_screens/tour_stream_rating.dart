@@ -21,6 +21,7 @@ class TourRatingStream extends StatelessWidget {
 
     return StreamBuilder(
       stream: DataBase().getAllTourComment(tourId),
+      // ignore: missing_return
       builder:(context,AsyncSnapshot<List<TourRating>>snapshot){
         if(snapshot.hasData){
           return Expanded(
@@ -277,10 +278,13 @@ class TourRatingStream extends StatelessWidget {
               },
             ),
           );
+        }else if(!snapshot.hasData){
+          return Container();
         }else if(snapshot.hasError){
           return Text(snapshot.error.toString());
-        }else
-          return Center(child: CircularProgressIndicator(),);
+        }
+        return CircularProgressIndicator();
+
 
       },
     );

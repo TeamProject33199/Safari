@@ -1,4 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:project/Controllers/firestore/DataBase.dart';
@@ -69,27 +70,34 @@ class _HotelSearchState extends State<HotelSearch> {
                   ),
                   child: Row(
                     children: [
-                      Container(
+                      CachedNetworkImage(
                         height: MediaQuery.of(context).size.height,
                         width: MediaQuery.of(context).size.width * 0.25,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.horizontal(
-                            left: AppLocalization.of(context)
-                                        .locale
-                                        .languageCode ==
-                                    "ar"
-                                ? Radius.circular(0)
-                                : Radius.circular(15),
-                            right: AppLocalization.of(context)
-                                        .locale
-                                        .languageCode ==
-                                    "ar"
-                                ? Radius.circular(15)
-                                : Radius.circular(0),
-                          ),
-                          image: DecorationImage(
-                            image: NetworkImage(currentHotel.images[0]),
-                            fit: BoxFit.cover,
+                        imageUrl: currentHotel.images[0],
+                        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        imageBuilder:(context, imageProvider)=> Container(
+                          height: MediaQuery.of(context).size.height,
+                          width: MediaQuery.of(context).size.width * 0.25,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.horizontal(
+                              left: AppLocalization.of(context)
+                                          .locale
+                                          .languageCode ==
+                                      "ar"
+                                  ? Radius.circular(0)
+                                  : Radius.circular(15),
+                              right: AppLocalization.of(context)
+                                          .locale
+                                          .languageCode ==
+                                      "ar"
+                                  ? Radius.circular(15)
+                                  : Radius.circular(0),
+                            ),
+                            image: DecorationImage(
+                              image: imageProvider,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -141,13 +142,19 @@ class _HomeScreenState extends State<HomeScreen>
                                child: CircleAvatar(
                                  backgroundColor: whiteColor,
                                  radius: 25,
-                                 child: CircleAvatar(
-                                   backgroundColor: Colors.transparent,
-                                   backgroundImage:NetworkImage(
-                                       data["image"] == null
-                                           ? "https://png.pngtree.com/png-clipart/20190516/original/pngtree-users-vector-icon-png-image_3723374.jpg"
-                                           : data["image"]),
-                                   radius: 23,
+                                 child: CachedNetworkImage(
+                                   imageUrl: data["image"] == null
+                                       ? "https://png.pngtree.com/png-clipart/20190516/original/pngtree-users-vector-icon-png-image_3723374.jpg"
+                                       : data["image"],
+                                   placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                                   errorWidget: (context, url, error) => Icon(Icons.error),
+                                   width: 45,
+                                   height: 45,
+                                   imageBuilder:(context, imageProvider)=> CircleAvatar(
+                                     backgroundColor: Colors.transparent,
+                                     backgroundImage:imageProvider,
+                                     radius: 23,
+                                   ),
                                  ),
                                ),
                              ),

@@ -21,7 +21,9 @@ class CarRatingStream extends StatelessWidget {
 
     return StreamBuilder(
       stream: DataBase().getAllCarComment(carId),
+      // ignore: missing_return
       builder:(context,AsyncSnapshot<List<CarRating>>snapshot){
+
         if(snapshot.hasData){
           return Expanded(
             child: ListView.builder(
@@ -278,10 +280,13 @@ class CarRatingStream extends StatelessWidget {
               },
             ),
           );
-        }else if(snapshot.hasError){
+        }else if(!snapshot.hasData){
+          return Container();
+        }
+        else if(snapshot.hasError){
           return Text(snapshot.error.toString());
-        }else
-          return Center(child: CircularProgressIndicator(),);
+        }
+        return CircularProgressIndicator();
 
       },
     );

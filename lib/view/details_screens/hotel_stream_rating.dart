@@ -20,6 +20,7 @@ class HotelRatingStream extends StatelessWidget {
 
     return StreamBuilder(
       stream: DataBase().getAllHotelComment(hotelId),
+      // ignore: missing_return
       builder:(context,AsyncSnapshot<List<HotelRating>> snapshot){
         if(snapshot.hasData){
           return Expanded(
@@ -276,10 +277,14 @@ class HotelRatingStream extends StatelessWidget {
               },
             ),
           );
-        }else if(snapshot.hasError){
+        }else if(!snapshot.hasData){
+          return Container();
+        }
+        else if(snapshot.hasError){
           return Text(snapshot.error.toString());
-        }else
-          return Center(child: CircularProgressIndicator(),);
+        }
+        return CircularProgressIndicator();
+
       },
     );
   }
