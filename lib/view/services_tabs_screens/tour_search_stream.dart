@@ -15,19 +15,17 @@ class TourSearchStream extends StatefulWidget {
   _TourSearchStreamState createState() => _TourSearchStreamState();
 }
 
-class _TourSearchStreamState extends State<TourSearchStream> with AutomaticKeepAliveClientMixin<TourSearchStream>{
+class _TourSearchStreamState extends State<TourSearchStream> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Tour>>.value(
+      initialData: [],
       value:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getAllToursAr :DataBase().getAllTours,
       catchError: (_, err) => throw Exception(err),
       child: ToursService(),
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
 
 class TourSearch extends StatefulWidget {

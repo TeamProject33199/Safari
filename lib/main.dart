@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:project/Controllers/internet_connection/locator.dart';
 import 'package:project/models/Provider_Offset.dart';
@@ -28,6 +27,7 @@ void main() async {
             ChangeNotifierProvider<prograssHud>(
               create: (context) => prograssHud(),
             ),
+
           ],
           child: MyApp(),
         ),

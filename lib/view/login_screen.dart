@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
-  var loginKey = GlobalKey<ScaffoldState>();
+  var loginKey = GlobalKey<ScaffoldMessengerState>();
 
   bool keepMeLoggedIn = false;
   bool _obscureText = false;
@@ -312,13 +312,12 @@ class _LoginScreenState extends State<LoginScreen> {
                     width: double.infinity,
                     height: 55,
                     padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: RaisedButton(
-                      color: primaryColor,
-                      shape: RoundedRectangleBorder(
+                    child: ElevatedButton(
+                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(primaryColor),shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.all(
                           Radius.circular(30),
                         ),
-                      ),
+                      ),),),
                       child: Text(
                         AppLocalization.of(context).getTranslated("button_login"),
                         style: TextStyle(
@@ -388,8 +387,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           color: grey600Color,
                           fontWeight: FontWeight.bold),
                     ),
-                    FlatButton(
-                      minWidth: 0,
+                    TextButton(
+                     // minWidth: 0,
+                      style: ButtonStyle(minimumSize: MaterialStateProperty.all(Size.zero)),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -535,7 +535,7 @@ class _LoginScreenState extends State<LoginScreen> {
         connected=true;
       });
       if(alreadyConnected==0&&connected==true){
-        funcFile.showInSnackBar(networkstate:connected,scaffoldKey:loginKey);
+        funcFile.showInSnackBar(networkstate:connected,context: context);
         if(mounted==false){
           return;
         }
@@ -552,7 +552,7 @@ class _LoginScreenState extends State<LoginScreen> {
         alreadyConnected=0;
       });
 
-      funcFile.showInSnackBar(networkstate:connected,scaffoldKey:loginKey);
+      funcFile.showInSnackBar(networkstate:connected,context: context);
     }
   }
 

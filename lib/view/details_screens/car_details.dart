@@ -277,7 +277,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex) {
+            itemBuilder: (BuildContext context, int itemIndex,int realId) {
               return MyImageView(widget.car.carPhotos[itemIndex]);
             }),
         Padding(
@@ -1103,7 +1103,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
 class MyImageView extends StatelessWidget {
  final String imgPath;
 
-  MyImageView(this.imgPath);
+  MyImageView(this.imgPath,);
 
   @override
   Widget build(BuildContext context) {

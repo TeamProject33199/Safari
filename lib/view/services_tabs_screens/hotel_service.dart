@@ -35,7 +35,7 @@ class _HotelsServiceState extends State<HotelsService> {
   @override
   void initState() {
     super.initState();
-    hotelList = new List();
+    hotelList = [];
   }
 
 
@@ -392,7 +392,7 @@ class _HotelsServiceState extends State<HotelsService> {
 
 
   void searchByFilters(HotelSearchModel model) {
-    filteredList =  List();
+    filteredList =  [];
 
     hotelList.forEach((element) {
       if (element.hotelCity.contains(model.cityName) &&
@@ -412,7 +412,7 @@ class _HotelsServiceState extends State<HotelsService> {
     if (input.length > 0) {
       isFilter = false;
 
-      filteredList = new List();
+      filteredList = [];
       filteredList.addAll(hotelList
           .where(
             (element) => element.hotelName.toLowerCase().contains(input),

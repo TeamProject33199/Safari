@@ -31,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
   final DataBase dataBase = DataBase();
 
@@ -62,9 +62,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String choice;
 
   var funcFile = locator<CustomFunction>();
-  bool sendMe=false;
-  bool connected=false;
-  int alreadyConnected=0;
+  bool sendMe = false;
+  bool connected = false;
+  int alreadyConnected = 0;
   Timer timer;
 
   void radioButtonChanges(String value) {
@@ -118,7 +118,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       data: ThemeData(fontFamily: 'SFDisplay'),
       child: Stack(
         children: [
-          _background(context,screenWidth,screenHeight),
+          _background(context, screenWidth, screenHeight),
           Scaffold(
             backgroundColor: transparent,
             key: _scaffoldKey,
@@ -134,7 +134,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 35,right: 35),
+                            padding: const EdgeInsets.only(left: 35, right: 35),
                             child: Card(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(17),
@@ -150,7 +150,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 35, top: 10,right: 35),
+                            padding: const EdgeInsets.only(
+                                left: 35, top: 10, right: 35),
                             child: Text(
                               "${AppLocalization.of(context).getTranslated("login_description1")}\n${AppLocalization.of(context).getTranslated("login_description2")}",
                               style: TextStyle(
@@ -177,7 +178,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             topRight: Radius.circular(35),
                           ),
                         ),
-                        child: _form(context,screenWidth),
+                        child: _form(context, screenWidth),
                       ),
                     ),
                   ],
@@ -190,7 +191,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _background(BuildContext context,screenWidth,screenHeight) {
+  Widget _background(BuildContext context, screenWidth, screenHeight) {
     return CachedNetworkImage(
       fit: BoxFit.cover,
       width: screenWidth,
@@ -202,7 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
     );
   }
 
-  Widget _form(BuildContext context,screenWidth) {
+  Widget _form(BuildContext context, screenWidth) {
     var authProvider = Provider.of<AuthProvider>(context);
 
     return ListView(
@@ -214,7 +215,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                AppLocalization.of(context).getTranslated("flat_button_register"),
+                AppLocalization.of(context)
+                    .getTranslated("flat_button_register"),
                 style: TextStyle(
                     fontSize: 32,
                     color: primaryColor,
@@ -249,9 +251,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         icon: Icon(
                           Icons.camera_alt,
                           size: 30,
-                          color: _image != null
-                              ? transparent
-                              : primaryColor,
+                          color: _image != null ? transparent : primaryColor,
                         ),
                       ),
                     ],
@@ -260,7 +260,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     height: 10,
                   ),
                   Text(
-                    AppLocalization.of(context).getTranslated("text_upload_photo"),
+                    AppLocalization.of(context)
+                        .getTranslated("text_upload_photo"),
                     style: TextStyle(color: grey700Color),
                   ),
                 ],
@@ -283,7 +284,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: blackColor,
                   ),
                   decoration: InputDecoration(
-                    labelText: AppLocalization.of(context).getTranslated("text_full_name1"),
+                    labelText: AppLocalization.of(context)
+                        .getTranslated("text_full_name1"),
                     labelStyle: _labelStyle,
                     prefixIcon: Icon(
                       Icons.person,
@@ -297,7 +299,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return AppLocalization.of(context).getTranslated("required_field_full_name");
+                      return AppLocalization.of(context)
+                          .getTranslated("required_field_full_name");
                     } else {
                       return null;
                     }
@@ -312,7 +315,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: Colors.black,
                   ),
                   decoration: InputDecoration(
-                    labelText: AppLocalization.of(context).getTranslated("text_username_register"),
+                    labelText: AppLocalization.of(context)
+                        .getTranslated("text_username_register"),
                     labelStyle: _labelStyle,
                     prefixIcon: Icon(
                       Icons.email_outlined,
@@ -326,9 +330,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return AppLocalization.of(context).getTranslated("required_field_email_register");
-                    } else if (!RegExp("^[a-zA-Z0-9.!#%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*").hasMatch(value)) {
-                      return AppLocalization.of(context).getTranslated("validated_field_email_register");
+                      return AppLocalization.of(context)
+                          .getTranslated("required_field_email_register");
+                    } else if (!RegExp(
+                            "^[a-zA-Z0-9.!#%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*")
+                        .hasMatch(value)) {
+                      return AppLocalization.of(context)
+                          .getTranslated("validated_field_email_register");
                     } else {
                       return null;
                     }
@@ -347,7 +355,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixStyle: TextStyle(
                       color: grey50Color,
                     ),
-                    labelText: AppLocalization.of(context).getTranslated("text_password_register"),
+                    labelText: AppLocalization.of(context)
+                        .getTranslated("text_password_register"),
                     labelStyle: _labelStyle,
                     prefixIcon: Icon(
                       Icons.lock_outlined,
@@ -372,9 +381,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return AppLocalization.of(context).getTranslated("required_field_password_register");
+                      return AppLocalization.of(context)
+                          .getTranslated("required_field_password_register");
                     } else if (value.length < 6) {
-                      return AppLocalization.of(context).getTranslated("strength_field_password_register");
+                      return AppLocalization.of(context)
+                          .getTranslated("strength_field_password_register");
                     } else {
                       return null;
                     }
@@ -393,7 +404,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     prefixStyle: TextStyle(
                       color: grey50Color,
                     ),
-                    labelText: AppLocalization.of(context).getTranslated("text_confirm_password"),
+                    labelText: AppLocalization.of(context)
+                        .getTranslated("text_confirm_password"),
                     labelStyle: _labelStyle,
                     prefixIcon: Icon(
                       Icons.lock_outlined,
@@ -418,11 +430,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return AppLocalization.of(context).getTranslated("required_field_confirm_password");
+                      return AppLocalization.of(context)
+                          .getTranslated("required_field_confirm_password");
                     } else if (value != _passwordController.text) {
-                      return AppLocalization.of(context).getTranslated("match_field_confirm_password");
+                      return AppLocalization.of(context)
+                          .getTranslated("match_field_confirm_password");
                     } else if (value.length < 6) {
-                      return AppLocalization.of(context).getTranslated("strength_field_confirm_password");
+                      return AppLocalization.of(context)
+                          .getTranslated("strength_field_confirm_password");
                     } else {
                       return null;
                     }
@@ -439,7 +454,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: blackColor,
                   ),
                   decoration: InputDecoration(
-                    labelText: AppLocalization.of(context).getTranslated("text_phone"),
+                    labelText:
+                        AppLocalization.of(context).getTranslated("text_phone"),
                     labelStyle: _labelStyle,
                     prefixIcon: Icon(
                       Icons.phone,
@@ -453,9 +469,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return AppLocalization.of(context).getTranslated("required_field_phone");
+                      return AppLocalization.of(context)
+                          .getTranslated("required_field_phone");
                     } else if (value.length < 11) {
-                      return AppLocalization.of(context).getTranslated("check_digits_field_phone");
+                      return AppLocalization.of(context)
+                          .getTranslated("check_digits_field_phone");
                     } else
                       return null;
                   },
@@ -470,7 +488,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     color: blackColor,
                   ),
                   decoration: InputDecoration(
-                    labelText: AppLocalization.of(context).getTranslated("text_address"),
+                    labelText: AppLocalization.of(context)
+                        .getTranslated("text_address"),
                     labelStyle: _labelStyle,
                     prefixIcon: Icon(
                       Icons.location_city,
@@ -484,7 +503,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return AppLocalization.of(context).getTranslated("required_field_address");
+                      return AppLocalization.of(context)
+                          .getTranslated("required_field_address");
                     } else {
                       return null;
                     }
@@ -499,25 +519,29 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Row(
                       children: [
                         Radio(
-                          value: AppLocalization.of(context).getTranslated("text_male"),
+                          value: AppLocalization.of(context)
+                              .getTranslated("text_male"),
                           groupValue: genderValue,
                           onChanged: radioButtonChanges,
                           activeColor: primaryColor,
                         ),
                         Text(
-                          AppLocalization.of(context).getTranslated("text_male"),
+                          AppLocalization.of(context)
+                              .getTranslated("text_male"),
                         ),
                         SizedBox(
                           width: 20,
                         ),
                         Radio(
-                          value: AppLocalization.of(context).getTranslated("text_female"),
+                          value: AppLocalization.of(context)
+                              .getTranslated("text_female"),
                           groupValue: genderValue,
                           onChanged: radioButtonChanges,
                           activeColor: primaryColor,
                         ),
                         Text(
-                          AppLocalization.of(context).getTranslated("text_female"),
+                          AppLocalization.of(context)
+                              .getTranslated("text_female"),
                         ),
                       ],
                     ),
@@ -530,15 +554,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   width: screenWidth,
                   height: 55,
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: RaisedButton(
-                    color: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(30),
-                      ),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        backgroundColor:MaterialStateProperty.all(primaryColor),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
+                        ),
                     ),
+
                     child: Text(
-                      AppLocalization.of(context).getTranslated("button_register"),
+                      AppLocalization.of(context)
+                          .getTranslated("button_register"),
                       style: TextStyle(
                         color: whiteColor,
                         fontWeight: FontWeight.bold,
@@ -547,15 +577,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                     ),
                     onPressed: () async {
-                      final model = Provider.of<prograssHud>(context, listen: false);
+                      final model =
+                          Provider.of<prograssHud>(context, listen: false);
 
                       if (_formKey.currentState.validate() && _image != null) {
                         model.changeLoading(true);
                         checkMyInternet();
-                        if(sendMe){
+                        if (sendMe) {
                           if (await authProvider.signUp(
-                              _emailController.text.trim(),
-                              _passwordController.text.trim()) !=
+                                  _emailController.text.trim(),
+                                  _passwordController.text.trim()) !=
                               null) {
                             model.changeLoading(false);
 
@@ -569,25 +600,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             model.changeLoading(false);
                             _scaffoldKey.currentState.showSnackBar(
                               SnackBar(
-                                content: Text(authProvider.errorMessage.toString()),
+                                content:
+                                    Text(authProvider.errorMessage.toString()),
                                 duration: Duration(seconds: 2),
                               ),
                             );
                           }
                           await _uploadImage(_image);
-                          await storeData(context,authProvider);
-                        }else{
+                          await storeData(context, authProvider);
+                        } else {
                           model.changeLoading(false);
-                          Fluttertoast.showToast(msg: "YOU NOT CONNECTED TO INTERNET", toastLength: Toast.LENGTH_SHORT,
+                          Fluttertoast.showToast(
+                              msg: "YOU NOT CONNECTED TO INTERNET",
+                              toastLength: Toast.LENGTH_SHORT,
                               gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb:2,
+                              timeInSecForIosWeb: 2,
                               backgroundColor: Colors.red,
                               textColor: Colors.white,
-                              fontSize: 16.0
-                          );
+                              fontSize: 16.0);
                           print("YOU NOT CONNECTED TO INTERNET");
                         }
-
                       }
                     },
                   ),
@@ -599,14 +631,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      AppLocalization.of(context).getTranslated("text_i_have_an_account_register"),
+                      AppLocalization.of(context)
+                          .getTranslated("text_i_have_an_account_register"),
                       style: TextStyle(
                           fontSize: 18,
                           color: grey600Color,
                           fontWeight: FontWeight.bold),
                     ),
-                    FlatButton(
-                      minWidth: 0,
+                    TextButton (
+                      style: ButtonStyle(minimumSize: MaterialStateProperty.all(Size.zero),),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -614,7 +647,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 builder: (context) => LoginScreen()));
                       },
                       child: Text(
-                        AppLocalization.of(context).getTranslated("flat_button_login_register"),
+                        AppLocalization.of(context)
+                            .getTranslated("flat_button_login_register"),
                         style: TextStyle(
                             fontSize: 18,
                             color: primaryColor,
@@ -636,20 +670,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future _uploadImage(File image) async {
-
-    FirebaseStorage  storage = FirebaseStorage.instanceFor(bucket: "gs://safari-726f0.appspot.com");
-    final Reference storageReference = storage.ref().child(p.basename(image.path));
-    await storageReference.putFile(image).whenComplete(()async{
-      await storageReference.getDownloadURL().then((value){
-        _url=value;
+    FirebaseStorage storage =
+        FirebaseStorage.instanceFor(bucket: "gs://safari-726f0.appspot.com");
+    final Reference storageReference =
+        storage.ref().child(p.basename(image.path));
+    await storageReference.putFile(image).whenComplete(() async {
+      await storageReference.getDownloadURL().then((value) {
+        _url = value;
       });
     });
 
     return _url;
   }
 
-  Future storeData(BuildContext context,AuthProvider authProvider) async {
-
+  Future storeData(BuildContext context, AuthProvider authProvider) async {
     await dataBase.addTraveler(
       Travelers(
         id: authProvider.currentUser(),
@@ -675,7 +709,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _image = File(pickedFile.path);
       } else {
         print('No image selected.');
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Please select Your Image")));
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text("Please select Your Image")));
       }
     });
   }
@@ -690,7 +725,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _image = File(pickedFile.path);
       } else {
         print('No image selected.');
-        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Please select Your Image")));
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text("Please select Your Image")));
       }
     });
   }
@@ -713,7 +749,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         color: primaryColor,
                       ),
                       title: Text(
-                        AppLocalization.of(context).getTranslated("text_gallery"),
+                        AppLocalization.of(context)
+                            .getTranslated("text_gallery"),
                         style: TextStyle(color: primaryColor),
                       ),
                       onTap: () {
@@ -746,56 +783,56 @@ class _RegisterScreenState extends State<RegisterScreen> {
     var internet2 = await funcFile.checkInternetAccess();
 
     if (internet && internet2) {
-      if(mounted==false){
+      if (mounted == false) {
         return;
       }
       setState(() {
-        connected=true;
+        connected = true;
       });
-      if(alreadyConnected==0&&connected==true){
-        funcFile.showInSnackBar(networkstate:connected,scaffoldKey:_scaffoldKey);
-        if(mounted==false){
+      if (alreadyConnected == 0 && connected == true) {
+        funcFile.showInSnackBar(
+            networkstate: connected, context: context);
+        if (mounted == false) {
           return;
         }
         setState(() {
-          alreadyConnected=1;
+          alreadyConnected = 1;
         });
       }
     } else {
-      if(mounted==false){
+      if (mounted == false) {
         return;
       }
       setState(() {
-        connected=false;
-        alreadyConnected=0;
+        connected = false;
+        alreadyConnected = 0;
       });
 
-      funcFile.showInSnackBar(networkstate:connected,scaffoldKey:_scaffoldKey);
+      funcFile.showInSnackBar(
+          networkstate: connected, context: context);
     }
   }
 
-  checkMyInternet(){
+  checkMyInternet() {
     funcFile.isInternet().then((value) {
       funcFile.checkInternetAccess().then((value2) {
-
-        if( value && value2){
-          if(mounted==false){
+        if (value && value2) {
+          if (mounted == false) {
             return;
           }
           setState(() {
-            sendMe= true;
+            sendMe = true;
           });
-        }else{
-          if(mounted==false){
+        } else {
+          if (mounted == false) {
             return;
           }
           setState(() {
-            sendMe= false;
+            sendMe = false;
           });
         }
       });
     });
-
   }
 }
 

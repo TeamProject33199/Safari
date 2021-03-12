@@ -274,7 +274,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex) {
+            itemBuilder: (BuildContext context, int itemIndex,int realId) {
               return MyImageView(widget.tour.tourPhotos[itemIndex]);
             }),
         Padding(

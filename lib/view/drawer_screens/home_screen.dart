@@ -322,7 +322,6 @@ class _HomeScreenState extends State<HomeScreen>
             height: 110,
             width: screenWidth,
             child: ListView.builder(
-              //physics: NeverScrollableScrollPhysics(),
               scrollDirection: Axis.horizontal,
               itemCount: categories.length,
               itemBuilder: (context, index) {
@@ -436,7 +435,7 @@ class _HomeScreenState extends State<HomeScreen>
   // ignore: non_constant_identifier_names, missing_return
   Widget Swipe_Screen(int index) {
     if (index == 1) {
-      return HotelStream();
+      return  HotelStream();
     } else if (index == 2) {
       return TourStream();
     } else if (index == 3) {

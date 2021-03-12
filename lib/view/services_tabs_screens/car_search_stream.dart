@@ -15,19 +15,18 @@ class CarSearchStream extends StatefulWidget {
   _CarSearchStreamState createState() => _CarSearchStreamState();
 }
 
-class _CarSearchStreamState extends State<CarSearchStream> with AutomaticKeepAliveClientMixin<CarSearchStream>{
+class _CarSearchStreamState extends State<CarSearchStream> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Cars>>.value(
+      initialData: [],
       value:AppLocalization.of(context).locale.languageCode=="ar"? DataBase().getAllCarsAr:DataBase().getAllCars,
       catchError: (_, err) => throw Exception(err),
       child: CarsService(),
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
+
 }
 
 class CarSearch extends StatefulWidget {

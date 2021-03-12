@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:project/Controllers/firestore/DataBase.dart';
@@ -7,8 +6,10 @@ import 'package:project/models/hotel.dart';
 import 'package:project/view/details_screens/hotel_details.dart';
 import '../locale_language/localization_delegate.dart';
 
-class HotelStream extends StatelessWidget {
-  @override
+ class HotelStream extends StatelessWidget {
+
+
+   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Hotel>>(
       stream: AppLocalization.of(context).locale.languageCode == "ar"

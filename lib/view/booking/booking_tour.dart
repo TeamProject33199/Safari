@@ -160,7 +160,7 @@ class _BookingTourScreenState extends State<BookingTourScreen> {
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex) {
+            itemBuilder: (BuildContext context, int itemIndex,int realId) {
               return MyImageView(tour.tourPhotos[itemIndex]);
             }),
         Padding(

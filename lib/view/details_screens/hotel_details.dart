@@ -325,7 +325,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex) {
+            itemBuilder: (BuildContext context, int itemIndex,int realId) {
               return MyImageView(widget.hotel.images[itemIndex]);
             }),
         Padding(

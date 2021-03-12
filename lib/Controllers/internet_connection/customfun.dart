@@ -5,14 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 class CustomFunction {
 
-  void showInSnackBar({bool networkstate,scaffoldKey}) {
+  void showInSnackBar({bool networkstate,context}) {
     var networkStateTxt="Null";
     if(networkstate==true){
       networkStateTxt="Internet Connected";
     }else{
       networkStateTxt="No Internet Connection";
     }
-    scaffoldKey.currentState.showSnackBar(
+
+    ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('$networkStateTxt',
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w400),

@@ -75,18 +75,32 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   ),
                   Center(
                     child: Transform.translate(
-                      offset: Offset(0,-100),
+                      offset: Offset(0, -100),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
                             height: 100,
                           ),
-                          Text(AppLocalization.of(context).getTranslated("on_boarding_description1"),style: TextStyle(color: whiteColor ,fontSize: 34,fontWeight: FontWeight.bold),),
+                          Text(
+                            AppLocalization.of(context)
+                                .getTranslated("on_boarding_description1"),
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontSize: 34,
+                                fontWeight: FontWeight.bold),
+                          ),
                           SizedBox(
                             height: 10,
                           ),
-                          Text(AppLocalization.of(context).getTranslated("on_boarding_description2"),style: TextStyle(color: whiteColor ,fontSize: 18,fontWeight: FontWeight.bold),),
+                          Text(
+                            AppLocalization.of(context)
+                                .getTranslated("on_boarding_description2"),
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                     ),
@@ -105,18 +119,32 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   ),
                   Center(
                     child: Transform.translate(
-                      offset: Offset(0,-100),
+                      offset: Offset(0, -100),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
                             height: 100,
                           ),
-                          Text(AppLocalization.of(context).getTranslated("on_boarding_description3"),style: TextStyle(color: whiteColor, fontSize: 34,fontWeight: FontWeight.bold),),
+                          Text(
+                            AppLocalization.of(context)
+                                .getTranslated("on_boarding_description3"),
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontSize: 34,
+                                fontWeight: FontWeight.bold),
+                          ),
                           SizedBox(
                             height: 10,
                           ),
-                          Text(AppLocalization.of(context).getTranslated("on_boarding_description4"),style: TextStyle(color: whiteColor ,fontSize: 18,fontWeight: FontWeight.bold),),
+                          Text(
+                            AppLocalization.of(context)
+                                .getTranslated("on_boarding_description4"),
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                     ),
@@ -135,18 +163,32 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   ),
                   Center(
                     child: Transform.translate(
-                      offset: Offset(0,-100),
+                      offset: Offset(0, -100),
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           SizedBox(
                             height: 100,
                           ),
-                          Text(AppLocalization.of(context).getTranslated("on_boarding_description5"),style: TextStyle(color: whiteColor ,fontSize: 32,fontWeight: FontWeight.bold),),
+                          Text(
+                            AppLocalization.of(context)
+                                .getTranslated("on_boarding_description5"),
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontSize: 32,
+                                fontWeight: FontWeight.bold),
+                          ),
                           SizedBox(
                             height: 10,
                           ),
-                          Text(AppLocalization.of(context).getTranslated("on_boarding_description6"),style: TextStyle(color: whiteColor ,fontSize: 18,fontWeight: FontWeight.bold),),
+                          Text(
+                            AppLocalization.of(context)
+                                .getTranslated("on_boarding_description6"),
+                            style: TextStyle(
+                                color: whiteColor,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold),
+                          ),
                         ],
                       ),
                     ),
@@ -159,7 +201,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
             offset: Offset(0, 40),
             child: Container(
               alignment: Alignment.topRight,
-              child: FlatButton(
+              child: TextButton(
                 onPressed: () {
                   updateSeen();
                   Navigator.pushReplacement(context,
@@ -170,7 +212,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                 child: Text(
                   AppLocalization.of(context).getTranslated("button_skip1"),
                   style: TextStyle(
-                    color: whiteColor ,
+                    color: whiteColor,
                     fontSize: 25,
                   ),
                 ),
@@ -190,7 +232,7 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
           _currentPage != _numPages - 1
               ? Align(
                   alignment: Alignment.bottomRight,
-                  child: FlatButton(
+                  child: TextButton(
                     onPressed: () {
                       _pageController.nextPage(
                         duration: Duration(milliseconds: 500),
@@ -198,22 +240,23 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                       );
                     },
                     child: Transform.translate(
-                      offset: Offset(0,-10),
+                      offset: Offset(0, -10),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
                           Text(
-                            AppLocalization.of(context).getTranslated("button_next1"),
+                            AppLocalization.of(context)
+                                .getTranslated("button_next1"),
                             style: TextStyle(
-                              color: whiteColor ,
+                              color: whiteColor,
                               fontSize: 24.0,
                             ),
                           ),
                           SizedBox(width: 10.0),
                           Icon(
                             Icons.arrow_forward,
-                            color: whiteColor ,
+                            color: whiteColor,
                             size: 32.0,
                           ),
                         ],
@@ -222,46 +265,49 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
                   ),
                 )
               : Text(''),
-
-
           _currentPage == _numPages - 1
               ? Transform.translate(
-            offset: Offset(0,-70),
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                width: 300,
-                height: 50,
-                child: RaisedButton(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(20),
+                  offset: Offset(0, -70),
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: SizedBox(
+                      width: 300,
+                      height: 50,
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                            ),
+                          ),
+                          backgroundColor:
+                              MaterialStateProperty.all(whiteColor),
+
+                        ),
+
+                        child: Text(
+                          AppLocalization.of(context)
+                              .getTranslated("button_start"),
+                          style: TextStyle(
+                            color: primaryColor,
+                            fontSize: 30,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                        onPressed: () {
+                          updateSeen();
+                          Navigator.pushReplacement(context, MaterialPageRoute(
+                              builder: (BuildContext context) {
+                            return LoginScreen();
+                          }));
+                        },
+                      ),
                     ),
                   ),
-                  color: whiteColor ,
-                  child: Text(
-                    AppLocalization.of(context).getTranslated("button_start"),
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontSize: 30,
-                      letterSpacing: 1,
-                    ),
-                  ),
-                  splashColor: primaryColor,
-                  onPressed: () {
-                    updateSeen();
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (BuildContext context) {
-                          return LoginScreen();
-                        }));
-                  },
-                ),
-              ),
-            ),
-          )
+                )
               : Text(''),
-
-
         ],
       ),
     );

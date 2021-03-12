@@ -321,7 +321,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
         connected=true;
       });
       if(alreadyConnected==0&&connected==true){
-        funcFile.showInSnackBar(networkstate:connected,scaffoldKey:registerKey);
+        funcFile.showInSnackBar(networkstate:connected,context: context);
         if(mounted==false){
           return;
         }
@@ -338,7 +338,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
         alreadyConnected=0;
       });
 
-      funcFile.showInSnackBar(networkstate:connected,scaffoldKey:registerKey);
+      funcFile.showInSnackBar(networkstate:connected,context: context);
     }
   }
 

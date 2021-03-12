@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -80,12 +81,19 @@ class _DrawerScreenState extends State<DrawerScreen> {
                     CircleAvatar(
                       radius: 32,
                       backgroundColor: whiteColor,
-                      child: CircleAvatar(
-                        radius: 30,
-                        backgroundColor: transparent,
-                        backgroundImage: NetworkImage(data["image"] == null
+                      child: CachedNetworkImage(
+                        imageUrl: data["image"] == null
                             ? "https://png.pngtree.com/png-clipart/20190516/original/pngtree-users-vector-icon-png-image_3723374.jpg"
-                            : data["image"]),
+                            : data["image"],
+                        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        width: 60,
+                        height: 60,
+                        imageBuilder:(context, imageProvider)=> CircleAvatar(
+                          radius: 30,
+                          backgroundColor: transparent,
+                          backgroundImage: imageProvider,
+                        ),
                       ),
                     ),
                     Padding(

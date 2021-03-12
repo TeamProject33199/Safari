@@ -16,19 +16,17 @@ class HotelSearchStream extends StatefulWidget {
   _HotelSearchStreamState createState() => _HotelSearchStreamState();
 }
 
-class _HotelSearchStreamState extends State<HotelSearchStream> with AutomaticKeepAliveClientMixin<HotelSearchStream>{
+class _HotelSearchStreamState extends State<HotelSearchStream> {
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Hotel>>.value(
+      initialData: [],
       value: AppLocalization.of(context).locale.languageCode=="ar"? DataBase().getAllHotelsAr:DataBase().getAllHotels,
       catchError: (_, err) => throw Exception(err),
       child: HotelsService(),
     );
   }
 
-  @override
-  // TODO: implement wantKeepAlive
-  bool get wantKeepAlive => true;
 }
 
 class HotelSearch extends StatefulWidget {

@@ -44,10 +44,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String genderValue;
   bool isLoading=false;
   var _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
   String currentUser = FirebaseAuth.instance.currentUser.uid;
-
   // ignore: missing_return
   Stream<DocumentSnapshot> getData()  {
     try {
