@@ -31,6 +31,7 @@ class _TourRatingStreamState extends State<TourRatingStream> {
         if(snapshot.hasData){
           return Expanded(
             child: ListView.builder(
+              key: Key("${snapshot.data.length}"),
               itemCount: snapshot.data != null && snapshot.data.length > 0 ? snapshot.data.length : 0,
               itemBuilder: (context, index) {
                 final TourRating currentRate = snapshot.data[index];

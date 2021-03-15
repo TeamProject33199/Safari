@@ -32,6 +32,7 @@ class _CarRatingStreamState extends State<CarRatingStream> {
         if(snapshot.hasData){
           return Expanded(
             child: ListView.builder(
+              key: Key("${snapshot.data.length}"),
               itemCount: snapshot.data != null && snapshot.data.length > 0 ? snapshot.data.length : 0,
               itemBuilder: (context, index) {
                 final CarRating currentRate = snapshot.data[index];
