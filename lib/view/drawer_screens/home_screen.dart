@@ -319,10 +319,11 @@ class _HomeScreenState extends State<HomeScreen>
             ),
           ),
           Container(
-            height: 110,
+            height: MediaQuery.of(context).size.height*0.15,
             width: screenWidth,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
+              physics: NeverScrollableScrollPhysics(),
               itemCount: categories.length,
               itemBuilder: (context, index) {
                 return Padding(
@@ -335,9 +336,9 @@ class _HomeScreenState extends State<HomeScreen>
                       });
                     },
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      padding:  EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width/25),
                       child: Container(
-                        width: 90,
+                        width: MediaQuery.of(context).size.width*0.23,
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           color: selectedButtonIndex == index + 1
@@ -448,21 +449,24 @@ class _HomeScreenState extends State<HomeScreen>
           barrierDismissible: false,
           context: context,
           builder: (context) => AlertDialog(
-            title: Text('Are you sure?'),
-            content: Text('Do you want to exit the App?'),
+            title: Text(AppLocalization.of(context)
+                .getTranslated("alert_exit1")),
+            content: Text(AppLocalization.of(context)
+                .getTranslated("alert_exit2")),
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             actions: <Widget>[
               FlatButton(
                 onPressed: () => Navigator.of(context).pop(),
-                child: Text('No'),
+                child: Text(AppLocalization.of(context)
+                    .getTranslated("alert_button2")),
               ),
               FlatButton(
                 onPressed: () async {
                   exit(0);
                 },
-                child: Text('Yes'),
-              ),
+                child: Text(AppLocalization.of(context)
+        .getTranslated("alert_button1"),),),
             ],
           ),
         )) ??

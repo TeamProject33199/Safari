@@ -31,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final DataBase dataBase = DataBase();
 
@@ -791,7 +791,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
       if (alreadyConnected == 0 && connected == true) {
         funcFile.showInSnackBar(
-            networkstate: connected, context: context);
+            networkstate: connected, scaffoldKey: _scaffoldKey);
         if (mounted == false) {
           return;
         }
@@ -809,7 +809,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
 
       funcFile.showInSnackBar(
-          networkstate: connected, context: context);
+          networkstate: connected, scaffoldKey: _scaffoldKey);
     }
   }
 

@@ -150,7 +150,7 @@ class _BookingHotelScreenState extends State<BookingHotelScreen> {
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex,int realId) {
+            itemBuilder: (BuildContext context, int itemIndex,int readId) {
               return MyImageView(hotel.images[itemIndex]);
             }),
         Padding(

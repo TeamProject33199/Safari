@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
-  var loginKey = GlobalKey<ScaffoldMessengerState>();
+  var loginKey = GlobalKey<ScaffoldState>();
 
   bool keepMeLoggedIn = false;
   bool _obscureText = false;
@@ -461,7 +461,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
             if (await authProvider.signInWithGoogle() != null) {
               model.changeLoading(false);
-
+              await authProvider.saveGoogleUser();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -477,7 +477,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               );
             }
-            await authProvider.saveGoogleUser();
+
           },
         ),
         SizedBox(
@@ -499,7 +499,7 @@ class _LoginScreenState extends State<LoginScreen> {
             }
             if (await authProvider.handleFacebookLogin() != null) {
               model.changeLoading(false);
-
+              await authProvider.saveFaceBookUser();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
@@ -515,7 +515,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               );
             }
-            await authProvider.saveFaceBookUser();
+
           },
         ),
       ],
@@ -535,7 +535,7 @@ class _LoginScreenState extends State<LoginScreen> {
         connected=true;
       });
       if(alreadyConnected==0&&connected==true){
-        funcFile.showInSnackBar(networkstate:connected,context: context);
+        funcFile.showInSnackBar(networkstate:connected,scaffoldKey: loginKey);
         if(mounted==false){
           return;
         }
@@ -552,7 +552,7 @@ class _LoginScreenState extends State<LoginScreen> {
         alreadyConnected=0;
       });
 
-      funcFile.showInSnackBar(networkstate:connected,context: context);
+      funcFile.showInSnackBar(networkstate:connected,scaffoldKey: loginKey);
     }
   }
 

@@ -44,7 +44,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String genderValue;
   bool isLoading=false;
   var _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
 
   String currentUser = FirebaseAuth.instance.currentUser.uid;
   // ignore: missing_return
@@ -735,7 +735,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ),
         builder: (BuildContext bc) {
           return Padding(
-            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom, left: 10, right: 10, top: 15),
+            padding: EdgeInsets.only(
+                bottom: MediaQuery.of(context).viewInsets.bottom,
+               left: 10, right: 10, top: 15),
             child: Form(
               key: _formKey,
               child: Column(
@@ -1237,7 +1239,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 15),
                     child: Text(

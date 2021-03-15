@@ -277,7 +277,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex,int realId) {
+            itemBuilder: (BuildContext context, int itemIndex,int readId) {
               return MyImageView(widget.car.carPhotos[itemIndex]);
             }),
         Padding(
@@ -792,6 +792,22 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
         Cars(
           id: widget.car.id,
         ));
+
+    await DataBase().updateRatingCarAr(
+        CarRating(
+          rateId: currentUser,
+          comment: _updateCommentController.text,
+          rate: updateNumOfRating,
+          timeStamp: timeReview,
+          username: username,
+          photoUrl: photoUrl,
+        ),
+        Travelers(
+          id: currentUser,
+        ),
+        Cars(
+          id: widget.car.id,
+        ));
   }
 
   List<Widget> _buildPageIndicator(images) {
@@ -858,7 +874,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) => Padding(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+              //  bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 10,
@@ -1017,7 +1033,8 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                                       _scaffoldKey.currentState.showSnackBar(
                                           SnackBar(
                                               content: Text(
-                                                  "Your Review Updated Success")));
+                                                  AppLocalization.of(context)
+                                                      .getTranslated("snack_update"))));
                                     }).catchError((error) {
                                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                                           content: Text(
@@ -1032,7 +1049,8 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                                       _scaffoldKey.currentState.showSnackBar(
                                           SnackBar(
                                               content: Text(
-                                                  "Your Review Added Success")));
+                                                  AppLocalization.of(context)
+                                                      .getTranslated("snack_add"))));
                                     }).catchError((error) {
                                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                                           content: Text(

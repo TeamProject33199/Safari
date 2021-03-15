@@ -45,11 +45,26 @@ class DataBase {
         .doc(travelers.id)
         .set(rate.toJson());
   }
+  Future<void> addRatingHotelAr(HotelRating rate, Travelers travelers, Hotel hotel) async {
+    return await hotelArCollection
+        .doc(hotel.hotelId)
+        .collection("HotelRatingAr")
+        .doc(travelers.id)
+        .set(rate.toJson());
+  }
 
   Future<void> updateRatingHotel(HotelRating rate, Travelers travelers, Hotel hotel) async {
     return await hotelCollection
         .doc(hotel.hotelId)
         .collection("HotelRating")
+        .doc(travelers.id)
+        .update(rate.toJson());
+  }
+
+  Future<void> updateRatingHotelAr(HotelRating rate, Travelers travelers, Hotel hotel) async {
+    return await hotelArCollection
+        .doc(hotel.hotelId)
+        .collection("HotelRatingAr")
         .doc(travelers.id)
         .update(rate.toJson());
   }
@@ -62,10 +77,26 @@ class DataBase {
         .delete();
   }
 
+  Future<void> deleteRatingHotelAr(HotelRating rate, Travelers travelers, Hotel hotel) async {
+    return await hotelArCollection
+        .doc(hotel.hotelId)
+        .collection("HotelRatingAr")
+        .doc(travelers.id)
+        .delete();
+  }
+
   Future<void> addRatingTour(TourRating rate, Travelers travelers, Tour tour) async {
     return await tourCollection
         .doc(tour.tourId)
         .collection("TourRating")
+        .doc(travelers.id)
+        .set(rate.toJson());
+  }
+
+  Future<void> addRatingTourAr(TourRating rate, Travelers travelers, Tour tour) async {
+    return await tourArCollection
+        .doc(tour.tourId)
+        .collection("TourRatingAr")
         .doc(travelers.id)
         .set(rate.toJson());
   }
@@ -78,10 +109,26 @@ class DataBase {
         .update(rate.toJson());
   }
 
+  Future<void> updateRatingTourAr(TourRating rate, Travelers travelers, Tour tour) async {
+    return await tourArCollection
+        .doc(tour.tourId)
+        .collection("TourRatingAr")
+        .doc(travelers.id)
+        .update(rate.toJson());
+  }
+
   Future<void> deleteRatingTour(TourRating rate, Travelers travelers, Tour tour) async {
     return await tourCollection
         .doc(tour.tourId)
         .collection("TourRating")
+        .doc(travelers.id)
+        .delete();
+  }
+
+  Future<void> deleteRatingTourAr(TourRating rate, Travelers travelers, Tour tour) async {
+    return await tourArCollection
+        .doc(tour.tourId)
+        .collection("TourRatingAr")
         .doc(travelers.id)
         .delete();
   }
@@ -101,6 +148,13 @@ class DataBase {
         .doc(travelers.id)
         .update(rate.toJson());
   }
+  Future<void> updateRatingCarAr(CarRating rate, Travelers travelers, Cars cars) async {
+    return await carArCollection
+        .doc(cars.id)
+        .collection("CarRatingAr")
+        .doc(travelers.id)
+        .update(rate.toJson());
+  }
 
   Future<void> deleteRatingCar(CarRating rate, Travelers travelers, Cars cars) async {
     return await carCollection
@@ -109,11 +163,27 @@ class DataBase {
         .doc(travelers.id)
         .delete();
   }
+  Future<void> deleteRatingCarAr(CarRating rate, Travelers travelers, Cars cars) async {
+    return await carArCollection
+        .doc(cars.id)
+        .collection("CarRatingAr")
+        .doc(travelers.id)
+        .delete();
+  }
 
   Stream<List<HotelRating>> getAllHotelComment(Hotel hotel) {
     return hotelCollection
         .doc(hotel.hotelId)
         .collection("HotelRating")
+        .orderBy("timeStamp",descending: true)
+        .snapshots()
+        .map(HotelRating().fromQuery);
+  }
+
+  Stream<List<HotelRating>> getAllHotelCommentAr(Hotel hotel) {
+    return hotelArCollection
+        .doc(hotel.hotelId)
+        .collection("HotelRatingAr")
         .orderBy("timeStamp",descending: true)
         .snapshots()
         .map(HotelRating().fromQuery);
@@ -128,10 +198,29 @@ class DataBase {
         .map(TourRating().fromQuery);
   }
 
+  Stream<List<TourRating>> getAllTourCommentAr(Tour tour) {
+    return tourArCollection
+        .doc(tour.tourId)
+        .collection("TourRatingAr")
+        .orderBy("timeStamp",descending: true)
+        .snapshots()
+        .map(TourRating().fromQuery);
+  }
+
+
   Stream<List<CarRating>> getAllCarComment(Cars cars) {
     return carCollection
         .doc(cars.id)
         .collection("CarRating")
+        .orderBy("timeStamp",descending: true)
+        .snapshots()
+        .map(CarRating().fromQuery);
+  }
+
+  Stream<List<CarRating>> getAllCarCommentAr(Cars cars) {
+    return carArCollection
+        .doc(cars.id)
+        .collection("CarRatingAr")
         .orderBy("timeStamp",descending: true)
         .snapshots()
         .map(CarRating().fromQuery);

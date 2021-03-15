@@ -150,7 +150,7 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex,int realId) {
+            itemBuilder: (BuildContext context, int itemIndex,int readId) {
               return MyImageView(car.carPhotos[itemIndex]);
             }),
         Padding(

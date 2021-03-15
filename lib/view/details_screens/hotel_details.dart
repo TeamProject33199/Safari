@@ -325,7 +325,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex,int realId) {
+            itemBuilder: (BuildContext context, int itemIndex,int readId) {
               return MyImageView(widget.hotel.images[itemIndex]);
             }),
         Padding(
@@ -900,10 +900,42 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
         Hotel(
           hotelId: widget.hotel.hotelId,
         ));
+    await DataBase().addRatingHotelAr(
+        HotelRating(
+          rateId: currentUser,
+          comment: _addCommentController.text,
+          rate: numOfRating,
+          timeStamp: timeReview,
+          username: username,
+          photoUrl: photoUrl,
+        ),
+        Travelers(
+          id: currentUser,
+        ),
+        Hotel(
+          hotelId: widget.hotel.hotelId,
+        ));
   }
+
 
   Future updateReview() async {
     await DataBase().updateRatingHotel(
+        HotelRating(
+          rateId: currentUser,
+          comment: _updateCommentController.text,
+          rate: updateNumOfRating,
+          timeStamp: timeReview,
+          username: username,
+          photoUrl: photoUrl,
+        ),
+        Travelers(
+          id: currentUser,
+        ),
+        Hotel(
+          hotelId: widget.hotel.hotelId,
+        ));
+
+    await DataBase().updateRatingHotelAr(
         HotelRating(
           rateId: currentUser,
           comment: _updateCommentController.text,
@@ -985,7 +1017,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) => Padding(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+               // bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 10,
@@ -1148,7 +1180,8 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                                     _scaffoldKey.currentState.showSnackBar(
                                         SnackBar(
                                             content: Text(
-                                                "Your Review Updated Success")));
+                                                AppLocalization.of(context)
+                                                    .getTranslated("snack_update"))));
                                   }).catchError((error) {
                                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                                         content: Text(
@@ -1162,7 +1195,8 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                                     _scaffoldKey.currentState.showSnackBar(
                                         SnackBar(
                                             content: Text(
-                                                "Your Review Added Success")));
+                                                AppLocalization.of(context)
+                                                    .getTranslated("snack_add"))));
                                   }).catchError((error) {
                                     _scaffoldKey.currentState.showSnackBar(SnackBar(
                                         content: Text(

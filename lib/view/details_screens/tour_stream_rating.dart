@@ -11,16 +11,21 @@ import 'package:project/models/users.dart';
 
 
 
-class TourRatingStream extends StatelessWidget {
+class TourRatingStream extends StatefulWidget {
   final Tour tourId;
   TourRatingStream({this.tourId});
 
+  @override
+  _TourRatingStreamState createState() => _TourRatingStreamState();
+}
+
+class _TourRatingStreamState extends State<TourRatingStream> {
   @override
   Widget build(BuildContext context) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream: DataBase().getAllTourComment(tourId),
+      stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getAllTourCommentAr(widget.tourId):DataBase().getAllTourComment(widget.tourId),
       // ignore: missing_return
       builder:(context,AsyncSnapshot<List<TourRating>>snapshot){
         if(snapshot.hasData){
@@ -30,7 +35,8 @@ class TourRatingStream extends StatelessWidget {
               itemBuilder: (context, index) {
                 final TourRating currentRate = snapshot.data[index];
 
-                return currentRate.rateId==currentUser?Slidable(
+                return currentRate.rateId==currentUser?
+                    Slidable(
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.25,
                   secondaryActions: [
@@ -39,13 +45,18 @@ class TourRatingStream extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.delete,color: Colors.red,),
-                          Text("Delete",style: TextStyle(color: Colors.red),),
+                          Text(AppLocalization.of(context)
+                              .getTranslated("delete_rate"),style: TextStyle(color: Colors.red),),
                         ],
                       ),
                       color: Colors.transparent,
                       onTap: () {
-                        DataBase().deleteRatingTour(currentRate, Travelers(id: currentUser), tourId);
-                        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Your Review Deleted"),),);
+                        setState(() {
+                          DataBase().deleteRatingTour(currentRate, Travelers(id: currentUser), widget.tourId);
+                          DataBase().deleteRatingTourAr(currentRate, Travelers(id: currentUser), widget.tourId);
+                        });
+                        Scaffold.of(context).showSnackBar(SnackBar(content: Text("${AppLocalization.of(context)
+                            .getTranslated("snack_delete")}"),),);
                       },
                     ),
                   ],
@@ -162,7 +173,8 @@ class TourRatingStream extends StatelessWidget {
                       ),
                     ),
                   ),
-                ):Padding(
+                ):
+                Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Container(
                     decoration: BoxDecoration(

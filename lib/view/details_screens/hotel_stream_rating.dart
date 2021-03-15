@@ -10,29 +10,35 @@ import 'package:project/models/rating_hotel.dart';
 import 'package:project/models/users.dart';
 
 
-class HotelRatingStream extends StatelessWidget {
+class HotelRatingStream extends StatefulWidget {
 
   final Hotel hotelId;
   HotelRatingStream({this.hotelId,});
+
+  @override
+  _HotelRatingStreamState createState() => _HotelRatingStreamState();
+}
+
+class _HotelRatingStreamState extends State<HotelRatingStream> {
   @override
   Widget build(BuildContext context) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream: DataBase().getAllHotelComment(hotelId),
+      stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getAllHotelCommentAr(widget.hotelId,) :DataBase().getAllHotelComment(widget.hotelId,),
       // ignore: missing_return
       builder:(context,AsyncSnapshot<List<HotelRating>> snapshot){
-
-
         if(snapshot.hasData){
           return Expanded(
             child: ListView.builder(
+              key: Key("${snapshot.data.length}"),
               itemCount: snapshot.data != null && snapshot.data.length > 0 ? snapshot.data.length : 0,
               itemBuilder: (context, index) {
                 final HotelRating currentRate = snapshot.data[index];
 
-                return currentRate.rateId==currentUser? Slidable(
-                  actionPane: SlidableDrawerActionPane(),
+                return currentRate.rateId==currentUser?
+                    Slidable(
+                  actionPane: SlidableScrollActionPane(),
                   actionExtentRatio: 0.25,
                   secondaryActions: [
                     IconSlideAction(
@@ -40,13 +46,18 @@ class HotelRatingStream extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.delete,color: Colors.red,),
-                          Text("Delete",style: TextStyle(color: Colors.red),),
+                          Text(AppLocalization.of(context)
+                              .getTranslated("delete_rate"),style: TextStyle(color: Colors.red),),
                         ],
                       ),
                       color: Colors.transparent,
                       onTap: () {
-                        DataBase().deleteRatingHotel(currentRate, Travelers(id: currentUser), hotelId);
-                        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Your Review Deleted"),),);
+                        setState(() {
+                          DataBase().deleteRatingHotel(currentRate, Travelers(id: currentUser), widget.hotelId);
+                          DataBase().deleteRatingHotelAr(currentRate, Travelers(id: currentUser), widget.hotelId);
+                        });
+                        Scaffold.of(context).showSnackBar(SnackBar(content: Text("${AppLocalization.of(context)
+                            .getTranslated("snack_delete")}"),),);
                       },
                     ),
                   ],
@@ -163,7 +174,8 @@ class HotelRatingStream extends StatelessWidget {
                       ),
                     ),
                   ),
-                ):Padding(
+                ):
+                Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Container(
                     decoration: BoxDecoration(

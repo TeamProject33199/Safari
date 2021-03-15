@@ -20,7 +20,7 @@ class _ToursServiceState extends State<ToursService> {
   double minPrice = 0;
   double maxPrice = 7000;
   double _lowerValue = 50;
-  double _upperValue = 500;
+  double _upperValue = 2000;
 
 
   List<Tour> filteredList;
@@ -153,13 +153,17 @@ class _ToursServiceState extends State<ToursService> {
   Widget checkFilter() {
     if (isFilter || (searchInput != null && searchInput.isNotEmpty)) {
       return filteredList != null && filteredList.length == 0
-          ? Container(child: Center(child: Text("No Data")))
+          ? Container(child: Center(child: Text(
+          AppLocalization.of(context)
+              .getTranslated("no_data"))))
           : TourSearch(
         tourList: filteredList,
       );
     } else {
       return tourList != null && tourList.length == 0
-          ? Container(child: Center(child: Text("No Data")))
+          ? Container(child: Center(child: Text(
+          AppLocalization.of(context)
+              .getTranslated("no_data"))))
           : TourSearch(
         tourList: tourList,
       );

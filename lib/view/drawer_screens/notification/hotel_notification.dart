@@ -8,12 +8,8 @@ import 'package:project/locale_language/localization_delegate.dart';
 import 'package:project/models/booking_hotel.dart';
 import 'package:project/models/users.dart';
 
-class HotelsNotifications extends StatefulWidget {
-  @override
-  _HotelsNotificationsState createState() => _HotelsNotificationsState();
-}
+class HotelsNotifications extends StatelessWidget {
 
-class _HotelsNotificationsState extends State<HotelsNotifications> {
 
 
   @override
@@ -159,19 +155,13 @@ class _HotelsNotificationsState extends State<HotelsNotifications> {
                             alignment: AppLocalization.of(context).locale.languageCode=="ar"?Alignment.bottomLeft:Alignment.bottomRight,
                             child: Padding(
                               padding: AppLocalization.of(context).locale.languageCode=="ar"?const EdgeInsets.only(
-                                  left: 12,bottom: 5, ):const EdgeInsets.only(right: 12,bottom: 10),
+                                  left: 12,bottom: 7, ):const EdgeInsets.only(right: 12,bottom: 7,),
                               child: SizedBox(
                                 height: 30,
                                 width: 80,
                                 child: RaisedButton(
                                   onPressed: (){
-                                    if(AppLocalization.of(context).locale.languageCode=="ar"){
-                                      DataBase().deleteBookingHotelAr(BookingHotel(bookingId: hotel.bookingId), Travelers(id: currentUser));
-
-                                    }else{
-                                      DataBase().deleteBookingHotel(BookingHotel(bookingId: hotel.bookingId), Travelers(id: currentUser));
-
-                                    }
+                                    _onWillPop(context,hotel,currentUser);
                                   },
                                   child: Text(AppLocalization.of(context).getTranslated('button_cancel_hotels'),style: TextStyle(color: whiteColor),),
                                   color: red900Color,
@@ -196,5 +186,38 @@ class _HotelsNotificationsState extends State<HotelsNotifications> {
           return Center(child: CircularProgressIndicator(),);
       },
     );
+  }
+  Future<bool> _onWillPop(context,hotel,currentUser) async {
+    return (await showDialog(
+      barrierDismissible: false,
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(AppLocalization.of(context)
+            .getTranslated("alert_exit1")),
+        content: Text(AppLocalization.of(context)
+            .getTranslated("alert_cancel2")),
+        shape:
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text(AppLocalization.of(context)
+                .getTranslated("alert_button2")),
+          ),
+          FlatButton(
+            onPressed: () async {
+              if(AppLocalization.of(context).locale.languageCode=="ar"){
+                DataBase().deleteBookingHotelAr(BookingHotel(bookingId: hotel.bookingId), Travelers(id: currentUser));
+              }else{
+                DataBase().deleteBookingHotel(BookingHotel(bookingId: hotel.bookingId), Travelers(id: currentUser));
+              }
+              Navigator.of(context).pop();
+            },
+            child: Text(AppLocalization.of(context)
+                .getTranslated("alert_button1"),),),
+        ],
+      ),
+    )) ??
+        false;
   }
 }

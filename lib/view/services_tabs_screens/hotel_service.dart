@@ -19,7 +19,7 @@ class _HotelsServiceState extends State<HotelsService> {
   double minPrice = 0;
   double maxPrice = 15000;
   double _lowerValue = 50;
-  double _upperValue = 500;
+  double _upperValue = 5000;
 
   List<Hotel> filteredList;
 
@@ -156,13 +156,17 @@ class _HotelsServiceState extends State<HotelsService> {
   Widget checkFilter() {
     if (isFilter || (searchInput != null && searchInput.isNotEmpty)) {
       return filteredList != null && filteredList.length == 0
-          ? Container(child: Center(child: Text("No Data")))
+          ? Container(child: Center(child: Text(
+          AppLocalization.of(context)
+              .getTranslated("no_data"))))
           : HotelSearch(
         hotelList: filteredList,
       );
     } else {
       return hotelList != null && hotelList.length == 0
-          ? Container(child: Center(child: Text("No Data")))
+          ? Container(child: Center(child: Text(
+          AppLocalization.of(context)
+              .getTranslated("no_data"))))
           : HotelSearch(
         hotelList: hotelList,
       );
@@ -334,7 +338,7 @@ class _HotelsServiceState extends State<HotelsService> {
                         max: maxPrice,
                         lowerValue: _lowerValue,
                         upperValue: _upperValue,
-                        divisions: 1000,
+                        divisions: 500,
                         showValueIndicator: true,
                         valueIndicatorMaxDecimals: 1,
                         onChanged: (double newLowerValue, double newUpperValue) {

@@ -18,9 +18,8 @@ import '../locale_language/localization_delegate.dart';
       builder: (context, AsyncSnapshot<List<Hotel>> snapshot) {
         if (snapshot.hasData) {
           return Container(
-            height: MediaQuery.of(context).size.height * 0.85,
+            height: MediaQuery.of(context).size.height *0.80,
             child: StaggeredGridView.countBuilder(
-                physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,

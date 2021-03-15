@@ -81,6 +81,7 @@ class StripeService {
               paymentMethodId: paymentMethod.id
           )
       );
+
       if (response.status == 'succeeded') {
         return new StripeTransactionResponse(
             message: 'Congratulation successful',

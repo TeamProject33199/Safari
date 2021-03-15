@@ -274,7 +274,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                   });
                 }),
             itemCount: sliderImages.length,
-            itemBuilder: (BuildContext context, int itemIndex,int realId) {
+            itemBuilder: (BuildContext context, int itemIndex,int readId) {
               return MyImageView(widget.tour.tourPhotos[itemIndex]);
             }),
         Padding(
@@ -754,10 +754,44 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
         Tour(
           tourId: widget.tour.tourId,
         ));
+
+    await DataBase().addRatingTourAr(
+        TourRating(
+          rateId: currentUser,
+          comment: _addCommentController.text,
+          rate: numOfRating,
+          timeStamp: timeReview,
+          username: username,
+          photoUrl: photoUrl,
+
+        ),
+        Travelers(
+          id: currentUser,
+        ),
+        Tour(
+          tourId: widget.tour.tourId,
+        ));
   }
 
   Future updateReview() async {
     await DataBase().updateRatingTour(
+        TourRating(
+          rateId: currentUser,
+          comment: _updateCommentController.text,
+          rate: updateNumOfRating,
+          timeStamp: timeReview,
+          username: username,
+          photoUrl: photoUrl,
+
+        ),
+        Travelers(
+          id: currentUser,
+        ),
+        Tour(
+          tourId: widget.tour.tourId,
+        ));
+
+    await DataBase().updateRatingTourAr(
         TourRating(
           rateId: currentUser,
           comment: _updateCommentController.text,
@@ -824,7 +858,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) => Padding(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+               // bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 10,
@@ -981,7 +1015,8 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                                       _scaffoldKey.currentState.showSnackBar(
                                           SnackBar(
                                               content: Text(
-                                                  "Your Review Updated Success")));
+                                                  AppLocalization.of(context)
+                                                      .getTranslated("snack_update"))));
                                     }).catchError((error) {
                                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                                           content: Text(
@@ -996,7 +1031,8 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                                       _scaffoldKey.currentState.showSnackBar(
                                           SnackBar(
                                               content: Text(
-                                                  "Your Review Added Success")));
+                                                  AppLocalization.of(context)
+                                                      .getTranslated("snack_add"))));
                                     }).catchError((error) {
                                       _scaffoldKey.currentState.showSnackBar(SnackBar(
                                           content: Text(

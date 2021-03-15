@@ -10,17 +10,22 @@ import 'package:project/models/rating_car.dart';
 import 'package:project/models/users.dart';
 
 
-class CarRatingStream extends StatelessWidget {
+class CarRatingStream extends StatefulWidget {
 
   final Cars carId;
   CarRatingStream({this.carId});
 
   @override
+  _CarRatingStreamState createState() => _CarRatingStreamState();
+}
+
+class _CarRatingStreamState extends State<CarRatingStream> {
+  @override
   Widget build(BuildContext context) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream: DataBase().getAllCarComment(carId),
+      stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getAllCarCommentAr(widget.carId) :DataBase().getAllCarComment(widget.carId),
       // ignore: missing_return
       builder:(context,AsyncSnapshot<List<CarRating>>snapshot){
 
@@ -31,7 +36,8 @@ class CarRatingStream extends StatelessWidget {
               itemBuilder: (context, index) {
                 final CarRating currentRate = snapshot.data[index];
 
-                return currentRate.rateId==currentUser?Slidable(
+                return currentRate.rateId==currentUser?
+                    Slidable(
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.25,
                   secondaryActions: [
@@ -40,14 +46,19 @@ class CarRatingStream extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(Icons.delete,color: Colors.red,),
-                          Text("Delete",style: TextStyle(color: Colors.red),),
+                          Text(AppLocalization.of(context)
+                              .getTranslated("delete_rate"),style: TextStyle(color: Colors.red),),
                         ],
                       ),
                       color: Colors.transparent,
 
                       onTap: () {
-                        DataBase().deleteRatingCar(currentRate, Travelers(id: currentUser), carId);
-                        Scaffold.of(context).showSnackBar(SnackBar(content: Text("Your Review Deleted"),),);
+                     setState(() {
+                        DataBase().deleteRatingCar(currentRate, Travelers(id: currentUser), widget.carId);
+                        DataBase().deleteRatingCarAr(currentRate, Travelers(id: currentUser), widget.carId);
+                     });
+                        Scaffold.of(context).showSnackBar(SnackBar(content: Text("${AppLocalization.of(context)
+                            .getTranslated("snack_delete")}"),),);
                       },
                     ),
                   ],
@@ -164,7 +175,8 @@ class CarRatingStream extends StatelessWidget {
                       ),
                     ),
                   ),
-                ):Padding(
+                ):
+                    Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Container(
                     decoration: BoxDecoration(

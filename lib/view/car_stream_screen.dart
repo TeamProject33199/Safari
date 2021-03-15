@@ -19,9 +19,8 @@ class CarStream extends StatelessWidget {
         builder:(context,AsyncSnapshot<List<Cars>>snapshot) {
         if(snapshot.hasData){
           return Container(
-            height: MediaQuery.of(context).size.height*0.85,
+            height: MediaQuery.of(context).size.height*0.80,
             child: StaggeredGridView.countBuilder(
-                physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,

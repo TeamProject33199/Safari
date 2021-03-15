@@ -22,7 +22,7 @@ class _CarsServiceState extends State<CarsService> {
   double minPrice = 0;
   double maxPrice = 10000;
   double _lowerValue = 50;
-  double _upperValue = 10000;
+  double _upperValue = 5000;
 
   List<Cars> filteredList;
 
@@ -82,13 +82,17 @@ class _CarsServiceState extends State<CarsService> {
   Widget checkFilter() {
     if (isFilter || (searchInput != null && searchInput.isNotEmpty)) {
       return filteredList != null && filteredList.length == 0
-          ? Container(child: Center(child: Text("No Data")))
+          ? Container(child: Center(child: Text(
+          AppLocalization.of(context)
+              .getTranslated("no_data"))))
           : CarSearch(
         carList: filteredList,
       );
     } else {
       return carList != null && carList.length == 0
-          ? Container(child: Center(child: Text("No Data")))
+          ? Container(child: Center(child: Text(
+          AppLocalization.of(context)
+              .getTranslated("no_data"))))
           : CarSearch(
         carList: carList,
       );
@@ -450,7 +454,7 @@ class _CarsServiceState extends State<CarsService> {
                         max: maxPrice,
                         lowerValue: _lowerValue,
                         upperValue: _upperValue,
-                        divisions: 1000,
+                        divisions: 500,
                         showValueIndicator: true,
                         valueIndicatorMaxDecimals: 1,
                         onChanged:
