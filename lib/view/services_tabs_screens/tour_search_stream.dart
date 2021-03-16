@@ -193,9 +193,9 @@ class _TourSearchState extends State<TourSearch> {
                                   InkWell(
                                     onTap: () {
                                       if(isFav){
-                                        AppLocalization.of(context).locale.languageCode=="ar"?deleteFavoriteAr(currentTour.tourId) :deleteFavorite(currentTour.tourId);
+                                        AppLocalization.of(context).locale.languageCode=="ar"?deleteFavorite(currentTour.tourId) :deleteFavorite(currentTour.tourId);
                                       }else{
-                                        AppLocalization.of(context).locale.languageCode=="ar"? deleteFavoriteAr(currentTour.tourId):addFavorite(currentTour.tourId);
+                                        AppLocalization.of(context).locale.languageCode=="ar"? addFavorite(currentTour.tourId):addFavorite(currentTour.tourId);
                                       }
 
                                     },
@@ -240,6 +240,11 @@ class _TourSearchState extends State<TourSearch> {
         tourId: tourId,
         travellerId: currentUser
     );
+
+    await DataBase().addFavoritesTourAr(
+        tourId: tourId,
+        travellerId: currentUser
+    );
   }
 
   Future deleteFavorite(tourId) async {
@@ -249,24 +254,11 @@ class _TourSearchState extends State<TourSearch> {
         tourId: tourId,
         travellerId: currentUser
     );
-  }
-
-
-  Future addFavoriteAr(tourId) async {
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
-
-    await DataBase().addFavoritesTourAr(
-        tourId: tourId,
-        travellerId: currentUser
-    );
-  }
-
-  Future deleteFavoriteAr(tourId) async {
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
-
     await DataBase().removeFavoritesTourAr(
         tourId: tourId,
         travellerId: currentUser
     );
+
   }
+
 }

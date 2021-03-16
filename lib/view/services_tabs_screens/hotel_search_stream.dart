@@ -196,9 +196,9 @@ class _HotelSearchState extends State<HotelSearch> {
                                   InkWell(
                                   onTap: () {
                                     if(isFav){
-                                      AppLocalization.of(context).locale.languageCode=="ar"?deleteFavoriteAr(currentHotel.hotelId) :deleteFavorite(currentHotel.hotelId);
+                                      AppLocalization.of(context).locale.languageCode=="ar"?deleteFavorite(currentHotel.hotelId) : deleteFavorite(currentHotel.hotelId);
                                     }else{
-                                      AppLocalization.of(context).locale.languageCode=="ar"?addFavoriteAr(currentHotel.hotelId) :addFavorite(currentHotel.hotelId);
+                                      AppLocalization.of(context).locale.languageCode=="ar"?addFavorite(currentHotel.hotelId) :addFavorite(currentHotel.hotelId);
                                     }
                                   },
                                   child: Icon(
@@ -242,7 +242,10 @@ class _HotelSearchState extends State<HotelSearch> {
         hotelId: hotelId,
         travellerId: currentUser
     );
-
+    await DataBase().addFavoritesHotelAr(
+        hotelId: hotelId,
+        travellerId: currentUser
+    );
   }
 
   Future deleteFavorite(hotelId) async {
@@ -251,19 +254,6 @@ class _HotelSearchState extends State<HotelSearch> {
         hotelId: hotelId,
         travellerId: currentUser
     );
-  }
-
-  Future addFavoriteAr(hotelId) async {
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
-    await DataBase().addFavoritesHotelAr(
-        hotelId: hotelId,
-        travellerId: currentUser
-    );
-
-  }
-
-  Future deleteFavoriteAr(hotelId) async {
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
     await DataBase().removeFavoritesHotelAr(
         hotelId: hotelId,
         travellerId: currentUser

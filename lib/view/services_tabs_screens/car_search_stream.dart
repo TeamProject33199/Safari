@@ -186,9 +186,9 @@ class _CarSearchState extends State<CarSearch> {
                                   InkWell(
                                     onTap: () {
                                       if(isFav){
-                                     AppLocalization.of(context).locale.languageCode=="ar"?deleteFavoriteAr(currentCar.id):deleteFavorite(currentCar.id);
+                                     AppLocalization.of(context).locale.languageCode=="ar"?deleteFavorite(currentCar.id):deleteFavorite(currentCar.id);
                                       }else{
-                                        AppLocalization.of(context).locale.languageCode=="ar"?addFavoriteAr(currentCar.id):addFavorite(currentCar.id);
+                                        AppLocalization.of(context).locale.languageCode=="ar"?addFavorite(currentCar.id):addFavorite(currentCar.id);
                                       }
 
                                     },
@@ -233,6 +233,11 @@ class _CarSearchState extends State<CarSearch> {
         carId: carId,
         travellerId: currentUser
     );
+
+    await DataBase().addFavoritesCarAr(
+        carId: carId,
+        travellerId: currentUser
+    );
   }
 
   Future deleteFavorite(carId) async {
@@ -242,22 +247,10 @@ class _CarSearchState extends State<CarSearch> {
         carId: carId,
         travellerId: currentUser
     );
-  }
-
-  Future addFavoriteAr(carId) async {
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
-    await DataBase().addFavoritesCarAr(
-        carId: carId,
-        travellerId: currentUser
-    );
-  }
-
-  Future deleteFavoriteAr(carId) async {
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
-
     await DataBase().removeFavoritesCarAr(
         carId: carId,
         travellerId: currentUser
     );
   }
+
 }

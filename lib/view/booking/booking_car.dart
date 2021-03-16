@@ -439,9 +439,9 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
     await dialog.hide();
 
     if(response.success==true){
-      AppLocalization.of(context).locale.languageCode=="ar"? await addPaymentAr():await addPayment();
+      await addPayment();
       await _showDialog(response);
-      AppLocalization.of(context).locale.languageCode=="ar"? await updatePayBookingAr():await updatePayBooking();
+      await updatePayBooking();
       await  scheduleNotification(car.carName,"${ AppLocalization.of(context).locale.languageCode=="ar"?"$bookingDate تم الحجز في ":"Your Booking in  $bookingDate"}");
 
     }else{
@@ -464,28 +464,10 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
         ));
   }
 
-  Future addPaymentAr() async {
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
-    await DataBase().addPaymentCarAr(
-        PaymentCar(
-          paymentId: car.id,
-          paymentDate: DateTime.now(),
-          paymentPrice: totalPrice,
-        ),
-        Travelers(
-          id: currentUser,
-        ));
-  }
 
   Future updatePayBooking() async{
     String currentUser=FirebaseAuth.instance.currentUser.uid;
     await DataBase().updateBookingCar(BookingCar(
-        bookingId: widget.car.id
-    ), Travelers(id: currentUser));
-  }
-  Future updatePayBookingAr() async{
-    String currentUser=FirebaseAuth.instance.currentUser.uid;
-    await DataBase().updateBookingCarAr(BookingCar(
         bookingId: widget.car.id
     ), Travelers(id: currentUser));
   }

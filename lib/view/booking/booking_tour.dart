@@ -313,7 +313,7 @@ class _BookingTourScreenState extends State<BookingTourScreen> {
                         "$duration" +
                             " " +
                             AppLocalization.of(context)
-                                .getTranslated("text_days"),
+                                .getTranslated("text_hours"),
                         style: TextStyle(
                             fontWeight: FontWeight.w500, color: grey700Color),
                       ),
@@ -458,9 +458,9 @@ class _BookingTourScreenState extends State<BookingTourScreen> {
     await dialog.hide();
 
     if (response.success == true) {
-      AppLocalization.of(context).locale.languageCode=="ar"?await addPaymentAr() :await addPayment();
+      await addPayment();
       await _showDialog(response);
-      AppLocalization.of(context).locale.languageCode=="ar"? await updatePayBookingAr(): await updatePayBooking();
+      await updatePayBooking();
       await scheduleNotification(tour.placeName,"${ AppLocalization.of(context).locale.languageCode=="ar"?"$bookingDate تم الحجز في ":"Your Booking in  $bookingDate"}");
 
     } else {
@@ -482,18 +482,6 @@ class _BookingTourScreenState extends State<BookingTourScreen> {
         ));
   }
 
-  Future addPaymentAr() async {
-    String currentUser = FirebaseAuth.instance.currentUser.uid;
-    await DataBase().addPaymentTourAr(
-        PaymentTour(
-          paymentId: tour.tourId,
-          paymentDate: DateTime.now(),
-          paymentPrice: totalPrice,
-        ),
-        Travelers(
-          id: currentUser,
-        ));
-  }
 
   Future updatePayBooking() async{
     String currentUser=FirebaseAuth.instance.currentUser.uid;
@@ -502,12 +490,7 @@ class _BookingTourScreenState extends State<BookingTourScreen> {
     ), Travelers(id: currentUser));
   }
 
-  Future updatePayBookingAr() async{
-    String currentUser=FirebaseAuth.instance.currentUser.uid;
-    await DataBase().updateBookingTourAr(BookingTour(
-        bookingId: widget.tour.tourId
-    ), Travelers(id: currentUser));
-  }
+
 
   Future _showDialog(response) async {
     return (await showDialog(

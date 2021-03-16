@@ -17,7 +17,7 @@ class DataBase {
   final CollectionReference hotelCollection =
   FirebaseFirestore.instance.collection("Hotels");
   final CollectionReference hotelArCollection =
-  FirebaseFirestore.instance.collection("HotelsAr");
+  FirebaseFirestore.instance.collection("HotelAr");
   final CollectionReference carCollection =
   FirebaseFirestore.instance.collection("Cars");
   final CollectionReference carArCollection =
@@ -463,15 +463,6 @@ class DataBase {
         .set(payment.toJson());
   }
 
-  Future<void> addPaymentTourAr(PaymentTour payment, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingTourAr")
-        .doc(payment.paymentId)
-        .collection("PaymentTourAr")
-        .doc()
-        .set(payment.toJson());
-  }
 
   Future<void> addPaymentCar(PaymentCar payment, Travelers travelers) async {
     return await travelerCollection
@@ -483,15 +474,6 @@ class DataBase {
         .set(payment.toJson());
   }
 
-  Future<void> addPaymentCarAr(PaymentCar payment, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingCarAr")
-        .doc(payment.paymentId)
-        .collection("PaymentCarAr")
-        .doc()
-        .set(payment.toJson());
-  }
 
   Stream<List<BookingHotel>>  getBookingHotel(Travelers travelers,) {
     return travelerCollection.doc(travelers.id).collection("BookingHotel").where("paid",isEqualTo: true)
@@ -511,21 +493,8 @@ class DataBase {
         .map(BookingCar().fromQuery);
   }
 
-  Stream<List<BookingHotel>>  getBookingHotelAr(Travelers travelers,) {
-    return travelerCollection.doc(travelers.id).collection("BookingHotelAr").where("paid",isEqualTo: true).snapshots().map(BookingHotel().fromQuery);
-  }
 
-  Stream<List<BookingTour>>  getBookingTourAr(Travelers travelers,) {
-    return travelerCollection.doc(travelers.id).collection("BookingTourAr").where("paid",isEqualTo: true)
-        .snapshots()
-        .map(BookingTour().fromQuery);
-  }
 
-  Stream<List<BookingCar>>  getBookingCarAr(Travelers travelers,) {
-    return travelerCollection.doc(travelers.id).collection("BookingCarAr").where("paid",isEqualTo: true)
-        .snapshots()
-        .map(BookingCar().fromQuery);
-  }
 
   Stream<List<Hotel>> getFavoriteHotel(Travelers travelers) {
     return hotelCollection.where('user_fav', arrayContains: '${travelers.id}').snapshots().map(Hotel().fromQuery);

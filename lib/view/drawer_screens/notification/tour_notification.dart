@@ -20,7 +20,7 @@ class _ToursNotificationsState extends State<ToursNotifications> {
     String currentUser=FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream: AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingTourAr(Travelers(id: currentUser)):DataBase().getBookingTour(Travelers(id: currentUser)),
+      stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingTour(Travelers(id: currentUser)) : DataBase().getBookingTour(Travelers(id: currentUser)),
       builder:(context,AsyncSnapshot<List<BookingTour>>snapshot){
         if(snapshot.hasData){
           return ListView.builder(
@@ -209,11 +209,7 @@ class _ToursNotificationsState extends State<ToursNotifications> {
           ),
           FlatButton(
             onPressed: () async {
-              if(AppLocalization.of(context).locale.languageCode=="ar"){
-                DataBase().deleteBookingTourAr(BookingTour(bookingId: tour.bookingId), Travelers(id: currentUser));
-              }else{
-                DataBase().deleteBookingTour(BookingTour(bookingId: tour.bookingId), Travelers(id: currentUser));
-              }
+              await  DataBase().deleteBookingTour(BookingTour(bookingId: tour.bookingId), Travelers(id: currentUser));
               Navigator.of(context).pop();
             },
             child: Text(AppLocalization.of(context)

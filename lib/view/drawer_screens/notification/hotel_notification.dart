@@ -17,7 +17,7 @@ class HotelsNotifications extends StatelessWidget {
     String currentUser=FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream: AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingHotelAr(Travelers(id: currentUser)):DataBase().getBookingHotel(Travelers(id: currentUser)),
+      stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingHotel(Travelers(id: currentUser)):DataBase().getBookingHotel(Travelers(id: currentUser)),
       builder:(context,AsyncSnapshot<List<BookingHotel>>snapshot){
         if(snapshot.hasData){
           return ListView.builder(
@@ -206,11 +206,7 @@ class HotelsNotifications extends StatelessWidget {
           ),
           FlatButton(
             onPressed: () async {
-              if(AppLocalization.of(context).locale.languageCode=="ar"){
-                DataBase().deleteBookingHotelAr(BookingHotel(bookingId: hotel.bookingId), Travelers(id: currentUser));
-              }else{
-                DataBase().deleteBookingHotel(BookingHotel(bookingId: hotel.bookingId), Travelers(id: currentUser));
-              }
+               await DataBase().deleteBookingHotel(BookingHotel(bookingId: hotel.bookingId), Travelers(id: currentUser));
               Navigator.of(context).pop();
             },
             child: Text(AppLocalization.of(context)

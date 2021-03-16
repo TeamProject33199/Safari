@@ -223,12 +223,12 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                 if (isFav) {
                   setState(() {
                     isFav=!isFav;
-                    AppLocalization.of(context).locale.languageCode=="ar"? deleteFavoriteAr():deleteFavorite();
+                    AppLocalization.of(context).locale.languageCode=="ar"? deleteFavorite():deleteFavorite();
                   });
                 } else {
                   setState(() {
                     isFav=!isFav;
-                    AppLocalization.of(context).locale.languageCode=="ar"?addFavoriteAr() :addFavorite();
+                    AppLocalization.of(context).locale.languageCode=="ar"?addFavorite() :addFavorite();
                   });
                 }
               },
@@ -448,12 +448,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                                     Text(
                                       "$duration" +
                                           " " +
-                                          "${widget.tour.tourCity=="الجيزة"?AppLocalization.of(context)
-                                              .getTranslated("text_hours"):widget.tour.tourCity=="القاهرة"?AppLocalization.of(context)
-                                              .getTranslated("text_hours"):widget.tour.tourCity=="Giza"?AppLocalization.of(context)
-                                              .getTranslated("text_hours"):widget.tour.tourCity=="Cairo"?AppLocalization.of(context)
-                                              .getTranslated("text_hours"):AppLocalization.of(context)
-                                              .getTranslated("text_days")}",
+                                          "${AppLocalization.of(context).getTranslated("text_hours")}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.w500,
                                           color: grey700Color),
@@ -674,7 +669,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                       ),
                     ),
                     onPressed: () async {
-                      AppLocalization.of(context).locale.languageCode=="ar"? await addDataAr():await addDataEn();
+                      await addData();
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -702,7 +697,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
     );
   }
 
-  Future addDataEn() async {
+  Future addData() async {
     await DataBase().addBookingTour(
         BookingTour(
           bookingId: widget.tour.tourId,
@@ -717,24 +712,9 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
         Travelers(
           id: currentUser,
         ));
+
   }
 
-  Future addDataAr() async {
-    await DataBase().addBookingTourAr(
-        BookingTour(
-          bookingId: widget.tour.tourId,
-          duration: duration,
-          totalPrice: totalPrice,
-          numOfPersons: currentSliderValue.toInt(),
-          startOfTour: startTour,
-          placeName: widget.tour.placeName,
-            tourPhoto: widget.tour.tourPhotos[0],
-          paid: false,
-        ),
-        Travelers(
-          id: currentUser,
-        ));
-  }
 
 
   Future addReview() async {
@@ -1070,6 +1050,10 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
         tourId:  widget.tour.tourId,
         travellerId: currentUser
     );
+    await DataBase().addFavoritesTourAr(
+        tourId:  widget.tour.tourId,
+        travellerId: currentUser
+    );
   }
 
   Future deleteFavorite() async {
@@ -1078,23 +1062,12 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
         tourId:  widget.tour.tourId,
         travellerId: currentUser
     );
-  }
-
-  Future addFavoriteAr() async {
-
-    await DataBase().addFavoritesTourAr(
-        tourId:  widget.tour.tourId,
-        travellerId: currentUser
-    );
-  }
-
-  Future deleteFavoriteAr() async {
-
     await DataBase().removeFavoritesTourAr(
         tourId:  widget.tour.tourId,
         travellerId: currentUser
     );
   }
+
 
 }
 

@@ -226,12 +226,12 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                 if (isFav) {
                   setState(() {
                     isFav=!isFav;
-                    AppLocalization.of(context).locale.languageCode=="ar"? deleteFavoriteAr():deleteFavorite();
+                    AppLocalization.of(context).locale.languageCode=="ar"? deleteFavorite():deleteFavorite();
                   });
                 } else {
                   setState(() {
                     isFav=!isFav;
-                   AppLocalization.of(context).locale.languageCode=="ar"?addFavoriteAr() :addFavorite();
+                   AppLocalization.of(context).locale.languageCode=="ar"?addFavorite() :addFavorite();
                   });
                 }
               },
@@ -697,7 +697,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                       ),
                     ),
                     onPressed: () async {
-                      AppLocalization.of(context).locale.languageCode=="ar"? await addDataAr():await addDataEn();
+                      await addData();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -722,7 +722,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     );
   }
 
-  addDataEn() async {
+  addData() async {
     await DataBase().addBookingCar(
         BookingCar(
           bookingId: widget.car.id,
@@ -740,23 +740,6 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
         ));
   }
 
-  addDataAr() async {
-    await DataBase().addBookingCarAr(
-        BookingCar(
-          bookingId: widget.car.id,
-          duration: duration,
-          carType: carType,
-          totalPrice: totalPrice,
-          startOfLease: startLease,
-          endOfLease: endLease,
-          carName: widget.car.carName,
-          carPhoto: widget.car.carPhotos[0],
-          paid: false,
-        ),
-        Travelers(
-          id: currentUser,
-        ));
-  }
 
   Future addReview() async {
     await DataBase().addRatingCar(
@@ -1089,6 +1072,11 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
         carId:  widget.car.id,
         travellerId: currentUser
     );
+
+    await DataBase().addFavoritesCarAr(
+        carId:  widget.car.id,
+        travellerId: currentUser
+    );
   }
 
   Future deleteFavorite() async {
@@ -1097,24 +1085,11 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
         carId:  widget.car.id,
         travellerId: currentUser
     );
-  }
-
-  Future addFavoriteAr() async {
-
-    await DataBase().addFavoritesCarAr(
-        carId:  widget.car.id,
-        travellerId: currentUser
-    );
-  }
-
-  Future deleteFavoriteAr() async {
-
     await DataBase().removeFavoritesCarAr(
         carId:  widget.car.id,
         travellerId: currentUser
     );
   }
-
 
 }
 

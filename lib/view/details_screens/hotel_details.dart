@@ -270,16 +270,12 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                 if (isFav) {
                   setState(() {
                     isFav = !isFav;
-                    AppLocalization.of(context).locale.languageCode == "ar"
-                        ? deleteFavoriteAr()
-                        : deleteFavorite();
+                    AppLocalization.of(context).locale.languageCode=="ar"?deleteFavorite()  :deleteFavorite();
                   });
                 } else {
                   setState(() {
                     isFav = !isFav;
-                    AppLocalization.of(context).locale.languageCode == "ar"
-                        ? addFavoriteAr()
-                        : addFavorite();
+                    AppLocalization.of(context).locale.languageCode=="ar"? addFavorite():addFavorite();
                   });
                 }
               },
@@ -818,9 +814,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                       ),
                     ),
                     onPressed: () async {
-                      AppLocalization.of(context).locale.languageCode == "ar"
-                          ? await addDataAr()
-                          : await addDataEn();
+                   await addData();
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -846,7 +840,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
     );
   }
 
-  addDataEn() async {
+  addData() async {
     await DataBase().addBookingHotel(
         BookingHotel(
           bookingId: widget.hotel.hotelId,
@@ -863,26 +857,9 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
         Travelers(
           id: currentUser,
         ));
+
   }
 
-  addDataAr() async {
-    await DataBase().addBookingHotelAr(
-        BookingHotel(
-          bookingId: widget.hotel.hotelId,
-          duration: duration,
-          roomType: roomType,
-          totalPrice: totalPrice,
-          startOfStay: startStay,
-          endOfStay: endStay,
-          hotelName: widget.hotel.hotelName,
-          images: widget.hotel.images[0],
-          paid: false,
-          numRooms: counterRooms,
-        ),
-        Travelers(
-          id: currentUser,
-        ));
-  }
 
   Future addReview() async {
     await DataBase().addRatingHotel(
@@ -1231,22 +1208,19 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
   Future addFavorite() async {
     await DataBase().addFavoritesHotel(
         hotelId: widget.hotel.hotelId, travellerId: currentUser);
+    await DataBase().addFavoritesHotelAr(hotelId: widget.hotel.hotelId, travellerId: currentUser);
+
   }
 
   Future deleteFavorite() async {
     await DataBase().removeFavoritesHotel(
         hotelId: widget.hotel.hotelId, travellerId: currentUser);
-  }
 
-  Future addFavoriteAr() async {
-    await DataBase().addFavoritesHotelAr(
-        hotelId: widget.hotel.hotelId, travellerId: currentUser);
-  }
-
-  Future deleteFavoriteAr() async {
     await DataBase().removeFavoritesHotelAr(
         hotelId: widget.hotel.hotelId, travellerId: currentUser);
   }
+
+
 }
 
 class MyImageView extends StatelessWidget {

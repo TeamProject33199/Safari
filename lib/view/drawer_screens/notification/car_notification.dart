@@ -21,7 +21,7 @@ class _CarsNotificationsState extends State<CarsNotifications> {
   Widget build(BuildContext context) {
     String currentUser=FirebaseAuth.instance.currentUser.uid;
     return StreamBuilder(
-      stream: AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingCarAr(Travelers(id: currentUser)):DataBase().getBookingCar(Travelers(id: currentUser)),
+      stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingCar(Travelers(id: currentUser)) :DataBase().getBookingCar(Travelers(id: currentUser)),
       builder:(context,AsyncSnapshot<List<BookingCar>>snapshot){
         if(snapshot.hasData){
           return ListView.builder(
@@ -202,11 +202,7 @@ class _CarsNotificationsState extends State<CarsNotifications> {
           ),
           FlatButton(
             onPressed: () async {
-              if(AppLocalization.of(context).locale.languageCode=="ar"){
-                DataBase().deleteBookingCarAr(BookingCar(bookingId: car.bookingId), Travelers(id: currentUser));
-              }else
-                DataBase().deleteBookingCar(BookingCar(bookingId: car.bookingId), Travelers(id: currentUser));
-
+               await DataBase().deleteBookingCar(BookingCar(bookingId: car.bookingId), Travelers(id: currentUser));
               Navigator.of(context).pop();
             },
             child: Text(AppLocalization.of(context)
