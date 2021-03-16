@@ -26,7 +26,6 @@ class _HotelSearchStreamState extends State<HotelSearchStream> {
       child: HotelsService(),
     );
   }
-
 }
 
 class HotelSearch extends StatefulWidget {

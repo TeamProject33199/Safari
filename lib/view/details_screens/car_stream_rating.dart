@@ -54,10 +54,8 @@ class _CarRatingStreamState extends State<CarRatingStream> {
                       color: Colors.transparent,
 
                       onTap: () {
-                     setState(() {
                         DataBase().deleteRatingCar(currentRate, Travelers(id: currentUser), widget.carId);
                         DataBase().deleteRatingCarAr(currentRate, Travelers(id: currentUser), widget.carId);
-                     });
                         Scaffold.of(context).showSnackBar(SnackBar(content: Text("${AppLocalization.of(context)
                             .getTranslated("snack_delete")}"),),);
                       },

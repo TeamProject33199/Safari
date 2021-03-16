@@ -52,10 +52,9 @@ class _HotelRatingStreamState extends State<HotelRatingStream> {
                       ),
                       color: Colors.transparent,
                       onTap: () {
-                        setState(() {
                           DataBase().deleteRatingHotel(currentRate, Travelers(id: currentUser), widget.hotelId);
                           DataBase().deleteRatingHotelAr(currentRate, Travelers(id: currentUser), widget.hotelId);
-                        });
+
                         Scaffold.of(context).showSnackBar(SnackBar(content: Text("${AppLocalization.of(context)
                             .getTranslated("snack_delete")}"),),);
                       },

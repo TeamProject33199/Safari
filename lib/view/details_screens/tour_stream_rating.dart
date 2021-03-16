@@ -52,10 +52,10 @@ class _TourRatingStreamState extends State<TourRatingStream> {
                       ),
                       color: Colors.transparent,
                       onTap: () {
-                        setState(() {
+
                           DataBase().deleteRatingTour(currentRate, Travelers(id: currentUser), widget.tourId);
                           DataBase().deleteRatingTourAr(currentRate, Travelers(id: currentUser), widget.tourId);
-                        });
+
                         Scaffold.of(context).showSnackBar(SnackBar(content: Text("${AppLocalization.of(context)
                             .getTranslated("snack_delete")}"),),);
                       },
