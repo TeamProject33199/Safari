@@ -15,13 +15,11 @@ class ToursService extends StatefulWidget {
 }
 
 class _ToursServiceState extends State<ToursService> {
-
   String dropdownValue;
   double minPrice = 0;
   double maxPrice = 7000;
   double _lowerValue = 50;
   double _upperValue = 2000;
-
 
   List<Tour> filteredList;
   List<Tour> tourList;
@@ -34,26 +32,28 @@ class _ToursServiceState extends State<ToursService> {
   @override
   void initState() {
     super.initState();
-    tourList = new List();
+    tourList =[];
   }
-
 
   @override
   Widget build(BuildContext context) {
-
     tourList = Provider.of<List<Tour>>(context);
-    dropdownValue=AppLocalization.of(context).locale.languageCode=="ar"?"القاهرة":"Cairo";
+    dropdownValue = AppLocalization.of(context).locale.languageCode == "ar"
+        ? "القاهرة"
+        : "Cairo";
 
-    if (isFilter && tourList != null && (searchInput == null || searchInput.isEmpty)) {
+    if (isFilter &&
+        tourList != null &&
+        (searchInput == null || searchInput.isEmpty)) {
       filteredList = tourList;
       searchByFilters(result);
-    } else if (searchInput != null && searchInput.isNotEmpty && tourList != null && !isFilter)
-    {
+    } else if (searchInput != null &&
+        searchInput.isNotEmpty &&
+        tourList != null &&
+        !isFilter) {
       filteredList = tourList;
       searchMethod(searchInput);
     }
-
-
 
     return Container(
       color: grey50Color,
@@ -65,9 +65,7 @@ class _ToursServiceState extends State<ToursService> {
             SizedBox(
               height: 10,
             ),
-
             checkFilter(),
-
           ],
         ),
       ),
@@ -83,12 +81,13 @@ class _ToursServiceState extends State<ToursService> {
               child: SizedBox(
                 height: 55,
                 child: Stack(
-                  alignment: AppLocalization.of(context).locale.languageCode == "ar"
-                      ? Alignment.centerLeft
-                      : Alignment.bottomRight,
+                  alignment:
+                      AppLocalization.of(context).locale.languageCode == "ar"
+                          ? Alignment.centerLeft
+                          : Alignment.bottomRight,
                   children: [
                     FocusScope(
-                      node:  FocusScopeNode(),
+                      node: FocusScopeNode(),
                       child: TextFormField(
                         style: TextStyle(
                           color: blackColor,
@@ -96,7 +95,8 @@ class _ToursServiceState extends State<ToursService> {
                         decoration: InputDecoration(
                           filled: true,
                           fillColor: whiteColor,
-                          hintText: AppLocalization.of(context).getTranslated("text_search"),
+                          hintText: AppLocalization.of(context)
+                              .getTranslated("text_search"),
                           prefixIcon: Icon(
                             Icons.search,
                             color: grey700Color,
@@ -122,21 +122,22 @@ class _ToursServiceState extends State<ToursService> {
                       ),
                     ),
                     Padding(
-                      padding: AppLocalization.of(context).locale.languageCode ==
-                          "ar"
-                          ? const EdgeInsets.only(left: 10)
-                          : const EdgeInsets.only(right: 10,bottom: 8),
+                      padding:
+                          AppLocalization.of(context).locale.languageCode ==
+                                  "ar"
+                              ? const EdgeInsets.only(left: 10)
+                              : const EdgeInsets.only(right: 10, bottom: 8),
                       child: InkWell(
-                        onTap: (){
+                        onTap: () {
                           _showFilter(context);
                         },
                         child: CircleAvatar(
                           radius: 19,
                           backgroundColor: grey50Color,
                           child: Icon(
-                              Icons.tune,
-                              color: primaryColor,
-                            ),
+                            Icons.tune,
+                            color: primaryColor,
+                          ),
                         ),
                       ),
                     ),
@@ -153,30 +154,30 @@ class _ToursServiceState extends State<ToursService> {
   Widget checkFilter() {
     if (isFilter || (searchInput != null && searchInput.isNotEmpty)) {
       return filteredList != null && filteredList.length == 0
-          ? Container(child: Center(child: Text(
-          AppLocalization.of(context)
-              .getTranslated("no_data"))))
+          ? Container(
+              child: Center(
+                  child: Text(
+                      AppLocalization.of(context).getTranslated("no_data"))))
           : TourSearch(
-        tourList: filteredList,
-      );
+              tourList: filteredList,
+            );
     } else {
       return tourList != null && tourList.length == 0
-          ? Container(child: Center(child: Text(
-          AppLocalization.of(context)
-              .getTranslated("no_data"))))
+          ? Container(
+              child: Center(
+                  child: Text(
+                      AppLocalization.of(context).getTranslated("no_data"))))
           : TourSearch(
-        tourList: tourList,
-      );
+              tourList: tourList,
+            );
     }
   }
 
-
-  void _showFilter(context) async{
+  void _showFilter(context) async {
     TourSearchModel model = TourSearchModel(
         cityName: dropdownValue,
         lowerPrice: _lowerValue,
-        upperPrice: _upperValue
-    );
+        upperPrice: _upperValue);
     var response = await showBarModalBottomSheet(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.only(
@@ -192,11 +193,13 @@ class _ToursServiceState extends State<ToursService> {
               child: Column(
                 children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 30, right: 30, left: 30),
+                    padding:
+                        const EdgeInsets.only(top: 30, right: 30, left: 30),
                     child: Column(
                       children: <Widget>[
                         Text(
-                          AppLocalization.of(context).getTranslated("text_filters"),
+                          AppLocalization.of(context)
+                              .getTranslated("text_filters"),
                           style: TextStyle(
                             fontSize: 24,
                             fontWeight: FontWeight.w600,
@@ -209,78 +212,89 @@ class _ToursServiceState extends State<ToursService> {
                         ),
                         Align(
                           alignment:
-                          AppLocalization.of(context).locale.languageCode ==
-                              "ar"
-                              ? Alignment.topRight
-                              : Alignment.topLeft,
+                              AppLocalization.of(context).locale.languageCode ==
+                                      "ar"
+                                  ? Alignment.topRight
+                                  : Alignment.topLeft,
                           child: Text(
                             AppLocalization.of(context)
                                 .getTranslated("text_city_services"),
-                            style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
                           ),
                         ),
                         StatefulBuilder(
-                          builder: (BuildContext context,
-                              StateSetter setState) =>
-                              Align(
-                                alignment:
-                                AppLocalization.of(context).locale.languageCode ==
+                          builder:
+                              (BuildContext context, StateSetter setState) =>
+                                  Align(
+                            alignment: AppLocalization.of(context)
+                                        .locale
+                                        .languageCode ==
                                     "ar"
-                                    ? Alignment.topRight
-                                    : Alignment.topLeft,
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width *0.4,
-                                  child: DropdownButton<Object>(
-                                    isExpanded: true,
-                                    value: dropdownValue,
-                                    style: TextStyle(color: grey600Color),
-                                    items: <Object>[
-                                      AppLocalization.of(context).getTranslated("text_cairo"),
-                                      AppLocalization.of(context).getTranslated("text_giza"),
-                                      AppLocalization.of(context).getTranslated("text_sharm_elsheikh"),
-                                      AppLocalization.of(context).getTranslated("text_luxor"),
-                                      AppLocalization.of(context).getTranslated("text_aswan"),
-                                      AppLocalization.of(context).getTranslated("text_hurghada"),
-                                      AppLocalization.of(context).getTranslated("text_alexandria"),
-                                    ].map<DropdownMenuItem<Object>>(
-                                            (Object value) {
-                                          return DropdownMenuItem<Object>(
-                                            value: value,
-                                            child: Row(
-                                                children: [
-                                                  Icon(
-                                                    FontAwesomeIcons.mapMarkerAlt,
-                                                    color: deepPurpleColor,
-                                                    size: 22,
-                                                  ),
-                                                  SizedBox(
-                                                    width: 5,
-                                                  ),
-                                                  Text(value.toString()),
-                                                ]),
-                                          );
-                                        }).toList(),
-                                    onChanged: (Object newValue) {
-                                      setState(() {
-                                        dropdownValue = newValue.toString();
-                                      });
-                                      model.cityName = newValue.toString();
-                                    },
-                                  ),
-                                ),
+                                ? Alignment.topRight
+                                : Alignment.topLeft,
+                            child: Container(
+                              width: MediaQuery.of(context).size.width * 0.4,
+                              child: DropdownButton<Object>(
+                                isExpanded: true,
+                                value: dropdownValue,
+                                style: TextStyle(color: grey600Color),
+                                items: <Object>[
+                                  AppLocalization.of(context)
+                                      .getTranslated("text_cairo"),
+                                  AppLocalization.of(context)
+                                      .getTranslated("text_giza"),
+                                  AppLocalization.of(context)
+                                      .getTranslated("text_sharm_elsheikh"),
+                                  AppLocalization.of(context)
+                                      .getTranslated("text_luxor"),
+                                  AppLocalization.of(context)
+                                      .getTranslated("text_aswan"),
+                                  AppLocalization.of(context)
+                                      .getTranslated("text_hurghada"),
+                                  AppLocalization.of(context)
+                                      .getTranslated("text_alexandria"),
+                                ].map<DropdownMenuItem<Object>>((Object value) {
+                                  return DropdownMenuItem<Object>(
+                                    value: value,
+                                    child: Row(children: [
+                                      Icon(
+                                        FontAwesomeIcons.mapMarkerAlt,
+                                        color: deepPurpleColor,
+                                        size: 22,
+                                      ),
+                                      SizedBox(
+                                        width: 5,
+                                      ),
+                                      Text(value.toString()),
+                                    ]),
+                                  );
+                                }).toList(),
+                                onChanged: (Object newValue) {
+                                  setState(() {
+                                    dropdownValue = newValue.toString();
+                                  });
+                                  model.cityName = newValue.toString();
+                                },
                               ),
+                            ),
+                          ),
                         ),
                         Padding(
                           padding: const EdgeInsets.symmetric(vertical: 24),
                           child: Align(
-                            alignment:
-                            AppLocalization.of(context).locale.languageCode ==
-                                "ar"
+                            alignment: AppLocalization.of(context)
+                                        .locale
+                                        .languageCode ==
+                                    "ar"
                                 ? Alignment.topRight
                                 : Alignment.topLeft,
-                            child: Text(AppLocalization.of(context)
-                .getTranslated("text_price_range"),
-                              style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold),),
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("text_price_range"),
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
                           ),
                         ),
                         Row(
@@ -288,11 +302,11 @@ class _ToursServiceState extends State<ToursService> {
                           children: [
                             Text(
                               AppLocalization.of(context).locale.languageCode ==
-                                  "ar"
+                                      "ar"
                                   ? AppLocalization.of(context)
-                                  .getTranslated("text_maximum")
+                                      .getTranslated("text_maximum")
                                   : AppLocalization.of(context)
-                                  .getTranslated("text_minimum"),
+                                      .getTranslated("text_minimum"),
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w300,
@@ -301,11 +315,11 @@ class _ToursServiceState extends State<ToursService> {
                             ),
                             Text(
                               AppLocalization.of(context).locale.languageCode ==
-                                  "ar"
+                                      "ar"
                                   ? AppLocalization.of(context)
-                                  .getTranslated("text_minimum")
+                                      .getTranslated("text_minimum")
                                   : AppLocalization.of(context)
-                                  .getTranslated("text_maximum"),
+                                      .getTranslated("text_maximum"),
                               style: TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w300,
@@ -322,7 +336,7 @@ class _ToursServiceState extends State<ToursService> {
                       trackHeight: 2.5,
                       activeTrackColor: deepPurpleColor,
                       thumbColor: deepPurpleColor,
-                      valueIndicatorColor:  deepPurpleColor,
+                      valueIndicatorColor: deepPurpleColor,
                       inactiveTrackColor: deepPurpleColor.withOpacity(0.3),
                     ),
                     child: Padding(
@@ -335,7 +349,8 @@ class _ToursServiceState extends State<ToursService> {
                         divisions: 50,
                         showValueIndicator: true,
                         valueIndicatorMaxDecimals: 1,
-                        onChanged: (double newLowerValue, double newUpperValue) {
+                        onChanged:
+                            (double newLowerValue, double newUpperValue) {
                           setState(() {
                             _lowerValue = newLowerValue;
                             _upperValue = newUpperValue;
@@ -347,28 +362,33 @@ class _ToursServiceState extends State<ToursService> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 30,bottom: 30),
+                    padding: const EdgeInsets.only(top: 30, bottom: 30),
                     child: Container(
                       width: 150,
                       height: 45,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            elevation: MaterialStateProperty.all(8),
+                          backgroundColor:
+                              MaterialStateProperty.all(primaryColor),
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                            ),
                           ),
                         ),
-                        color: primaryColor,
                         child: Text(
                           AppLocalization.of(context)
-                              .getTranslated("button_save_filters"),                        style: TextStyle(
+                              .getTranslated("button_save_filters"),
+                          style: TextStyle(
                             color: whiteColor,
                             fontSize: 14,
                           ),
                         ),
-                        elevation: 8,
                         onPressed: () {
                           Navigator.of(context).pop(model);
-
                         },
                       ),
                     ),
@@ -379,7 +399,6 @@ class _ToursServiceState extends State<ToursService> {
           );
         });
 
-
     if (response != null) {
       setState(() {
         result = response;
@@ -389,20 +408,17 @@ class _ToursServiceState extends State<ToursService> {
     }
   }
 
-
   void searchByFilters(TourSearchModel model) {
-    filteredList =  List();
+    filteredList = [];
 
     tourList.forEach((element) {
       if (element.tourCity.contains(model.cityName) &&
           element.tourPrice >= model.lowerPrice &&
-          element.tourPrice <= model.upperPrice)
-        filteredList.add(element);
+          element.tourPrice <= model.upperPrice) filteredList.add(element);
     });
 
     setState(() {});
   }
-
 
   void searchMethod(String input) {
     if (input.length == 0) {
@@ -411,11 +427,11 @@ class _ToursServiceState extends State<ToursService> {
     if (input.length > 0) {
       isFilter = false;
 
-      filteredList = new List();
+      filteredList = [];
       filteredList.addAll(tourList
           .where(
             (element) => element.placeName.toLowerCase().contains(input),
-      )
+          )
           .toList());
     }
     setState(() {});

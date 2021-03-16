@@ -31,7 +31,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController _phoneController = TextEditingController();
   TextEditingController _addressController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
   final DataBase dataBase = DataBase();
 
@@ -555,74 +555,74 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   height: 55,
                   padding: EdgeInsets.symmetric(horizontal: 20),
                   child: ElevatedButton(
-                    style: ButtonStyle(
-                        backgroundColor:MaterialStateProperty.all(primaryColor),
-                        shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(30),
-                            ),
-                          ),
+                  style: ButtonStyle(
+                    backgroundColor:MaterialStateProperty.all(primaryColor),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(30),
                         ),
-                    ),
-
-                    child: Text(
-                      AppLocalization.of(context)
-                          .getTranslated("button_register"),
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                        letterSpacing: 1.1,
                       ),
                     ),
-                    onPressed: () async {
-                      final model =
-                          Provider.of<prograssHud>(context, listen: false);
+                  ),
 
-                      if (_formKey.currentState.validate() && _image != null) {
-                        model.changeLoading(true);
-                        checkMyInternet();
-                        if (sendMe) {
-                          if (await authProvider.signUp(
-                                  _emailController.text.trim(),
-                                  _passwordController.text.trim()) !=
-                              null) {
-                            model.changeLoading(false);
+                  child: Text(
+                    AppLocalization.of(context)
+                        .getTranslated("button_register"),
+                    style: TextStyle(
+                      color: whiteColor,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                  onPressed: () async {
+                    final model =
+                    Provider.of<prograssHud>(context, listen: false);
 
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                            );
-                          } else {
-                            model.changeLoading(false);
-                            _scaffoldKey.currentState.showSnackBar(
-                              SnackBar(
-                                content:
-                                    Text(authProvider.errorMessage.toString()),
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                          }
-                          await _uploadImage(_image);
-                          await storeData(context, authProvider);
+                    if (_formKey.currentState.validate() && _image != null) {
+                      model.changeLoading(true);
+                      checkMyInternet();
+                      if (sendMe) {
+                        if (await authProvider.signUp(
+                            _emailController.text.trim(),
+                            _passwordController.text.trim()) !=
+                            null) {
+                          model.changeLoading(false);
+
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ),
+                          );
                         } else {
                           model.changeLoading(false);
-                          Fluttertoast.showToast(
-                              msg: "YOU NOT CONNECTED TO INTERNET",
-                              toastLength: Toast.LENGTH_SHORT,
-                              gravity: ToastGravity.CENTER,
-                              timeInSecForIosWeb: 2,
-                              backgroundColor: Colors.red,
-                              textColor: Colors.white,
-                              fontSize: 16.0);
-                          print("YOU NOT CONNECTED TO INTERNET");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content:
+                              Text(authProvider.errorMessage.toString()),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
                         }
+                        await _uploadImage(_image);
+                        await storeData(context, authProvider);
+                      } else {
+                        model.changeLoading(false);
+                        Fluttertoast.showToast(
+                            msg: "YOU NOT CONNECTED TO INTERNET",
+                            toastLength: Toast.LENGTH_SHORT,
+                            gravity: ToastGravity.CENTER,
+                            timeInSecForIosWeb: 2,
+                            backgroundColor: Colors.red,
+                            textColor: Colors.white,
+                            fontSize: 16.0);
+                        print("YOU NOT CONNECTED TO INTERNET");
                       }
-                    },
-                  ),
+                    }
+                  },
+                ),
                 ),
                 SizedBox(
                   height: 20,
@@ -709,7 +709,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _image = File(pickedFile.path);
       } else {
         print('No image selected.');
-        _scaffoldKey.currentState
+        ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text("Please select Your Image")));
       }
     });
@@ -725,8 +725,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         _image = File(pickedFile.path);
       } else {
         print('No image selected.');
-        _scaffoldKey.currentState
-            .showSnackBar(SnackBar(content: Text("Please select Your Image")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please select Your Image")));
       }
     });
   }
@@ -791,7 +790,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
       if (alreadyConnected == 0 && connected == true) {
         funcFile.showInSnackBar(
-            networkstate: connected, scaffoldKey: _scaffoldKey);
+            networkstate: connected, context: context);
         if (mounted == false) {
           return;
         }
@@ -809,7 +808,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
 
       funcFile.showInSnackBar(
-          networkstate: connected, scaffoldKey: _scaffoldKey);
+          networkstate: connected,context: context);
     }
   }
 

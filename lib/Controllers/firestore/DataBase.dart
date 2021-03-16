@@ -140,6 +140,13 @@ class DataBase {
         .doc(travelers.id)
         .set(rate.toJson());
   }
+  Future<void> addRatingCarAr(CarRating rate, Travelers travelers, Cars cars) async {
+    return await carArCollection
+        .doc(cars.id)
+        .collection("CarRatingAr")
+        .doc(travelers.id)
+        .set(rate.toJson());
+  }
 
   Future<void> updateRatingCar(CarRating rate, Travelers travelers, Cars cars) async {
     return await carCollection

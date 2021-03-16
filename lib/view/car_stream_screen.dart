@@ -17,7 +17,15 @@ class CarStream extends StatelessWidget {
     return StreamBuilder(
       stream: AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getCarsAr:DataBase().getCars,
         builder:(context,AsyncSnapshot<List<Cars>>snapshot) {
-        if(snapshot.hasData){
+          if(snapshot.hasError){
+            return Text(snapshot.error.toString());
+          }
+          else if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          else if(snapshot.data.isEmpty) {
+            return Container(child: Center(child: Text('No Data'),),);
+          }else
           return Container(
             height: MediaQuery.of(context).size.height*0.80,
             child: StaggeredGridView.countBuilder(
@@ -85,10 +93,6 @@ class CarStream extends StatelessWidget {
                 }
             ),
           );
-        }else if(snapshot.hasError){
-          return Text(snapshot.error.toString());
-        }else
-          return Center(child: CircularProgressIndicator());
 
         },
     );

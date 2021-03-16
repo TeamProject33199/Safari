@@ -4,7 +4,6 @@ class CarRating{
   String rateId,comment,username,photoUrl;
   double rate;
   String  timeStamp;
-  String timeStampAr;
 
 
   CarRating({

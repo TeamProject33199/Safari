@@ -36,7 +36,7 @@ class _CarsServiceState extends State<CarsService> {
   @override
   void initState() {
     super.initState();
-    carList = new List();
+    carList = [];
   }
 
 
@@ -474,13 +474,19 @@ class _CarsServiceState extends State<CarsService> {
                     child: Container(
                       width: 150,
                       height: 45,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.all(8),
+                          backgroundColor:
+                          MaterialStateProperty.all(primaryColor),
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                            ),
                           ),
                         ),
-                        color: primaryColor,
                         child: Text(
                           AppLocalization.of(context)
                               .getTranslated("button_save_filters"),
@@ -489,7 +495,6 @@ class _CarsServiceState extends State<CarsService> {
                             fontSize: 14,
                           ),
                         ),
-                        elevation: 8,
                         onPressed: () {
                           Navigator.of(context).pop(model);
                         },
@@ -513,7 +518,7 @@ class _CarsServiceState extends State<CarsService> {
 
 
   void searchByFilters(CarSearchModel model) {
-    filteredList = new List();
+    filteredList = [];
 
     carList.forEach((element) {
       //print("${element.carType}");
@@ -533,7 +538,7 @@ class _CarsServiceState extends State<CarsService> {
     if (input.length > 0) {
       isFilter = false;
 
-      filteredList = new List();
+      filteredList = [];
       filteredList.addAll(carList
           .where(
             (element) => element.carName.toLowerCase().contains(input),

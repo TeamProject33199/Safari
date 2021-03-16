@@ -357,13 +357,19 @@ class _HotelsServiceState extends State<HotelsService> {
                     child: Container(
                       width: 150,
                       height: 45,
-                      child: RaisedButton(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(15),
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                          elevation: MaterialStateProperty.all(8),
+                          backgroundColor:
+                          MaterialStateProperty.all(primaryColor),
+                          shape: MaterialStateProperty.all(
+                            RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(15),
+                              ),
+                            ),
                           ),
                         ),
-                        color: primaryColor,
                         child: Text(
                           AppLocalization.of(context)
                               .getTranslated("button_save_filters"),
@@ -372,7 +378,6 @@ class _HotelsServiceState extends State<HotelsService> {
                             fontSize: 14,
                           ),
                         ),
-                        elevation: 8,
                         onPressed: () {
                           Navigator.of(context).pop(model);
                         },

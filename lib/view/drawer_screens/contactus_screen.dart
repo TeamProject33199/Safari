@@ -3,19 +3,17 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:project/constants_colors.dart';
 import 'package:project/locale_language/localization_delegate.dart';
 
-
 class ContactUsScreen extends StatefulWidget {
   @override
   _ContactUsScreenState createState() => _ContactUsScreenState();
 }
 
 class _ContactUsScreenState extends State<ContactUsScreen> {
-
   TextEditingController _messageController = TextEditingController();
   TextEditingController _subjectController = TextEditingController();
 
   var _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
   OutlineInputBorder borderE = OutlineInputBorder(
     borderSide: BorderSide(
@@ -39,6 +37,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     _subjectController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,11 +53,11 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
           },
         ),
         centerTitle: true,
-        title: Text(
-            AppLocalization.of(context).getTranslated("contact_us_title"),
-            style: TextStyle(
-              color: blackColor,
-            )),
+        title:
+            Text(AppLocalization.of(context).getTranslated("contact_us_title"),
+                style: TextStyle(
+                  color: blackColor,
+                )),
         backgroundColor: transparent,
         elevation: 0,
       ),
@@ -83,7 +82,6 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-
                   TextFormField(
                     keyboardType: TextInputType.text,
                     controller: _subjectController,
@@ -94,11 +92,12 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                         prefixStyle: TextStyle(
                           color: grey50Color,
                         ),
-                        labelText: AppLocalization.of(context).getTranslated("text_subject"),
-                        labelStyle:
-                        TextStyle(inherit: true, color: blackColor),
-                        hintText: AppLocalization.of(context).getTranslated("text_subject_hint"),
-                        hintStyle: TextStyle( color: grey500Color),
+                        labelText: AppLocalization.of(context)
+                            .getTranslated("text_subject"),
+                        labelStyle: TextStyle(inherit: true, color: blackColor),
+                        hintText: AppLocalization.of(context)
+                            .getTranslated("text_subject_hint"),
+                        hintStyle: TextStyle(color: grey500Color),
                         prefixIcon: Icon(
                           Icons.subject,
                           color: primaryColor,
@@ -110,7 +109,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                         border: borderE),
                     validator: (value) {
                       if (value.isEmpty) {
-                        return AppLocalization.of(context).getTranslated("validated_field_subject");
+                        return AppLocalization.of(context)
+                            .getTranslated("validated_field_subject");
                       } else {
                         return null;
                       }
@@ -129,11 +129,12 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                         prefixStyle: TextStyle(
                           color: grey500Color,
                         ),
-                        labelText: AppLocalization.of(context).getTranslated("text_message"),
-                        labelStyle:
-                            TextStyle(inherit: true, color: blackColor),
-                        hintText: AppLocalization.of(context).getTranslated("text_message_hint"),
-                        hintStyle: TextStyle( color: grey50Color),
+                        labelText: AppLocalization.of(context)
+                            .getTranslated("text_message"),
+                        labelStyle: TextStyle(inherit: true, color: blackColor),
+                        hintText: AppLocalization.of(context)
+                            .getTranslated("text_message_hint"),
+                        hintStyle: TextStyle(color: grey50Color),
                         prefixIcon: Icon(
                           Icons.mail,
                           color: primaryColor,
@@ -145,46 +146,48 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                         border: borderE),
                     validator: (value) {
                       if (value.isEmpty) {
-                        return AppLocalization.of(context).getTranslated("validated_field_message");
+                        return AppLocalization.of(context)
+                            .getTranslated("validated_field_message");
                       } else {
                         return null;
                       }
                     },
                   ),
-
-
-
                   SizedBox(
                     height: 40,
                   ),
                   Container(
-                      width: double.infinity,
-                      height: 55,
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: RaisedButton(
-                        color: primaryColor,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(30),
+                    width: double.infinity,
+                    height: 55,
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.all(primaryColor),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
                           ),
                         ),
-                        child: Text(
-                          AppLocalization.of(context).getTranslated("button_send_message"),
-                          style: TextStyle(
-                            color: whiteColor,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18,
-                            letterSpacing: 1.1,
-                          ),
-                        ),
-                        onPressed: () async {
-
-                          if (_formKey.currentState.validate()) {
-                            await sendEmail();
-                          }
-                        },
                       ),
+                      child: Text(
+                            AppLocalization.of(context).getTranslated("button_send_message"),
+                            style: TextStyle(
+                              color: whiteColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                              letterSpacing: 1.1,
+                            ),
+                          ),
+                      onPressed: () async {
+                        if (_formKey.currentState.validate()) {
+                          await sendEmail();
+                        }
+                      },
                     ),
+                  ),
                 ],
               ),
             ),
@@ -216,6 +219,8 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
     if (!mounted)
       return null;
     else
-    _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text(platformResponse),));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(platformResponse),
+      ));
   }
 }

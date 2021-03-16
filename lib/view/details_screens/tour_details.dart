@@ -69,7 +69,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
 
   String timeReview;
   String startTour;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
 
   CollectionReference travelerCollection = FirebaseFirestore.instance.collection('Travelers');
@@ -584,13 +584,15 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                               ),
                             ),
                           ),
-                          FlatButton(
+                          TextButton(
                             onPressed: () {
                               _showReview();
                             },
-                            padding: EdgeInsets.zero,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
+                            //padding: EdgeInsets.zero,
+                          //  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                            style: ButtonStyle(
+                              padding: MaterialStateProperty.all(EdgeInsets.zero),
+                            ),
                             child: Container(
                               width:rateId !=null? MediaQuery.of(context).size.width * 0.3:MediaQuery.of(context).size.width * 0.25,
                               child: rateId !=null
@@ -652,38 +654,43 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                 SizedBox(
                   height: 40,
                   width: 170,
-                  child: RaisedButton(
-                    color: primaryColor,
-                    colorBrightness: Brightness.dark,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
-                      ),
-                    ),
-                    child: Text(
-                      AppLocalization.of(context).getTranslated("button_book"),
-                      style: TextStyle(
-                        color: whiteColor,
-                        fontSize: 18,
-                        letterSpacing: 1.1,
-                      ),
-                    ),
-                    onPressed: () async {
-                      await addData();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => BookingTourScreen(
-                            tour: widget.tour,
-                            startOfBooking: startOfTour,
-                            duration: duration,
-                            totalPrice: totalPrice,
-                            persons: currentSliderValue.toInt(),
-
+                  child:ElevatedButton(
+                    style: ButtonStyle(
+                     overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
+                      backgroundColor:MaterialStateProperty.all(primaryColor),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15),
                           ),
                         ),
-                      );
-                    },
+                      ),
+                    ),
+
+                    child: Text(
+                          AppLocalization.of(context).getTranslated("button_book"),
+                          style: TextStyle(
+                            color: whiteColor,
+                            fontSize: 18,
+                            letterSpacing: 1.1,
+                          ),
+                        ),
+                    onPressed: () async{
+                          await addData();
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BookingTourScreen(
+                                tour: widget.tour,
+                                startOfBooking: startOfTour,
+                                duration: duration,
+                                totalPrice: totalPrice,
+                                persons: currentSliderValue.toInt(),
+
+                              ),
+                            ),
+                          );
+                        },
                   ),
                 ),
               ],
@@ -838,205 +845,207 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) => Padding(
               padding: EdgeInsets.only(
-               // bottom: MediaQuery.of(context).viewInsets.bottom,
+                bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 10,
               ),
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${AppLocalization.of(context).getTranslated("text_share_ex")} ${widget.tour.placeName}",
-                              style: TextStyle(
-                                  color: blackColor,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20),
-                            ),
-                            Text(
-                              AppLocalization.of(context).getTranslated("text_help_ex"),
-                              style: TextStyle(
-                                  color: grey400Color,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 15),
-                            ),
-                          ],
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SizedBox(
+                          height: 10,
                         ),
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Divider(
-                        color: grey700Color,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Text(
-                              "${AppLocalization.of(context).getTranslated("text_rate")}  ${widget.tour.placeName}:",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              RatingBar.builder(
-                                initialRating: rateId !=null?updateNumOfRating:numOfRating,
-                                minRating: 0,
-                                direction: Axis.horizontal,
-                                allowHalfRating: true,
-                                itemCount: 5,
-                                itemPadding:
-                                    EdgeInsets.symmetric(horizontal: 3.0),
-                                itemBuilder: (context, _) => Icon(
-                                  Icons.star,
-                                  color: Colors.amber,
-                                ),
-                                onRatingUpdate: (rating) {
-                                  if(rateId !=null){
-                                    setState(() {
-                                      this.updateNumOfRating = rating;
-                                    });
-                                  }else{
-                                    setState(() {
-                                      this.numOfRating = rating;
-                                    });
-                                  }
-                                },
+                              Text(
+                                "${AppLocalization.of(context).getTranslated("text_share_ex")} ${widget.tour.placeName}",
+                                style: TextStyle(
+                                    color: blackColor,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20),
                               ),
                               Text(
-                                "${rateId !=null?updateNumOfRating:numOfRating} /5.0",
-                                style:
-                                    TextStyle(color: grey700Color, fontSize: 18),
+                                AppLocalization.of(context).getTranslated("text_help_ex"),
+                                style: TextStyle(
+                                    color: grey400Color,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 15),
                               ),
                             ],
                           ),
-                        ],
-                      ),
-                      Divider(
-                        color: grey700Color,
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextFormField(
-                        minLines: 1,
-                        maxLines: 3,
-                        keyboardType: TextInputType.multiline,
-                        maxLength: 300,
-                        controller: rateId !=null?_updateCommentController:_addCommentController,
-                        style: TextStyle(
-                          color: blackColor,
                         ),
-                        decoration: InputDecoration(
-                          labelText: AppLocalization.of(context).getTranslated("text_your_review"),
-                          labelStyle: _labelStyle,
-                          prefixIcon: Icon(
-                            Icons.rate_review,
-                            color: primaryColor,
-                          ),
-                          fillColor: Colors.white,
-                          focusedBorder: borderF,
-                          enabledBorder: borderE,
-                          border: borderE,
-                          filled: true,
+                        SizedBox(
+                          height: 10,
                         ),
-                        validator: (value) {
-                          if (value.isEmpty) {
-                            return "Enter Your Review";
-                          } else {
-                            return null;
-                          }
-                        },
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          FlatButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
+                        Divider(
+                          color: grey700Color,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 10),
                               child: Text(
-                                AppLocalization.of(context)
-                                    .getTranslated("button_cancel_profile"),
-                                style: TextStyle(color: redColor),
-                              )),
-                          FlatButton(
-                              onPressed: () async {
-                                if (_formKey.currentState.validate()) {
-                                  if(rateId !=null){
-                                    await updateReview().then((_) {
-                                      Navigator.pop(context);
-                                      _scaffoldKey.currentState.showSnackBar(
-                                          SnackBar(
-                                              content: Text(
-                                                  AppLocalization.of(context)
-                                                      .getTranslated("snack_update"))));
-                                    }).catchError((error) {
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                          content: Text(
-                                              "Your Review Updated Failed $error")));
-                                    });
-                                    setState((){});
+                                "${AppLocalization.of(context).getTranslated("text_rate")}  ${widget.tour.placeName}:",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                RatingBar.builder(
+                                  initialRating: rateId !=null?updateNumOfRating:numOfRating,
+                                  minRating: 0,
+                                  direction: Axis.horizontal,
+                                  allowHalfRating: true,
+                                  itemCount: 5,
+                                  itemPadding:
+                                      EdgeInsets.symmetric(horizontal: 3.0),
+                                  itemBuilder: (context, _) => Icon(
+                                    Icons.star,
+                                    color: Colors.amber,
+                                  ),
+                                  onRatingUpdate: (rating) {
+                                    if(rateId !=null){
+                                      setState(() {
+                                        this.updateNumOfRating = rating;
+                                      });
+                                    }else{
+                                      setState(() {
+                                        this.numOfRating = rating;
+                                      });
+                                    }
+                                  },
+                                ),
+                                Text(
+                                  "${rateId !=null?updateNumOfRating:numOfRating} /5.0",
+                                  style:
+                                      TextStyle(color: grey700Color, fontSize: 18),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        Divider(
+                          color: grey700Color,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextFormField(
+                          minLines: 1,
+                          maxLines: 3,
+                          keyboardType: TextInputType.multiline,
+                          maxLength: 300,
+                          controller: rateId !=null?_updateCommentController:_addCommentController,
+                          style: TextStyle(
+                            color: blackColor,
+                          ),
+                          decoration: InputDecoration(
+                            labelText: AppLocalization.of(context).getTranslated("text_your_review"),
+                            labelStyle: _labelStyle,
+                            prefixIcon: Icon(
+                              Icons.rate_review,
+                              color: primaryColor,
+                            ),
+                            fillColor: Colors.white,
+                            focusedBorder: borderF,
+                            enabledBorder: borderE,
+                            border: borderE,
+                            filled: true,
+                          ),
+                          validator: (value) {
+                            if (value.isEmpty) {
+                              return "Enter Your Review";
+                            } else {
+                              return null;
+                            }
+                          },
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            TextButton(
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                                child: Text(
+                                  AppLocalization.of(context)
+                                      .getTranslated("button_cancel_profile"),
+                                  style: TextStyle(color: redColor),
+                                )),
+                            TextButton(
+                                onPressed: () async {
+                                  if (_formKey.currentState.validate()) {
+                                    if(rateId !=null){
+                                      await updateReview().then((_) {
+                                        Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    AppLocalization.of(context)
+                                                        .getTranslated("snack_update"))));
+                                      }).catchError((error) {
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                            content: Text(
+                                                "Your Review Updated Failed $error")));
+                                      });
+                                      setState((){});
 
-                                  }else{
-                                    await addReview().then((_) {
-                                      Navigator.pop(context);
-                                      _addCommentController.clear();
-                                      _scaffoldKey.currentState.showSnackBar(
-                                          SnackBar(
-                                              content: Text(
-                                                  AppLocalization.of(context)
-                                                      .getTranslated("snack_add"))));
-                                    }).catchError((error) {
-                                      _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                          content: Text(
-                                              "Your Review Added Failed $error")));
-                                    });
-                                    setState((){});
+                                    }else{
+                                      await addReview().then((_) {
+                                        Navigator.pop(context);
+                                        _addCommentController.clear();
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                                content: Text(
+                                                    AppLocalization.of(context)
+                                                        .getTranslated("snack_add"))));
+                                      }).catchError((error) {
+                                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                            content: Text(
+                                                "Your Review Added Failed $error")));
+                                      });
+                                      setState((){});
+
+                                    }
 
                                   }
-
-                                }
-                              },
-                              child:rateId !=null
-                                  ? Text(
-                                "${AppLocalization.of(context).getTranslated("text_update_review")}",
-                                style: TextStyle(color: primaryColor),
-                              )
-                                  : Text(
-                                "${AppLocalization.of(context).getTranslated("text_add_review")}",
-                                style: TextStyle(color: primaryColor),
-                              ),
-                          ),
-                        ],
-                      ),
-                    ],
+                                },
+                                child:rateId !=null
+                                    ? Text(
+                                  "${AppLocalization.of(context).getTranslated("text_update_review")}",
+                                  style: TextStyle(color: primaryColor),
+                                )
+                                    : Text(
+                                  "${AppLocalization.of(context).getTranslated("text_add_review")}",
+                                  style: TextStyle(color: primaryColor),
+                                ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

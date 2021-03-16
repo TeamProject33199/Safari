@@ -156,17 +156,27 @@ class _CarsNotificationsState extends State<CarsNotifications> {
                             child: SizedBox(
                               height: 30,
                               width: 80,
-                              child: RaisedButton(
-                                onPressed: (){
-                                  _onWillPop(context,car,currentUser);
-                                  },
-                                child: Text(AppLocalization.of(context).getTranslated('button_cancel_hotels'),style: TextStyle(color: whiteColor),),
-                                color: red900Color,
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                                // minWidth: 70,
-                                // height: 30,
-                                elevation: 8,
-                                splashColor: whiteColor,
+                              child: ElevatedButton(
+                                style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(8),
+                                  backgroundColor:MaterialStateProperty.all(red900Color),
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(15),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                child: Text(
+                                  AppLocalization.of(context)
+                                      .getTranslated('button_cancel_hotels'),
+                                  style: TextStyle(color: whiteColor),
+                                ),
+                                onPressed: () {
+                                  _onWillPop(context, car, currentUser);
+                                },
                               ),
                             ),
                           ),

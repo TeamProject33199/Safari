@@ -456,12 +456,12 @@ class _HomeScreenState extends State<HomeScreen>
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             actions: <Widget>[
-              FlatButton(
+              TextButton(
                 onPressed: () => Navigator.of(context).pop(),
                 child: Text(AppLocalization.of(context)
                     .getTranslated("alert_button2")),
               ),
-              FlatButton(
+              TextButton(
                 onPressed: () async {
                   exit(0);
                 },

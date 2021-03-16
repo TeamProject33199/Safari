@@ -26,7 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
   var _formKey = GlobalKey<FormState>();
-  var loginKey = GlobalKey<ScaffoldState>();
+  var loginKey = GlobalKey<ScaffoldMessengerState>();
 
   bool keepMeLoggedIn = false;
   bool _obscureText = false;
@@ -349,7 +349,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             }
                             else {
                               model.changeLoading(false);
-                              loginKey.currentState.showSnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(authProvider.errorMessage.toString()),
                                   duration: Duration(seconds: 2),
@@ -470,7 +470,7 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             } else {
               model.changeLoading(false);
-              loginKey.currentState.showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(authProvider.errorMessage),
                   duration: Duration(seconds: 2),
@@ -508,7 +508,7 @@ class _LoginScreenState extends State<LoginScreen> {
               );
             } else {
               model.changeLoading(false);
-              loginKey.currentState.showSnackBar(
+              ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(authProvider.errorMessage),
                   duration: Duration(seconds: 2),
@@ -535,7 +535,7 @@ class _LoginScreenState extends State<LoginScreen> {
         connected=true;
       });
       if(alreadyConnected==0&&connected==true){
-        funcFile.showInSnackBar(networkstate:connected,scaffoldKey: loginKey);
+        funcFile.showInSnackBar(networkstate:connected,context: context);
         if(mounted==false){
           return;
         }
@@ -552,7 +552,7 @@ class _LoginScreenState extends State<LoginScreen> {
         alreadyConnected=0;
       });
 
-      funcFile.showInSnackBar(networkstate:connected,scaffoldKey: loginKey);
+      funcFile.showInSnackBar(networkstate:connected,context: context);
     }
   }
 

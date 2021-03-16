@@ -14,19 +14,20 @@ class ToursNotifications extends StatefulWidget {
 }
 
 class _ToursNotificationsState extends State<ToursNotifications> {
-
   @override
   Widget build(BuildContext context) {
-    String currentUser=FirebaseAuth.instance.currentUser.uid;
+    String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingTour(Travelers(id: currentUser)) : DataBase().getBookingTour(Travelers(id: currentUser)),
-      builder:(context,AsyncSnapshot<List<BookingTour>>snapshot){
-        if(snapshot.hasData){
+      stream: AppLocalization.of(context).locale.languageCode == "ar"
+          ? DataBase().getBookingTour(Travelers(id: currentUser))
+          : DataBase().getBookingTour(Travelers(id: currentUser)),
+      builder: (context, AsyncSnapshot<List<BookingTour>> snapshot) {
+        if (snapshot.hasData) {
           return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
-                BookingTour tour=snapshot.data[index];
+                BookingTour tour = snapshot.data[index];
                 return Padding(
                   padding: const EdgeInsets.only(
                     left: 15,
@@ -58,15 +59,15 @@ class _ToursNotificationsState extends State<ToursNotifications> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.horizontal(
                                     left: AppLocalization.of(context)
-                                        .locale
-                                        .languageCode ==
-                                        "ar"
+                                                .locale
+                                                .languageCode ==
+                                            "ar"
                                         ? Radius.circular(0)
                                         : Radius.circular(15),
                                     right: AppLocalization.of(context)
-                                        .locale
-                                        .languageCode ==
-                                        "ar"
+                                                .locale
+                                                .languageCode ==
+                                            "ar"
                                         ? Radius.circular(15)
                                         : Radius.circular(0),
                                   ),
@@ -78,20 +79,27 @@ class _ToursNotificationsState extends State<ToursNotifications> {
                               ),
                               Expanded(
                                 child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: AppLocalization.of(context)
-                                              .locale
-                                              .languageCode ==
-                                              "ar"
-                                              ? EdgeInsets.only(right: 12, top: 12)
-                                              : EdgeInsets.only(left: 12, top: 12),
+                                                      .locale
+                                                      .languageCode ==
+                                                  "ar"
+                                              ? EdgeInsets.only(
+                                                  right: 12, top: 12)
+                                              : EdgeInsets.only(
+                                                  left: 12, top: 12),
                                           child: Container(
-                                            width: MediaQuery.of(context).size.width*0.60,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.60,
                                             child: AutoSizeText(
                                               tour.placeName,
                                               style: TextStyle(
@@ -104,16 +112,26 @@ class _ToursNotificationsState extends State<ToursNotifications> {
                                         ),
                                         Padding(
                                           padding: AppLocalization.of(context)
-                                              .locale
-                                              .languageCode ==
-                                              'ar'
-                                              ? const EdgeInsets.only(right: 9,)
-                                              : const EdgeInsets.only(left: 9, top: 8),
+                                                      .locale
+                                                      .languageCode ==
+                                                  'ar'
+                                              ? const EdgeInsets.only(
+                                                  right: 9,
+                                                )
+                                              : const EdgeInsets.only(
+                                                  left: 9, top: 8),
                                           child: Row(
                                             children: [
                                               Padding(
-                                                padding: const EdgeInsets.only(bottom: 5,right: 3,left: 3),
-                                                child: Icon(FontAwesomeIcons.calendarAlt,size: 16,color: primaryColor,),
+                                                padding: const EdgeInsets.only(
+                                                    bottom: 5,
+                                                    right: 3,
+                                                    left: 3),
+                                                child: Icon(
+                                                  FontAwesomeIcons.calendarAlt,
+                                                  size: 16,
+                                                  color: primaryColor,
+                                                ),
                                               ),
                                               Text(
                                                 '${tour.startOfTour}',
@@ -123,22 +141,28 @@ class _ToursNotificationsState extends State<ToursNotifications> {
                                         ),
                                         Padding(
                                           padding: AppLocalization.of(context)
-                                              .locale
-                                              .languageCode ==
-                                              "ar"
-                                              ? const EdgeInsets.only(right: 12,)
-                                              : const EdgeInsets.only(left: 12, top: 8),
+                                                      .locale
+                                                      .languageCode ==
+                                                  "ar"
+                                              ? const EdgeInsets.only(
+                                                  right: 12,
+                                                )
+                                              : const EdgeInsets.only(
+                                                  left: 12, top: 8),
                                           child: Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                                MainAxisAlignment.spaceBetween,
                                             children: [
                                               Row(
                                                 children: [
                                                   Text(
-                                                    '${tour.totalPrice}' + ' ${AppLocalization.of(context).locale.languageCode=="ar"?"\جنيه":"\EGP"}',
+                                                    '${tour.totalPrice}' +
+                                                        ' ${AppLocalization.of(context).locale.languageCode == "ar" ? "\جنيه" : "\EGP"}',
                                                     style: TextStyle(
-                                                      color: pink600Color.withOpacity(0.8),
-                                                      fontWeight: FontWeight.w500,
+                                                      color: pink600Color
+                                                          .withOpacity(0.8),
+                                                      fontWeight:
+                                                          FontWeight.w500,
                                                     ),
                                                   )
                                                 ],
@@ -148,31 +172,49 @@ class _ToursNotificationsState extends State<ToursNotifications> {
                                         ),
                                       ],
                                     ),
-
                                   ],
                                 ),
                               ),
                             ],
                           ),
                           Align(
-                            alignment: AppLocalization.of(context).locale.languageCode=="ar"?Alignment.bottomLeft:Alignment.bottomRight,
+                            alignment: AppLocalization.of(context)
+                                        .locale
+                                        .languageCode ==
+                                    "ar"
+                                ? Alignment.bottomLeft
+                                : Alignment.bottomRight,
                             child: Padding(
-                              padding: AppLocalization.of(context).locale.languageCode=="ar"?const EdgeInsets.only(
-                                  left: 12,bottom: 7 ):const EdgeInsets.only(right: 12,bottom: 7),
+                              padding: AppLocalization.of(context)
+                                          .locale
+                                          .languageCode ==
+                                      "ar"
+                                  ? const EdgeInsets.only(left: 12, bottom: 7)
+                                  : const EdgeInsets.only(right: 12, bottom: 7),
                               child: SizedBox(
                                 height: 30,
                                 width: 80,
-                                child: RaisedButton(
-                                  onPressed: (){
-                                 _onWillPop(context, tour, currentUser);
+                                child: ElevatedButton(
+                                  style: ButtonStyle(
+                                    elevation: MaterialStateProperty.all(8),
+                                    backgroundColor:MaterialStateProperty.all(red900Color),
+                                    shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.all(
+                                          Radius.circular(15),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+
+                                  child: Text(
+                                        AppLocalization.of(context)
+                                            .getTranslated('button_cancel_hotels'),
+                                        style: TextStyle(color: whiteColor),
+                                      ),
+                                  onPressed: () {
+                                    _onWillPop(context, tour, currentUser);
                                   },
-                                  child: Text(AppLocalization.of(context).getTranslated('button_cancel_hotels'),style: TextStyle(color: whiteColor),),
-                                  color: red900Color,
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                                  // minWidth: 70,
-                                  // height: 30,
-                                  elevation: 8,
-                                  splashColor: whiteColor,
                                 ),
                               ),
                             ),
@@ -183,40 +225,47 @@ class _ToursNotificationsState extends State<ToursNotifications> {
                   ),
                 );
               });
-        }else if(snapshot.hasError){
+        } else if (snapshot.hasError) {
           return Text(snapshot.error.toString());
-        }else
-          return Center(child: CircularProgressIndicator(),);
+        } else
+          return Center(
+            child: CircularProgressIndicator(),
+          );
       },
     );
   }
-  Future<bool> _onWillPop(context,tour,currentUser) async {
+
+  Future<bool> _onWillPop(context, tour, currentUser) async {
     return (await showDialog(
-      barrierDismissible: false,
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(AppLocalization.of(context)
-            .getTranslated("alert_exit1")),
-        content: Text(AppLocalization.of(context)
-            .getTranslated("alert_cancel2")),
-        shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(AppLocalization.of(context)
-                .getTranslated("alert_button2")),
+          barrierDismissible: false,
+          context: context,
+          builder: (context) => AlertDialog(
+            title:
+                Text(AppLocalization.of(context).getTranslated("alert_exit1")),
+            content: Text(
+                AppLocalization.of(context).getTranslated("alert_cancel2")),
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            actions: <Widget>[
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text(
+                    AppLocalization.of(context).getTranslated("alert_button2")),
+              ),
+              TextButton(
+                onPressed: () async {
+                  await DataBase().deleteBookingTour(
+                      BookingTour(bookingId: tour.bookingId),
+                      Travelers(id: currentUser));
+                  Navigator.of(context).pop();
+                },
+                child: Text(
+                  AppLocalization.of(context).getTranslated("alert_button1"),
+                ),
+              ),
+            ],
           ),
-          FlatButton(
-            onPressed: () async {
-              await  DataBase().deleteBookingTour(BookingTour(bookingId: tour.bookingId), Travelers(id: currentUser));
-              Navigator.of(context).pop();
-            },
-            child: Text(AppLocalization.of(context)
-                .getTranslated("alert_button1"),),),
-        ],
-      ),
-    )) ??
+        )) ??
         false;
   }
 }

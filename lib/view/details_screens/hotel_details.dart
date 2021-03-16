@@ -71,7 +71,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
   String timeReview;
   String startStay;
   String endStay;
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
   CollectionReference travelerCollection =
       FirebaseFirestore.instance.collection('Travelers');
@@ -727,13 +727,13 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                                   color: primaryColor),
                             ),
                           ),
-                          FlatButton(
+                          TextButton(
                             onPressed: () {
                               _showReview();
                             },
-                            padding: EdgeInsets.zero,
-                            materialTapTargetSize:
-                                MaterialTapTargetSize.shrinkWrap,
+                            style: ButtonStyle(
+                              padding: MaterialStateProperty.all(EdgeInsets.zero),
+                            ),
                             child: Container(
                               width: rateId != null
                                   ? MediaQuery.of(context).size.width * 0.3
@@ -797,14 +797,19 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                 SizedBox(
                   height: 40,
                   width: 170,
-                  child: RaisedButton(
-                    color: primaryColor,
-                    colorBrightness: Brightness.dark,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(15),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
+                      backgroundColor:MaterialStateProperty.all(primaryColor),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(15),
+                          ),
+                        ),
                       ),
                     ),
+
                     child: Text(
                       AppLocalization.of(context).getTranslated("button_book"),
                       style: TextStyle(
@@ -813,20 +818,20 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                         letterSpacing: 1.1,
                       ),
                     ),
-                    onPressed: () async {
-                   await addData();
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => BookingHotelScreen(
-                                    hotel: widget.hotel,
-                                    duration: duration,
-                                    startOfBooking: startOfStay,
-                                    roomType: roomType,
-                                    totalPrice: totalPrice,
-                                    counterRooms: counterRooms,
-                                  )));
-                    },
+                      onPressed: () async {
+                         await addData();
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BookingHotelScreen(
+                                          hotel: widget.hotel,
+                                          duration: duration,
+                                          startOfBooking: startOfStay,
+                                          roomType: roomType,
+                                          totalPrice: totalPrice,
+                                          counterRooms: counterRooms,
+                                        )));
+                          },
                   ),
                 ),
               ],
@@ -994,14 +999,14 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) => Padding(
               padding: EdgeInsets.only(
-               // bottom: MediaQuery.of(context).viewInsets.bottom,
+                //bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 10,
               ),
-              child: Form(
-                key: _formKey,
-                child: SingleChildScrollView(
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1139,7 +1144,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          FlatButton(
+                          TextButton(
                               onPressed: () {
                                 Navigator.pop(context);
                               },
@@ -1148,19 +1153,19 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                                     .getTranslated("button_cancel_profile"),
                                 style: TextStyle(color: redColor),
                               )),
-                          FlatButton(
+                          TextButton(
                             onPressed: () async {
                               if (_formKey.currentState.validate()) {
                                 if (rateId != null) {
                                   await updateReview().then((_) {
                                     Navigator.pop(context);
-                                    _scaffoldKey.currentState.showSnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text(
                                                 AppLocalization.of(context)
                                                     .getTranslated("snack_update"))));
                                   }).catchError((error) {
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         content: Text(
                                             "Your Review Updated Failed $error")));
                                   });
@@ -1169,13 +1174,13 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                                   await addReview().then((_) {
                                     Navigator.pop(context);
                                     _addCommentController.clear();
-                                    _scaffoldKey.currentState.showSnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text(
                                                 AppLocalization.of(context)
                                                     .getTranslated("snack_add"))));
                                   }).catchError((error) {
-                                    _scaffoldKey.currentState.showSnackBar(SnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                         content: Text(
                                             "Your Review Added Failed $error")));
                                   });

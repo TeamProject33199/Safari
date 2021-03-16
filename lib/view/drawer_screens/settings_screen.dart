@@ -20,7 +20,7 @@ class SettingScreen extends StatefulWidget {
 
 class _SettingScreenState extends State<SettingScreen> {
 
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
   String text = 'https://play.google.com/store/apps/details?id=com.safari.project';
   String subject = 'Safari App';
@@ -188,7 +188,7 @@ class _SettingScreenState extends State<SettingScreen> {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
-      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text( throw 'Could not launch $url')));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text( throw 'Could not launch $url')));
 
 
     }

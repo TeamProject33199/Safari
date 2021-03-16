@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -44,9 +45,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   String genderValue;
   bool isLoading=false;
   var _formKey = GlobalKey<FormState>();
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
   String currentUser = FirebaseAuth.instance.currentUser.uid;
+  String providerId = FirebaseAuth.instance.currentUser.providerData[0].providerId;
+
   // ignore: missing_return
   Stream<DocumentSnapshot> getData()  {
     try {
@@ -105,6 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Stack(
       children: [
         Container(
@@ -183,12 +187,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   return FullScreenWidget(
                     child: Hero(
                       tag: snapshot.data.id,
-                      child: CircleAvatar(
-                        radius: MediaQuery.of(context).size.width * 0.170,
-                        backgroundColor: Colors.transparent,
-                        backgroundImage:isLoading==false? NetworkImage(data["image"] == null
+                      child: CachedNetworkImage(
+                        imageUrl: isLoading==false? data["image"] == null
                             ? "https://png.pngtree.com/png-clipart/20190516/original/pngtree-users-vector-icon-png-image_3723374.jpg"
-                            : data["image"] ):AssetImage("assets/images/loading.gif"),
+                            : data["image"] :"assets/images/loading.gif",
+                        placeholder: (context, url) => Center(child: CircularProgressIndicator()),
+                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        width: MediaQuery.of(context).size.width * 0.330,
+                        height: MediaQuery.of(context).size.width * 0.330,
+                          imageBuilder : (context,imageProvider)=>CircleAvatar(
+                          radius: MediaQuery.of(context).size.width * 0.170,
+                          backgroundColor: Colors.transparent,
+                          backgroundImage: imageProvider,
+                        ),
                       ),
                     ),
                   );
@@ -413,7 +424,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           ],
                         ),
                       ),
-                      Padding(
+                      providerId=="facebook.com"||providerId=="google.com"? Container():  Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -429,7 +440,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             SizedBox(
                               height: 5,
                             ),
-                            Container(
+                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(10),
                                 color: whiteColor,
@@ -439,7 +450,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10),
-                                child: Row(
+                                child:Row(
                                   mainAxisAlignment:
                                   MainAxisAlignment.spaceBetween,
                                   children: [
@@ -627,11 +638,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       if (pickedFile != null) {
         _uploadImage(File(pickedFile.path));
-        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("You Updated Image Successful")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You Updated Image Successful")));
 
       } else {
         print('No image selected.');
-        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No image selected")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No image selected")));
       }
     });
     Navigator.pop(context);
@@ -648,10 +659,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       if (pickedFile != null) {
         _uploadImage(File(pickedFile.path));
-        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("You Updated Image Successful")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("You Updated Image Successful")));
       } else {
         print('No image selected.');
-        _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("No image selected")));
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("No image selected")));
       }
     });
     Navigator.pop(context);
@@ -736,110 +747,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (BuildContext bc) {
           return Padding(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+               bottom: MediaQuery.of(bc).viewInsets.bottom,
                left: 10, right: 10, top: 15),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      AppLocalization.of(context)
-                          .getTranslated("update_name"),
-                      style: TextStyle(
-                          color: blackColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    maxLines: 1,
-                    controller: _fullNameController,
-                    style: TextStyle(
-                      color: blackColor,
-                    ),
-                    decoration: InputDecoration(
-                      labelText: AppLocalization.of(context)
-                          .getTranslated("text_full_name1"),
-                      labelStyle: _labelStyle,
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: primaryColor,
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Text(
+                        AppLocalization.of(context)
+                            .getTranslated("update_name"),
+                        style: TextStyle(
+                            color: blackColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
-                      fillColor: Colors.white,
-                      focusedBorder: borderF,
-                      enabledBorder: borderE,
-                      border: borderE,
-                      filled: true,
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return AppLocalization.of(context)
-                            .getTranslated("required_field_full_name");
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            AppLocalization.of(context)
-                                .getTranslated("button_cancel_profile"),
-                            style: TextStyle(color: redColor),
-                          )),
-                      FlatButton(
-                          onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              var user =
-                                  FirebaseAuth.instance.currentUser.uid;
-                              await travelerCollection.doc(user).update({
-                                "fullName": _fullNameController.text.trim(),
-                              }).then((value) {
-                                _fullNameController.clear();
-                                Navigator.pop(context);
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    content: Text(
-                                        "You Updated Full Name Successful")));
-                                print("User Updated");
-                              }).catchError((error) {
-                                _scaffoldKey.currentState.showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            "Failed to update user: $error")));
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      maxLines: 1,
+                      controller: _fullNameController,
+                      style: TextStyle(
+                        color: blackColor,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: AppLocalization.of(context)
+                            .getTranslated("text_full_name1"),
+                        labelStyle: _labelStyle,
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: primaryColor,
+                        ),
+                        fillColor: Colors.white,
+                        focusedBorder: borderF,
+                        enabledBorder: borderE,
+                        border: borderE,
+                        filled: true,
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return AppLocalization.of(context)
+                              .getTranslated("required_field_full_name");
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("button_cancel_profile"),
+                              style: TextStyle(color: redColor),
+                            )),
+                        TextButton(
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                var user =
+                                    FirebaseAuth.instance.currentUser.uid;
+                                await travelerCollection.doc(user).update({
+                                  "fullName": _fullNameController.text.trim(),
+                                }).then((value) {
+                                  _fullNameController.clear();
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "You Updated Full Name Successful")));
+                                  print("User Updated");
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "Failed to update user: $error")));
 
-                                print("Failed to update user: $error");
-                              });
-                            }
-                          },
-                          child: Text(
-                            AppLocalization.of(context)
-                                .getTranslated("button_update_profile"),
-                            style: TextStyle(color: primaryColor),
-                          )),
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(bc).viewInsets.bottom,
-                  ),
-                ],
+                                  print("Failed to update user: $error");
+                                });
+                              }
+                            },
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("button_update_profile"),
+                              style: TextStyle(color: primaryColor),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(bc).viewInsets.bottom,
+                    ),
+                  ],
+
+                ),
 
               ),
-
             ),
           );
         });
@@ -861,105 +874,107 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 right: 10,
                 top: 15
             ),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      AppLocalization.of(context)
-                          .getTranslated("update_address"),
-                      style: TextStyle(
-                          color: blackColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    maxLines: 1,
-                    controller: _addressController,
-                    style: TextStyle(
-                      color: blackColor,
-                    ),
-                    decoration: InputDecoration(
-                      labelText: AppLocalization.of(context)
-                          .getTranslated("text_address"),
-                      labelStyle: _labelStyle,
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: primaryColor,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Text(
+                        AppLocalization.of(context)
+                            .getTranslated("update_address"),
+                        style: TextStyle(
+                            color: blackColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
-                      fillColor: whiteColor,
-                      focusedBorder: borderF,
-                      enabledBorder: borderE,
-                      border: borderE,
-                      filled: true,
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return AppLocalization.of(context)
-                            .getTranslated("required_field_address");
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            AppLocalization.of(context)
-                                .getTranslated("button_cancel_profile"),
-                            style: TextStyle(color: redColor),
-                          )),
-                      FlatButton(
-                          onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              var user =
-                                  FirebaseAuth.instance.currentUser.uid;
-                              await travelerCollection.doc(user).update({
-                                "address": _addressController.text.trim(),
-                              }).then((value) {
-                                _addressController.clear();
-                                Navigator.pop(context);
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    content: Text(
-                                        "You Updated Address Successful")));
-                                print("Address Updated");
-                              }).catchError((error) {
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    content: Text(
-                                        "Failed to update Address: $error")));
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      maxLines: 1,
+                      controller: _addressController,
+                      style: TextStyle(
+                        color: blackColor,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: AppLocalization.of(context)
+                            .getTranslated("text_address"),
+                        labelStyle: _labelStyle,
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: primaryColor,
+                        ),
+                        fillColor: whiteColor,
+                        focusedBorder: borderF,
+                        enabledBorder: borderE,
+                        border: borderE,
+                        filled: true,
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return AppLocalization.of(context)
+                              .getTranslated("required_field_address");
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("button_cancel_profile"),
+                              style: TextStyle(color: redColor),
+                            )),
+                        TextButton(
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                var user =
+                                    FirebaseAuth.instance.currentUser.uid;
+                                await travelerCollection.doc(user).update({
+                                  "address": _addressController.text.trim(),
+                                }).then((value) {
+                                  _addressController.clear();
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "You Updated Address Successful")));
+                                  print("Address Updated");
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "Failed to update Address: $error")));
 
-                                print("Failed to update Address: $error");
-                              });
-                            }
-                          },
-                          child: Text(
-                            AppLocalization.of(context)
-                                .getTranslated("button_update_profile"),
-                            style: TextStyle(color: primaryColor),
-                          )),
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(bc).viewInsets.bottom,
-                  ),
-                ],
+                                  print("Failed to update Address: $error");
+                                });
+                              }
+                            },
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("button_update_profile"),
+                              style: TextStyle(color: primaryColor),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(bc).viewInsets.bottom,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -981,113 +996,115 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 left: 10,
                 right: 10,
                 top: 15),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      AppLocalization.of(context)
-                          .getTranslated("update_password"),
-                      style: TextStyle(
-                          color: blackColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    maxLines: 1,
-                    controller: _passwordController,
-                    style: TextStyle(
-                      color: blackColor,
-                    ),
-                    decoration: InputDecoration(
-                      labelText: AppLocalization.of(context)
-                          .getTranslated("text_password_register"),
-                      labelStyle: _labelStyle,
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: primaryColor,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Text(
+                        AppLocalization.of(context)
+                            .getTranslated("update_password"),
+                        style: TextStyle(
+                            color: blackColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
-                      fillColor: whiteColor,
-                      focusedBorder: borderF,
-                      enabledBorder: borderE,
-                      border: borderE,
-                      filled: true,
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return AppLocalization.of(context).getTranslated(
-                            "required_field_password_register");
-                      } else if (value.length < 6) {
-                        return AppLocalization.of(context).getTranslated(
-                            "strength_field_password_register");
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            AppLocalization.of(context)
-                                .getTranslated("button_cancel_profile"),
-                            style: TextStyle(color: redColor),
-                          )),
-                      FlatButton(
-                          onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              var user = FirebaseAuth.instance.currentUser;
-                              await user
-                                  .updatePassword(_passwordController.text)
-                                  .then((_) {
-                                print("success");
-                              }).catchError((error) =>
-                                      print("${error.toString()}"));
-                              await travelerCollection.doc(user.uid).update({
-                                "password": _passwordController.text.trim(),
-                              }).then((value) {
-                                _passwordController.clear();
-                                Navigator.pop(context);
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    content: Text(
-                                        "You Updated Password Successful")));
-                                print("Password Updated");
-                              }).catchError((error) {
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    content: Text(
-                                        "Failed to update Password: $error")));
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      maxLines: 1,
+                      controller: _passwordController,
+                      style: TextStyle(
+                        color: blackColor,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: AppLocalization.of(context)
+                            .getTranslated("text_password_register"),
+                        labelStyle: _labelStyle,
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: primaryColor,
+                        ),
+                        fillColor: whiteColor,
+                        focusedBorder: borderF,
+                        enabledBorder: borderE,
+                        border: borderE,
+                        filled: true,
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return AppLocalization.of(context).getTranslated(
+                              "required_field_password_register");
+                        } else if (value.length < 6) {
+                          return AppLocalization.of(context).getTranslated(
+                              "strength_field_password_register");
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("button_cancel_profile"),
+                              style: TextStyle(color: redColor),
+                            )),
+                        TextButton(
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                var user = FirebaseAuth.instance.currentUser;
+                                await user
+                                    .updatePassword(_passwordController.text)
+                                    .then((_) {
+                                  print("success");
+                                }).catchError((error) =>
+                                        print("${error.toString()}"));
+                                await travelerCollection.doc(user.uid).update({
+                                  "password": _passwordController.text.trim(),
+                                }).then((value) {
+                                  _passwordController.clear();
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "You Updated Password Successful")));
+                                  print("Password Updated");
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "Failed to update Password: $error")));
 
-                                print("Failed to update Password: $error");
-                              });
-                            }
-                          },
-                          child: Text(
-                            AppLocalization.of(context)
-                                .getTranslated("button_update_profile"),
-                            style: TextStyle(color: primaryColor),
-                          )),
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(bc).viewInsets.bottom,
-                  ),
-                ],
+                                  print("Failed to update Password: $error");
+                                });
+                              }
+                            },
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("button_update_profile"),
+                              style: TextStyle(color: primaryColor),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(bc).viewInsets.bottom,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -1109,110 +1126,112 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 left: 10,
                 right: 10,
                 top: 15),
-            child: Form(
-              key: _formKey,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+            child: SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
 
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Text(
-                      AppLocalization.of(context)
-                          .getTranslated("update_phone"),
-                      style: TextStyle(
-                          color: blackColor,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextFormField(
-                    maxLines: 1,
-                    maxLength: 11,
-                    controller: _phoneController,
-                    style: TextStyle(
-                      color: blackColor,
-                    ),
-                    decoration: InputDecoration(
-                      labelText: AppLocalization.of(context)
-                          .getTranslated("text_phone"),
-                      labelStyle: _labelStyle,
-                      prefixIcon: Icon(
-                        Icons.person,
-                        color: primaryColor,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Text(
+                        AppLocalization.of(context)
+                            .getTranslated("update_phone"),
+                        style: TextStyle(
+                            color: blackColor,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
                       ),
-                      fillColor: whiteColor,
-                      focusedBorder: borderF,
-                      enabledBorder: borderE,
-                      border: borderE,
-                      filled: true,
                     ),
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return AppLocalization.of(context)
-                            .getTranslated("required_field_phone");
-                      } else if (value.length < 11) {
-                        return AppLocalization.of(context)
-                            .getTranslated("check_digits_field_phone");
-                      } else {
-                        return null;
-                      }
-                    },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      FlatButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            AppLocalization.of(context)
-                                .getTranslated("button_cancel_profile"),
-                            style: TextStyle(color: redColor),
-                          )),
-                      FlatButton(
-                          onPressed: () async {
-                            if (_formKey.currentState.validate()) {
-                              var user =
-                                  FirebaseAuth.instance.currentUser.uid;
-                              await travelerCollection.doc(user).update({
-                                "phone": _phoneController.text.trim(),
-                              }).then((value) {
-                                _phoneController.clear();
-                                Navigator.pop(context);
-                                _scaffoldKey.currentState.showSnackBar(
-                                    SnackBar(
-                                        content: Text(
-                                            "You Updated Phone Successful")));
-                                print("Phone Updated");
-                              }).catchError((error) {
-                                _scaffoldKey.currentState.showSnackBar(SnackBar(
-                                    content: Text(
-                                        "Failed to update Phone: $error")));
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextFormField(
+                      maxLines: 1,
+                      maxLength: 11,
+                      controller: _phoneController,
+                      style: TextStyle(
+                        color: blackColor,
+                      ),
+                      decoration: InputDecoration(
+                        labelText: AppLocalization.of(context)
+                            .getTranslated("text_phone"),
+                        labelStyle: _labelStyle,
+                        prefixIcon: Icon(
+                          Icons.person,
+                          color: primaryColor,
+                        ),
+                        fillColor: whiteColor,
+                        focusedBorder: borderF,
+                        enabledBorder: borderE,
+                        border: borderE,
+                        filled: true,
+                      ),
+                      validator: (value) {
+                        if (value.isEmpty) {
+                          return AppLocalization.of(context)
+                              .getTranslated("required_field_phone");
+                        } else if (value.length < 11) {
+                          return AppLocalization.of(context)
+                              .getTranslated("check_digits_field_phone");
+                        } else {
+                          return null;
+                        }
+                      },
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("button_cancel_profile"),
+                              style: TextStyle(color: redColor),
+                            )),
+                        TextButton(
+                            onPressed: () async {
+                              if (_formKey.currentState.validate()) {
+                                var user =
+                                    FirebaseAuth.instance.currentUser.uid;
+                                await travelerCollection.doc(user).update({
+                                  "phone": _phoneController.text.trim(),
+                                }).then((value) {
+                                  _phoneController.clear();
+                                  Navigator.pop(context);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              "You Updated Phone Successful")));
+                                  print("Phone Updated");
+                                }).catchError((error) {
+                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: Text(
+                                          "Failed to update Phone: $error")));
 
-                                print("Failed to update Phone: $error");
-                              });
-                            }
-                          },
-                          child: Text(
-                            AppLocalization.of(context)
-                                .getTranslated("button_update_profile"),
-                            style: TextStyle(color: primaryColor),
-                          )),
-                    ],
-                  ),
-                  SizedBox(
-                    height: MediaQuery.of(bc).viewInsets.bottom,
-                  ),
-                ],
+                                  print("Failed to update Phone: $error");
+                                });
+                              }
+                            },
+                            child: Text(
+                              AppLocalization.of(context)
+                                  .getTranslated("button_update_profile"),
+                              style: TextStyle(color: primaryColor),
+                            )),
+                      ],
+                    ),
+                    SizedBox(
+                      height: MediaQuery.of(bc).viewInsets.bottom,
+                    ),
+                  ],
+                ),
               ),
             ),
           );
@@ -1303,7 +1322,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      FlatButton(
+                      TextButton(
                           onPressed: () {
                             Navigator.pop(context);
                           },
@@ -1312,19 +1331,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 .getTranslated("button_cancel_profile"),
                             style: TextStyle(color: redColor),
                           )),
-                      FlatButton(
+                      TextButton(
                           onPressed: () async {
                             var user = FirebaseAuth.instance.currentUser.uid;
                             await travelerCollection.doc(user).update({
                               "gender": genderValue,
                             }).then((value) {
                               Navigator.pop(context);
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content:
                                       Text("You Updated Gender Successful")));
                               print("Gender Updated");
                             }).catchError((error) {
-                              _scaffoldKey.currentState.showSnackBar(SnackBar(
+                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                   content: Text(
                                       "Failed to update Gender: $error")));
                               print("Failed to update Gender: $error");

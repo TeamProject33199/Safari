@@ -28,7 +28,16 @@ class _TourRatingStreamState extends State<TourRatingStream> {
       stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getAllTourCommentAr(widget.tourId):DataBase().getAllTourComment(widget.tourId),
       // ignore: missing_return
       builder:(context,AsyncSnapshot<List<TourRating>>snapshot){
-        if(snapshot.hasData){
+
+        if(snapshot.hasError){
+          return Text(snapshot.error.toString());
+        }
+        else if (!snapshot.hasData) {
+          return Container();
+        }
+        else if(snapshot.data.isEmpty) {
+          return Container(child: Center(child: Text('No Data'),),);
+        }else
           return Expanded(
             child: ListView.builder(
               key: Key("${snapshot.data.length}"),
@@ -37,7 +46,7 @@ class _TourRatingStreamState extends State<TourRatingStream> {
                 final TourRating currentRate = snapshot.data[index];
 
                 return currentRate.rateId==currentUser?
-                    Slidable(
+                Slidable(
                   actionPane: SlidableDrawerActionPane(),
                   actionExtentRatio: 0.25,
                   secondaryActions: [
@@ -53,8 +62,8 @@ class _TourRatingStreamState extends State<TourRatingStream> {
                       color: Colors.transparent,
                       onTap: () {
 
-                          DataBase().deleteRatingTour(currentRate, Travelers(id: currentUser), widget.tourId);
-                          DataBase().deleteRatingTourAr(currentRate, Travelers(id: currentUser), widget.tourId);
+                        DataBase().deleteRatingTour(currentRate, Travelers(id: currentUser), widget.tourId);
+                        DataBase().deleteRatingTourAr(currentRate, Travelers(id: currentUser), widget.tourId);
 
                         Scaffold.of(context).showSnackBar(SnackBar(content: Text("${AppLocalization.of(context)
                             .getTranslated("snack_delete")}"),),);
@@ -291,14 +300,6 @@ class _TourRatingStreamState extends State<TourRatingStream> {
               },
             ),
           );
-        }else if(!snapshot.hasData){
-          return Container();
-        }else if(snapshot.hasError){
-          return Text(snapshot.error.toString());
-        }
-        return CircularProgressIndicator();
-
-
       },
     );
   }

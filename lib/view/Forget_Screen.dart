@@ -17,7 +17,7 @@ class ForgetScreen extends StatefulWidget {
 class _ForgetScreenState extends State<ForgetScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  var registerKey = GlobalKey<ScaffoldState>();
+  var registerKey = GlobalKey<ScaffoldMessengerState>();
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   var _formKey = GlobalKey<FormState>();
@@ -207,11 +207,15 @@ class _ForgetScreenState extends State<ForgetScreen> {
                   width: screenWidth,
                   height: 55,
                   padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: RaisedButton(
-                    color: primaryColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(30),
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                      backgroundColor:MaterialStateProperty.all(primaryColor),
+                      shape: MaterialStateProperty.all(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(30),
+                          ),
+                        ),
                       ),
                     ),
                     child: Text(
@@ -254,7 +258,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                       }
 
                         }catch (e) {
-                          registerKey.currentState.showSnackBar(
+                          ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text("$e"),
                               duration: Duration(seconds: 2),
@@ -278,8 +282,8 @@ class _ForgetScreenState extends State<ForgetScreen> {
                           color: grey600Color,
                           fontWeight: FontWeight.bold),
                     ),
-                    FlatButton(
-                      minWidth: 0,
+                    TextButton(
+                      style: ButtonStyle(minimumSize: MaterialStateProperty.all(Size.zero)),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -321,7 +325,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
         connected=true;
       });
       if(alreadyConnected==0&&connected==true){
-        funcFile.showInSnackBar(networkstate:connected,scaffoldKey: registerKey);
+        funcFile.showInSnackBar(networkstate:connected,context: context);
         if(mounted==false){
           return;
         }
@@ -338,7 +342,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
         alreadyConnected=0;
       });
 
-      funcFile.showInSnackBar(networkstate:connected,scaffoldKey: registerKey);
+      funcFile.showInSnackBar(networkstate:connected,context: context);
     }
   }
 

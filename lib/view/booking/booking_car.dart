@@ -49,7 +49,7 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
   String bookingDate ;
   int currentPos = 0;
   Iterable<String> sliderImages = [];
-  final _scaffoldKey = GlobalKey<ScaffoldState>();
+  final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
   @override
@@ -376,24 +376,30 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
                     width: double.infinity,
                     height: 40,
                     padding: EdgeInsets.symmetric(horizontal: 15),
-                    child: RaisedButton(
-                      colorBrightness: Brightness.dark,
-                      color: primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(15),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
+                        backgroundColor:MaterialStateProperty.all(primaryColor),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(15),
+                            ),
+                          ),
                         ),
                       ),
-                      child: Text(
-                        AppLocalization.of(context).getTranslated("text_checkout"),
+
+                      child:Text(
+                        AppLocalization.of(context)
+                            .getTranslated("text_checkout"),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           letterSpacing: 1.1,
                         ),
                       ),
-                      onPressed: () async{
-                       await _checkOut(context);
+                      onPressed: () async {
+                        await _checkOut(context);
                       },
                     ),
                   ),
@@ -500,7 +506,7 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
         shape:
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             onPressed: () => response.success==true?Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>AnimatedDrawer())):Navigator.pop(context),
             child: AppLocalization.of(context).locale.languageCode=="ar"?Text('حسنا'):Text('Ok'),
           ),
