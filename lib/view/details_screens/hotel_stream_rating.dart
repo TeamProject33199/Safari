@@ -54,161 +54,169 @@ class _HotelRatingStreamState extends State<HotelRatingStream> {
                 final HotelRating currentRate = snapshot.data[index];
 
                 return currentRate.rateId == currentUser
-                    ? Slidable(
-                        actionPane: SlidableScrollActionPane(),
-                        actionExtentRatio: 0.25,
-                        secondaryActions: [
-                          IconSlideAction(
-                            iconWidget: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Icon(
-                                  Icons.delete,
-                                  color: Colors.red,
-                                ),
-                                Text(
-                                  AppLocalization.of(context)
-                                      .getTranslated("delete_rate"),
-                                  style: TextStyle(color: Colors.red),
-                                ),
-                              ],
-                            ),
-                            color: Colors.transparent,
-                            onTap: () {
-                              DataBase().deleteRatingHotel(currentRate,
-                                  Travelers(id: currentUser), widget.hotelId);
-                              DataBase().deleteRatingHotelAr(currentRate,
-                                  Travelers(id: currentUser), widget.hotelId);
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text(
-                                      "${AppLocalization.of(context).getTranslated("snack_delete")}"),
-                                ),
-                              );
-                            },
-                          ),
-                        ],
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 5),
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: whiteColor,
-                              borderRadius: BorderRadius.circular(15),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(15),
-                              child: Column(
+                    ? Builder(
+                      builder:(cx)=> Slidable(
+                          actionPane: SlidableScrollActionPane(),
+                          actionExtentRatio: 0.25,
+                          secondaryActions: [
+                            IconSlideAction(
+                              iconWidget: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Row(
-                                    children: [
-                                      CircleAvatar(
-                                        radius: 24,
-                                        backgroundColor: primaryColor,
-                                        child: CircleAvatar(
-                                          backgroundColor: whiteColor,
-                                          radius: 22,
-                                          child: CircleAvatar(
-                                            backgroundImage: NetworkImage(
-                                                currentRate.photoUrl),
-                                            radius: 20,
-                                          ),
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  AppLocalization.of(context)
-                                                              .locale
-                                                              .languageCode ==
-                                                          "ar"
-                                                      ? const EdgeInsets.only(
-                                                          right: 10)
-                                                      : const EdgeInsets.only(
-                                                          left: 10),
-                                              child: Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                children: [
-                                                  Container(
-                                                    width:
-                                                        MediaQuery.of(context)
-                                                                .size
-                                                                .width *
-                                                            0.40,
-                                                    child: AutoSizeText(
-                                                      currentRate.username,
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color: pink600Color),
-                                                      softWrap: true,
-                                                      maxLines: 1,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    currentRate.timeStamp,
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color: grey600Color),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Padding(
-                                              padding:
-                                                  AppLocalization.of(context)
-                                                              .locale
-                                                              .languageCode ==
-                                                          "ar"
-                                                      ? const EdgeInsets.only(
-                                                          top: 2, right: 8)
-                                                      : const EdgeInsets.only(
-                                                          top: 2, left: 8),
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    (Icons.star_rate_rounded),
-                                                    color: orangeColor,
-                                                    size: 20,
-                                                  ),
-                                                  SizedBox(width: 2),
-                                                  Text(
-                                                    currentRate.rate.toString(),
-                                                    style: TextStyle(
-                                                        color: grey700Color,
-                                                        fontWeight:
-                                                            FontWeight.w500),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                  Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
                                   ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(top: 15),
-                                    child: Align(
-                                      alignment: Alignment.centerLeft,
-                                      child: Text(currentRate.comment),
-                                    ),
+                                  Text(
+                                    AppLocalization.of(context)
+                                        .getTranslated("delete_rate"),
+                                    style: TextStyle(color: Colors.red),
                                   ),
                                 ],
+                              ),
+                              color: Colors.transparent,
+                              onTap: () async{
+                                if(AppLocalization.of(context).locale.languageCode=="ar"){
+                                  await DataBase().deleteRatingHotelAr(currentRate, Travelers(id: currentUser), widget.hotelId);
+                                  await  DataBase().deleteRatingHotel(currentRate, Travelers(id: currentUser), widget.hotelId);
+                                }else{
+                                  await DataBase().deleteRatingHotel(currentRate, Travelers(id: currentUser), widget.hotelId);
+                                  await  DataBase().deleteRatingHotelAr(currentRate, Travelers(id: currentUser), widget.hotelId);
+                                }
+
+                                setState(() {
+                                  snapshot.data.removeAt(index);
+                                });
+                                ScaffoldMessenger.of(cx).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                        "${AppLocalization.of(context).getTranslated("snack_delete")}"),
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 5),
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: whiteColor,
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(15),
+                                child: Column(
+                                  children: [
+                                    Row(
+                                      children: [
+                                        CircleAvatar(
+                                          radius: 24,
+                                          backgroundColor: primaryColor,
+                                          child: CircleAvatar(
+                                            backgroundColor: whiteColor,
+                                            radius: 22,
+                                            child: CircleAvatar(
+                                              backgroundImage: NetworkImage(
+                                                  currentRate.photoUrl),
+                                              radius: 20,
+                                            ),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    AppLocalization.of(context)
+                                                                .locale
+                                                                .languageCode ==
+                                                            "ar"
+                                                        ? const EdgeInsets.only(
+                                                            right: 10)
+                                                        : const EdgeInsets.only(
+                                                            left: 10),
+                                                child: Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                  children: [
+                                                    Container(
+                                                      width:
+                                                          MediaQuery.of(context)
+                                                                  .size
+                                                                  .width *
+                                                              0.40,
+                                                      child: AutoSizeText(
+                                                        currentRate.username,
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: pink600Color),
+                                                        softWrap: true,
+                                                        maxLines: 1,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      currentRate.timeStamp,
+                                                      style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                          color: grey600Color),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                              Padding(
+                                                padding:
+                                                    AppLocalization.of(context)
+                                                                .locale
+                                                                .languageCode ==
+                                                            "ar"
+                                                        ? const EdgeInsets.only(
+                                                            top: 2, right: 8)
+                                                        : const EdgeInsets.only(
+                                                            top: 2, left: 8),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      (Icons.star_rate_rounded),
+                                                      color: orangeColor,
+                                                      size: 20,
+                                                    ),
+                                                    SizedBox(width: 2),
+                                                    Text(
+                                                      currentRate.rate.toString(),
+                                                      style: TextStyle(
+                                                          color: grey700Color,
+                                                          fontWeight:
+                                                              FontWeight.w500),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 15),
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(currentRate.comment),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      )
+                    )
                     : Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Container(

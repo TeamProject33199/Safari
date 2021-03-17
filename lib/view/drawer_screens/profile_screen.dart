@@ -747,7 +747,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (BuildContext bc) {
           return Padding(
             padding: EdgeInsets.only(
-               bottom: MediaQuery.of(bc).viewInsets.bottom,
+              // bottom: MediaQuery.of(bc).viewInsets.bottom,
                left: 10, right: 10, top: 15),
             child: SingleChildScrollView(
               child: Form(
@@ -845,9 +845,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )),
                       ],
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(bc).viewInsets.bottom,
-                    ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(bc).viewInsets.bottom,
+                    // ),
                   ],
 
                 ),
@@ -869,7 +869,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (BuildContext bc) {
           return Padding(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+              //  bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 15
@@ -970,9 +970,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )),
                       ],
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(bc).viewInsets.bottom,
-                    ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(bc).viewInsets.bottom,
+                    // ),
                   ],
                 ),
               ),
@@ -992,7 +992,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (BuildContext bc) {
           return Padding(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+              //  bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 15),
@@ -1100,9 +1100,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )),
                       ],
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(bc).viewInsets.bottom,
-                    ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(bc).viewInsets.bottom,
+                    // ),
                   ],
                 ),
               ),
@@ -1122,7 +1122,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         builder: (BuildContext bc) {
           return Padding(
             padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+               // bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 15),
@@ -1227,9 +1227,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )),
                       ],
                     ),
-                    SizedBox(
-                      height: MediaQuery.of(bc).viewInsets.bottom,
-                    ),
+                    // SizedBox(
+                    //   height: MediaQuery.of(bc).viewInsets.bottom,
+                    // ),
                   ],
                 ),
               ),
@@ -1250,7 +1250,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) => Padding(
               padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                //  bottom: MediaQuery.of(context).viewInsets.bottom,
                   left: 10,
                   right: 10,
                   top: 15),

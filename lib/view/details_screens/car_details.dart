@@ -877,7 +877,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
           return StatefulBuilder(
             builder: (BuildContext context, StateSetter setState) => Padding(
               padding: EdgeInsets.only(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
+                //bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 10,
                 right: 10,
                 top: 10,
