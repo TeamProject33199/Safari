@@ -36,7 +36,7 @@ class _TourRatingStreamState extends State<TourRatingStream> {
           return Container();
         }
         else if(snapshot.data.isEmpty) {
-          return Container(child: Center(child: Text('No Data'),),);
+          return Container(child: Center(child: Text(AppLocalization.of(context).getTranslated("no_reviews")),),);
         }else
           return Expanded(
             child: ListView.builder(

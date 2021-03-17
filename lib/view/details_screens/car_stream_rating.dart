@@ -36,7 +36,7 @@ class _CarRatingStreamState extends State<CarRatingStream> {
         } else if (snapshot.data.isEmpty) {
           return Container(
             child: Center(
-              child: Text('No Data'),
+              child: Text(AppLocalization.of(context).getTranslated("no_reviews")),
             ),
           );
         } else
