@@ -82,6 +82,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
   String username, photoUrl;
   String rateId;
   int counterRooms=1;
+  String bookId;
   // ignore: missing_return
   Stream<List<HotelRating>> getRate() {
     hotelCollection
@@ -194,6 +195,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
     getData();
     isFav = widget.hotel.favHotels.contains(currentUser);
     getRate();
+    getPaymentBook();
   }
 
   @override
@@ -794,7 +796,8 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                     ),
                   ],
                 ),
-                SizedBox(
+              bookId==null
+              ?SizedBox(
                   height: 40,
                   width: 170,
                   child: ElevatedButton(
@@ -833,7 +836,34 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                                         )));
                           },
                   ),
+                )
+              :SizedBox(
+                height: 40,
+                width: 170,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
+                    backgroundColor:MaterialStateProperty.all(grey500Color),
+                    shape: MaterialStateProperty.all(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(15),
+                        ),
+                      ),
+                    ),
+                  ),
+
+                  child: Text(
+                    AppLocalization.of(context).getTranslated("booking"),
+                    style: TextStyle(
+                      color: whiteColor,
+                      fontSize: 18,
+                      letterSpacing: 1.1,
+                    ),
+                  ),
+                  onPressed:null,
                 ),
+              ),
               ],
             ),
           ),
@@ -985,6 +1015,34 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
     }
 
     return dateEnd;
+  }
+
+  // ignore: missing_return
+  Stream<List<BookingHotel>> getPaymentBook(){
+    travelerCollection.doc(currentUser).collection("BookingHotel").where("paid",isEqualTo: true)
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length > 0) {
+        data.docs.forEach((element) {
+          if (element != null) {
+            if (mounted == false) {
+              return;
+            }
+
+            setState(() {
+              bookId = element.data()["booking_Id"];
+            });
+          }
+        });
+      } else {
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          bookId = null;
+        });
+      }
+    });
   }
 
   void _showReview() {
@@ -1174,6 +1232,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                                   await addReview().then((_) {
                                     Navigator.pop(context);
                                     _addCommentController.clear();
+                                    numOfRating=0;
                                     ScaffoldMessenger.of(context).showSnackBar(
                                         SnackBar(
                                             content: Text(

@@ -478,13 +478,17 @@ class _BookingTourScreenState extends State<BookingTourScreen> {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
     await DataBase().addPaymentTour(
         PaymentTour(
-          paymentId: tour.tourId,
+          paymentId: currentUser,
           paymentDate: DateTime.now(),
           paymentPrice: totalPrice,
         ),
         Travelers(
           id: currentUser,
-        ));
+        ),
+       BookingTour(
+         bookingId: tour.tourId,
+       ),
+    );
   }
 
 

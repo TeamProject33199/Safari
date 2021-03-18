@@ -487,13 +487,18 @@ class _BookingHotelScreenState extends State<BookingHotelScreen> {
      String currentUser = FirebaseAuth.instance.currentUser.uid;
      await DataBase().addPaymentHotel(
          PaymentHotel(
-           paymentId: hotel.hotelId,
+           paymentId:currentUser,
            paymentDate: DateTime.now(),
            paymentPrice: totalPrice,
          ),
          Travelers(
            id: currentUser,
-         ));
+         ),
+       BookingHotel(
+         bookingId: hotel.hotelId
+       ),
+     );
+
    }
 
 

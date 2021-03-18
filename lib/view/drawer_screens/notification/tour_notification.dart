@@ -189,8 +189,8 @@ class _ToursNotificationsState extends State<ToursNotifications> {
                                           .locale
                                           .languageCode ==
                                       "ar"
-                                  ? const EdgeInsets.only(left: 12, bottom: 7)
-                                  : const EdgeInsets.only(right: 12, bottom: 7),
+                                  ? const EdgeInsets.only(left: 12, bottom: 5)
+                                  : const EdgeInsets.only(right: 12, bottom: 5),
                               child: SizedBox(
                                 height: 30,
                                 width: 80,
@@ -254,9 +254,8 @@ class _ToursNotificationsState extends State<ToursNotifications> {
               ),
               TextButton(
                 onPressed: () async {
-                  await DataBase().deleteBookingTour(
-                      BookingTour(bookingId: tour.bookingId),
-                      Travelers(id: currentUser));
+                  await DataBase().deletePaymentTour(BookingTour(bookingId: tour.bookingId), Travelers(id: currentUser));
+                  await DataBase().deleteBookingTour(BookingTour(bookingId: tour.bookingId), Travelers(id: currentUser));
                   Navigator.of(context).pop();
                 },
                 child: Text(

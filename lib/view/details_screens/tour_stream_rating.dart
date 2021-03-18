@@ -21,11 +21,11 @@ class TourRatingStream extends StatefulWidget {
 
 class _TourRatingStreamState extends State<TourRatingStream> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext mainContext) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getAllTourCommentAr(widget.tourId):DataBase().getAllTourComment(widget.tourId),
+      stream:AppLocalization.of(mainContext).locale.languageCode=="ar"?DataBase().getAllTourCommentAr(widget.tourId):DataBase().getAllTourComment(widget.tourId),
       // ignore: missing_return
       builder:(context,AsyncSnapshot<List<TourRating>>snapshot){
 
@@ -40,13 +40,13 @@ class _TourRatingStreamState extends State<TourRatingStream> {
         }else
           return Expanded(
             child: ListView.builder(
+              key: Key("${snapshot.data.length}"),
               itemCount: snapshot.data != null && snapshot.data.length > 0 ? snapshot.data.length : 0,
               itemBuilder: (context, index) {
                 final TourRating currentRate = snapshot.data[index];
 
                 return currentRate.rateId==currentUser?
-                Builder(
-                  builder:(cx)=> Slidable(
+                Slidable(
                     actionPane: SlidableDrawerActionPane(),
                     actionExtentRatio: 0.25,
                     secondaryActions: [
@@ -72,7 +72,7 @@ class _TourRatingStreamState extends State<TourRatingStream> {
                           setState(() {
                             snapshot.data.removeAt(index);
                           });
-                          ScaffoldMessenger.of(cx).showSnackBar(SnackBar(content: Text("${AppLocalization.of(context)
+                          ScaffoldMessenger.of(mainContext).showSnackBar(SnackBar(content: Text("${AppLocalization.of(mainContext)
                               .getTranslated("snack_delete")}"),),);
                         },
                       ),
@@ -190,8 +190,8 @@ class _TourRatingStreamState extends State<TourRatingStream> {
                         ),
                       ),
                     ),
-                  ),
-                ):
+                  )
+                :
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 5),
                   child: Container(

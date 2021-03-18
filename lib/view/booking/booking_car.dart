@@ -461,13 +461,17 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
     await DataBase().addPaymentCar(
         PaymentCar(
-          paymentId: car.id,
+          paymentId: currentUser,
           paymentDate: DateTime.now(),
           paymentPrice: totalPrice,
         ),
         Travelers(
           id: currentUser,
-        ));
+        ),
+       BookingCar(
+         bookingId: car.id,
+       ),
+    );
   }
 
 

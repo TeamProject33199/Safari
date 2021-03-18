@@ -260,6 +260,17 @@ class DataBase {
         .delete();
   }
 
+  Future<void> deletePaymentHotel(BookingHotel booking, Travelers travelers) async {
+    return await travelerCollection
+        .doc(travelers.id)
+        .collection("BookingHotel")
+        .doc(booking.bookingId)
+        .collection("PaymentHotel")
+        .doc(travelers.id)
+        .delete();
+  }
+
+
   Future<void> addBookingCar(BookingCar booking, Travelers travelers) async {
     return await travelerCollection
         .doc(travelers.id)
@@ -283,6 +294,16 @@ class DataBase {
         .doc(travelers.id)
         .collection("BookingCar")
         .doc(booking.bookingId)
+        .delete();
+  }
+
+  Future<void> deletePaymentCar(BookingCar booking, Travelers travelers) async {
+    return await travelerCollection
+        .doc(travelers.id)
+        .collection("BookingCar")
+        .doc(booking.bookingId)
+        .collection("PaymentCar")
+        .doc(travelers.id)
         .delete();
   }
 
@@ -312,82 +333,13 @@ class DataBase {
         .delete();
   }
 
-  Future<void> addBookingHotelAr(BookingHotel booking, Travelers travelers) async {
+  Future<void> deletePaymentTour(BookingTour booking, Travelers travelers) async {
     return await travelerCollection
         .doc(travelers.id)
-        .collection("BookingHotelAr")
+        .collection("BookingTour")
         .doc(booking.bookingId)
-        .set(booking.toJson());
-  }
-
-  Future<void> updateBookingHotelAr(BookingHotel booking, Travelers travelers) async {
-    return await travelerCollection
+        .collection("PaymentTour")
         .doc(travelers.id)
-        .collection("BookingHotelAr")
-        .doc(booking.bookingId)
-        .update({
-      "paid":true
-    });
-  }
-
-  Future<void> deleteBookingHotelAr(BookingHotel booking, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingHotelAr")
-        .doc(booking.bookingId)
-        .delete();
-  }
-
-  Future<void> addBookingCarAr(BookingCar booking, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingCarAr")
-        .doc(booking.bookingId)
-        .set(booking.toJson());
-  }
-
-
-
-  Future<void> updateBookingCarAr(BookingCar booking, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingCarAr")
-        .doc(booking.bookingId)
-        .update({
-      "paid":true
-    });
-  }
-
-  Future<void> deleteBookingCarAr(BookingCar booking, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingCarAr")
-        .doc(booking.bookingId)
-        .delete();
-  }
-
-  Future<void> addBookingTourAr(BookingTour booking, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingTourAr")
-        .doc(booking.bookingId)
-        .set(booking.toJson());
-  }
-  Future<void> updateBookingTourAr(BookingTour booking, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingTourAr")
-        .doc(booking.bookingId)
-        .update({
-      "paid":true
-    });
-  }
-
-  Future<void> deleteBookingTourAr(BookingTour booking, Travelers travelers) async {
-    return await travelerCollection
-        .doc(travelers.id)
-        .collection("BookingTourAr")
-        .doc(booking.bookingId)
         .delete();
   }
 
@@ -439,45 +391,36 @@ class DataBase {
     return await carArCollection.doc(carId).update({'user_fav': FieldValue.arrayRemove(['$travellerId'])});
   }
 
-  Future<void> addPaymentHotel(PaymentHotel payment, Travelers travelers) async {
+  Future<void> addPaymentHotel(PaymentHotel payment, Travelers travelers,BookingHotel booking) async {
     return await travelerCollection
         .doc(travelers.id)
         .collection("BookingHotel")
-        .doc(payment.paymentId)
+        .doc(booking.bookingId)
         .collection("PaymentHotel")
-        .doc()
-        .set(payment.toJson());
-  }
-
-  Future<void> addPaymentHotelAr(PaymentHotel payment, Travelers travelers) async {
-    return await travelerCollection
         .doc(travelers.id)
-        .collection("BookingHotelAr")
-        .doc(payment.paymentId)
-        .collection("PaymentHotelAr")
-        .doc()
         .set(payment.toJson());
   }
 
 
-  Future<void> addPaymentTour(PaymentTour payment, Travelers travelers) async {
+
+  Future<void> addPaymentTour(PaymentTour payment, Travelers travelers,BookingTour booking) async {
     return await travelerCollection
         .doc(travelers.id)
         .collection("BookingTour")
-        .doc(payment.paymentId)
+        .doc(booking.bookingId)
         .collection("PaymentTour")
-        .doc()
+        .doc(travelers.id)
         .set(payment.toJson());
   }
 
 
-  Future<void> addPaymentCar(PaymentCar payment, Travelers travelers) async {
+  Future<void> addPaymentCar(PaymentCar payment, Travelers travelers,BookingCar booking) async {
     return await travelerCollection
         .doc(travelers.id)
         .collection("BookingCar")
-        .doc(payment.paymentId)
+        .doc(booking.bookingId)
         .collection("PaymentCar")
-        .doc()
+        .doc(travelers.id)
         .set(payment.toJson());
   }
 

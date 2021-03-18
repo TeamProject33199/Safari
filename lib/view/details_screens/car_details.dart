@@ -79,6 +79,8 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
 
   String currentUser = FirebaseAuth.instance.currentUser.uid;
   var isFav;
+
+  String bookId;
   // ignore: missing_return
   Stream<DocumentSnapshot> getData()  {
     try {
@@ -149,6 +151,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     getData();
     isFav = widget.car.favCars.contains(currentUser);
     getRate();
+    getPaymentBook();
   }
 
   @override
@@ -677,7 +680,8 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                     ),
                   ],
                 ),
-                SizedBox(
+               bookId==null?
+               SizedBox(
                   height: 40,
                   width: 170,
                   child:ElevatedButton(
@@ -715,7 +719,34 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                                     )));
                           },
                   ),
-                ),
+                )
+                :SizedBox(
+                 height: 40,
+                 width: 170,
+                 child:ElevatedButton(
+                   style: ButtonStyle(
+                     overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
+                     backgroundColor:MaterialStateProperty.all(grey500Color),
+                     shape: MaterialStateProperty.all(
+                       RoundedRectangleBorder(
+                         borderRadius: BorderRadius.all(
+                           Radius.circular(15),
+                         ),
+                       ),
+                     ),
+                   ),
+
+                   child: Text(
+                     AppLocalization.of(context).getTranslated("booking"),
+                     style: TextStyle(
+                       color: whiteColor,
+                       fontSize: 18,
+                       letterSpacing: 1.1,
+                     ),
+                   ),
+                   onPressed: null,
+                 ),
+               ),
               ],
             ),
           ),
@@ -864,6 +895,34 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     }
     return dateEnd;
   }
+
+  Stream<List<BookingCar>> getPaymentBook(){
+    travelerCollection.doc(currentUser).collection("BookingCar").where("paid",isEqualTo: true)
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length > 0) {
+        data.docs.forEach((element) {
+          if (element != null) {
+            if (mounted == false) {
+              return;
+            }
+
+            setState(() {
+              bookId = element.data()["booking_Id"];
+            });
+          }
+        });
+      } else {
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          bookId = null;
+        });
+      }
+    });
+  }
+
 
   void _showReview() {
     showModalBottomSheet(
@@ -1050,6 +1109,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                                       await addReview().then((_) {
                                         Navigator.pop(context);
                                         _addCommentController.clear();
+                                        numOfRating=0;
                                         ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
                                                 content: Text(

@@ -22,11 +22,11 @@ class HotelRatingStream extends StatefulWidget {
 
 class _HotelRatingStreamState extends State<HotelRatingStream> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext mainContext) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream: AppLocalization.of(context).locale.languageCode == "ar"
+      stream: AppLocalization.of(mainContext).locale.languageCode == "ar"
           ? DataBase().getAllHotelCommentAr(
               widget.hotelId,
             )
@@ -54,8 +54,7 @@ class _HotelRatingStreamState extends State<HotelRatingStream> {
                 final HotelRating currentRate = snapshot.data[index];
 
                 return currentRate.rateId == currentUser
-                    ? Builder(
-                      builder:(cx)=> Slidable(
+                    ?  Slidable(
                           actionPane: SlidableScrollActionPane(),
                           actionExtentRatio: 0.25,
                           secondaryActions: [
@@ -87,10 +86,10 @@ class _HotelRatingStreamState extends State<HotelRatingStream> {
                                 setState(() {
                                   snapshot.data.removeAt(index);
                                 });
-                                ScaffoldMessenger.of(cx).showSnackBar(
+                                ScaffoldMessenger.of(mainContext).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                        "${AppLocalization.of(context).getTranslated("snack_delete")}"),
+                                        "${AppLocalization.of(mainContext).getTranslated("snack_delete")}"),
                                   ),
                                 );
                               },
@@ -215,8 +214,7 @@ class _HotelRatingStreamState extends State<HotelRatingStream> {
                               ),
                             ),
                           ),
-                        ),
-                    )
+                        )
                     : Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Container(

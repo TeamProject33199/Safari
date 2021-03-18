@@ -20,11 +20,11 @@ class CarRatingStream extends StatefulWidget {
 
 class _CarRatingStreamState extends State<CarRatingStream> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext mainContext) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream: AppLocalization.of(context).locale.languageCode == "ar"
+      stream: AppLocalization.of(mainContext).locale.languageCode == "ar"
           ? DataBase().getAllCarCommentAr(widget.carId)
           : DataBase().getAllCarComment(widget.carId),
       // ignore: missing_return
@@ -42,7 +42,7 @@ class _CarRatingStreamState extends State<CarRatingStream> {
         } else
           return Expanded(
             child: ListView.builder(
-              // key: Key("${snapshot.data.length}"),
+               key: Key("${snapshot.data.length}"),
               itemCount: snapshot.data != null && snapshot.data.length > 0
                   ? snapshot.data.length
                   : 0,
@@ -50,8 +50,7 @@ class _CarRatingStreamState extends State<CarRatingStream> {
                 final CarRating currentRate = snapshot.data[index];
 
                 return currentRate.rateId == currentUser
-                    ? Builder(
-                      builder:(cx)=> Slidable(
+                    ?  Slidable(
                           actionPane: SlidableDrawerActionPane(),
                           actionExtentRatio: 0.25,
                           secondaryActions: [
@@ -87,10 +86,10 @@ class _CarRatingStreamState extends State<CarRatingStream> {
                                 setState(() {
                                   snapshot.data.removeAt(index);
                                 });
-                                ScaffoldMessenger.of(cx).showSnackBar(
+                                ScaffoldMessenger.of(mainContext).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                        "${AppLocalization.of(context).getTranslated("snack_delete")}"),
+                                        "${AppLocalization.of(mainContext).getTranslated("snack_delete")}"),
                                   ),
                                 );
                               },
@@ -215,8 +214,7 @@ class _CarRatingStreamState extends State<CarRatingStream> {
                               ),
                             ),
                           ),
-                        ),
-                    )
+                        )
                     : Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         child: Container(

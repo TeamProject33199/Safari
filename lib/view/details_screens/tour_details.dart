@@ -79,6 +79,8 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
   String currentUser = FirebaseAuth.instance.currentUser.uid;
   var isFav;
   String rateId;
+
+  String bookId;
   // ignore: missing_return
   Stream<DocumentSnapshot> getData()  {
     try {
@@ -146,6 +148,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
     getData();
     isFav = widget.tour.favTours.contains(currentUser);
     getRate();
+    getPaymentBook();
   }
 
   @override
@@ -651,7 +654,8 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                     ),
                   ],
                 ),
-                SizedBox(
+               bookId==null
+                   ?SizedBox(
                   height: 40,
                   width: 170,
                   child:ElevatedButton(
@@ -692,7 +696,34 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                           );
                         },
                   ),
-                ),
+                )
+                :SizedBox(
+                 height: 40,
+                 width: 170,
+                 child:ElevatedButton(
+                   style: ButtonStyle(
+                     overlayColor: MaterialStateProperty.all(Colors.white.withOpacity(0.1)),
+                     backgroundColor:MaterialStateProperty.all(grey500Color),
+                     shape: MaterialStateProperty.all(
+                       RoundedRectangleBorder(
+                         borderRadius: BorderRadius.all(
+                           Radius.circular(15),
+                         ),
+                       ),
+                     ),
+                   ),
+
+                   child: Text(
+                     AppLocalization.of(context).getTranslated("booking"),
+                     style: TextStyle(
+                       color: whiteColor,
+                       fontSize: 18,
+                       letterSpacing: 1.1,
+                     ),
+                   ),
+                   onPressed: null,
+                 ),
+               ),
               ],
             ),
           ),
@@ -832,6 +863,35 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
     }
     return dateStart;
   }
+
+  // ignore: missing_return
+  Stream<List<BookingTour>> getPaymentBook(){
+    travelerCollection.doc(currentUser).collection("BookingTour").where("paid",isEqualTo: true)
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length > 0) {
+        data.docs.forEach((element) {
+          if (element != null) {
+            if (mounted == false) {
+              return;
+            }
+
+            setState(() {
+              bookId = element.data()["booking_Id"];
+            });
+          }
+        });
+      } else {
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          bookId = null;
+        });
+      }
+    });
+  }
+
 
   void _showReview() {
     showModalBottomSheet(
@@ -1016,6 +1076,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                                       await addReview().then((_) {
                                         Navigator.pop(context);
                                         _addCommentController.clear();
+                                        numOfRating=0;
                                         ScaffoldMessenger.of(context).showSnackBar(
                                             SnackBar(
                                                 content: Text(

@@ -152,7 +152,7 @@ class _CarsNotificationsState extends State<CarsNotifications> {
                           alignment: AppLocalization.of(context).locale.languageCode=="ar"?Alignment.bottomLeft:Alignment.bottomRight,
                           child: Padding(
                             padding: AppLocalization.of(context).locale.languageCode=="ar"?const EdgeInsets.only(
-                                left: 12,bottom: 7 ):const EdgeInsets.only(right: 12,bottom: 7),
+                                left: 12,bottom: 5 ):const EdgeInsets.only(right: 12,bottom: 5),
                             child: SizedBox(
                               height: 30,
                               width: 80,
@@ -205,13 +205,14 @@ class _CarsNotificationsState extends State<CarsNotifications> {
         shape:
         RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: Text(AppLocalization.of(context)
                 .getTranslated("alert_button2")),
           ),
-          FlatButton(
+          TextButton(
             onPressed: () async {
+               await DataBase().deletePaymentCar(BookingCar(bookingId: car.bookingId), Travelers(id: currentUser));
                await DataBase().deleteBookingCar(BookingCar(bookingId: car.bookingId), Travelers(id: currentUser));
               Navigator.of(context).pop();
             },
