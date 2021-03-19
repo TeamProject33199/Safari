@@ -178,11 +178,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             StreamBuilder(
               stream: getData(),
               builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  print(snapshot.error.toString());
-                  return Text(snapshot.error.toString());
 
-                } else if (snapshot.hasData) {
+
+                if(snapshot.hasError){
+                  return Text(snapshot.error.toString());
+                }
+                else if (!snapshot.hasData) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                else if(!snapshot.data.exists) {
+                  return Container(child: Center(child: Text('No Data'),),);
+                }else{
                   var data = snapshot.data;
                   return FullScreenWidget(
                     child: Hero(
@@ -195,7 +201,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         errorWidget: (context, url, error) => Icon(Icons.error),
                         width: MediaQuery.of(context).size.width * 0.330,
                         height: MediaQuery.of(context).size.width * 0.330,
-                          imageBuilder : (context,imageProvider)=>CircleAvatar(
+                        imageBuilder : (context,imageProvider)=>CircleAvatar(
                           radius: MediaQuery.of(context).size.width * 0.170,
                           backgroundColor: Colors.transparent,
                           backgroundImage: imageProvider,
@@ -203,8 +209,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                   );
-                }else
-                  return Center(child: CircularProgressIndicator(),);
+                }
+
 
               },
             ),
@@ -237,9 +243,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
       child: StreamBuilder<DocumentSnapshot>(
         stream: getData(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-          if (snapshot.hasError) {
-            return Text(snapshot.error);
-          } else if (snapshot.hasData) {
+
+
+          if(snapshot.hasError){
+            return Text(snapshot.error.toString());
+          }
+          else if (!snapshot.hasData) {
+            return Center(child: CircularProgressIndicator());
+          }
+          else if(!snapshot.data.exists) {
+            return Container(child: Center(child: Text('No Data'),),);
+          }else{
             var data = snapshot.data;
             return Column(
               children: [
@@ -270,8 +284,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 ),
               ],
             );
-          }else
-            return Center(child: CircularProgressIndicator(),);
+          }
         },
       ),
     );
