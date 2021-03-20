@@ -66,6 +66,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   bool connected = false;
   int alreadyConnected = 0;
   Timer timer;
+  bool isLoading=false;
 
   void radioButtonChanges(String value) {
     setState(() {
@@ -238,8 +239,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             painter: CirclePainter(),
                             child: CircleAvatar(
                               backgroundColor: transparent,
-                              backgroundImage:
-                                  _image != null ? FileImage(_image) : null,
+                              backgroundImage:isLoading==false? _image != null ? FileImage(_image) : null:AssetImage("assets/images/loading.gif"),
                             ),
                           ),
                         ),
@@ -700,6 +700,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future getImageFromGallery() async {
+    setState(() {
+      isLoading=true;
+    });
     final pickedFile = await ImagePicker().getImage(
       source: ImageSource.gallery,
     );
@@ -713,9 +716,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
             .showSnackBar(SnackBar(content: Text("Please select Your Image")));
       }
     });
+    setState(() {
+      isLoading=false;
+    });
   }
 
   Future getImageFromCamera() async {
+    setState(() {
+      isLoading=true;
+    });
     final pickedFile = await ImagePicker().getImage(
       source: ImageSource.camera,
     );
@@ -727,6 +736,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
         print('No image selected.');
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Please select Your Image")));
       }
+    });
+    setState(() {
+      isLoading=false;
     });
   }
 

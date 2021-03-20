@@ -8,19 +8,37 @@ import '../locale_language/localization_delegate.dart';
 
 
 
-class TourStream extends StatelessWidget {
+class TourStream extends StatefulWidget {
+
+  @override
+  _TourStreamState createState() => _TourStreamState();
+}
+
+class _TourStreamState extends State<TourStream> {
+
+  getRating(){
+    return  AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getToursAr:DataBase().getTours;
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getRating();
+    });
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
 
     return StreamBuilder(
-      stream: AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getToursAr:DataBase().getTours,
+      stream: getRating(),
         builder:(context,AsyncSnapshot<List<Tour>>snapshot){
           if(snapshot.hasError){
             return Text(snapshot.error.toString());
           }
           else if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Container();
           }
           else if(snapshot.data.isEmpty) {
             return Container(child: Center(child: Text('No Data'),),);

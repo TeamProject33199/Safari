@@ -20,12 +20,27 @@ class TourRatingStream extends StatefulWidget {
 }
 
 class _TourRatingStreamState extends State<TourRatingStream> {
+
+  getRating(){
+    return  AppLocalization.of(context).locale.languageCode=="ar"
+        ?DataBase().getAllTourCommentAr(widget.tourId)
+        :DataBase().getAllTourComment(widget.tourId);
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getRating();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext mainContext) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream:AppLocalization.of(mainContext).locale.languageCode=="ar"?DataBase().getAllTourCommentAr(widget.tourId):DataBase().getAllTourComment(widget.tourId),
+      stream:getRating(),
       // ignore: missing_return
       builder:(context,AsyncSnapshot<List<TourRating>>snapshot){
 

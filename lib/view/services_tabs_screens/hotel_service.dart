@@ -425,8 +425,7 @@ class _HotelsServiceState extends State<HotelsService> {
       filteredList.addAll(hotelList
           .where(
             (element) => element.hotelName.toLowerCase().contains(input),
-      )
-          .toList());
+      ).toList());
     }
     setState(() {});
   }

@@ -6,36 +6,53 @@ import 'package:project/models/hotel.dart';
 import 'package:project/view/details_screens/hotel_details.dart';
 import '../locale_language/localization_delegate.dart';
 
- class HotelStream extends StatelessWidget {
+ class HotelStream extends StatefulWidget {
 
 
+  @override
+  _HotelStreamState createState() => _HotelStreamState();
+}
+
+class _HotelStreamState extends State<HotelStream> {
+  getRating(){
+    return   AppLocalization.of(context).locale.languageCode == "ar"
+        ? DataBase().getHotelsAr
+        : DataBase().getHotels;
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getRating();
+    });
+    super.initState();
+  }
    @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Hotel>>(
-      stream: AppLocalization.of(context).locale.languageCode == "ar"
-          ? DataBase().getHotelsAr
-          : DataBase().getHotels,
+      stream:getRating(),
       builder: (context, AsyncSnapshot<List<Hotel>> snapshot) {
         if(snapshot.hasError){
           return Text(snapshot.error.toString());
         }
         else if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return Container();
         }
         else if(snapshot.data.isEmpty) {
-          return Container(child: Center(child: Text('No Data'),),);
-        }else
+          return Center(child: Text('No Data'),);
+        }else{
+          var data=snapshot.data;
           return Container(
             height: MediaQuery.of(context).size.height *0.80,
             child: StaggeredGridView.countBuilder(
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
-                itemCount: snapshot.data != null && snapshot.data.length > 0
-                    ? snapshot.data.length
+                itemCount: data != null && data.length > 0
+                    ? data.length
                     : 0,
                 itemBuilder: (context, index) {
-                  final Hotel currentHotel = snapshot.data[index];
+                  final Hotel currentHotel = data[index];
 
                   return InkWell(
                     child: Container(
@@ -120,6 +137,8 @@ import '../locale_language/localization_delegate.dart';
                   return StaggeredTile.count(1, index.isEven ? 1.8 : 1.2);
                 }),
           );
+        }
+
       },
     );
   }

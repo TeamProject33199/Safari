@@ -348,8 +348,6 @@ class _DrawerScreenState extends State<DrawerScreen> {
          Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()),(Route<dynamic> route) => false);
          AppLocalization.of(context).locale.languageCode=='ar'? offset.drawerCloseAR():offset.drawerClose();
       }
-      AppLocalization.of(context).locale.languageCode=='ar'? offset.drawerCloseAR():offset.drawerClose();
-
       print("User signOut Success");
      }).catchError((error) => print(error.toString()));
 

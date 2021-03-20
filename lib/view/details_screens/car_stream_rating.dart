@@ -19,14 +19,27 @@ class CarRatingStream extends StatefulWidget {
 }
 
 class _CarRatingStreamState extends State<CarRatingStream> {
+
+  getRating(){
+    return AppLocalization.of(context).locale.languageCode == "ar"
+        ? DataBase().getAllCarCommentAr(widget.carId)
+        : DataBase().getAllCarComment(widget.carId);
+  }
+
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getRating();
+    });
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext mainContext) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return StreamBuilder(
-      stream: AppLocalization.of(mainContext).locale.languageCode == "ar"
-          ? DataBase().getAllCarCommentAr(widget.carId)
-          : DataBase().getAllCarComment(widget.carId),
+      stream:getRating(),
       // ignore: missing_return
       builder: (context, AsyncSnapshot<List<CarRating>> snapshot) {
         if (snapshot.hasError) {

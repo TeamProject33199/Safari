@@ -7,21 +7,35 @@ import 'package:project/models/car.dart';
 import 'package:project/view/details_screens/car_details.dart';
 import '../locale_language/localization_delegate.dart';
 
+class CarStream extends StatefulWidget {
 
+  @override
+  _CarStreamState createState() => _CarStreamState();
+}
 
-class CarStream extends StatelessWidget {
+class _CarStreamState extends State<CarStream> {
+  getRating(){
+    return AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getCarsAr:DataBase().getCars;
+  }
 
+  @override
+  void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      getRating();
+    });
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
 
     return StreamBuilder(
-      stream: AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getCarsAr:DataBase().getCars,
+      stream: getRating(),
         builder:(context,AsyncSnapshot<List<Cars>>snapshot) {
           if(snapshot.hasError){
             return Text(snapshot.error.toString());
           }
           else if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return Container();
           }
           else if(snapshot.data.isEmpty) {
             return Container(child: Center(child: Text('No Data'),),);
