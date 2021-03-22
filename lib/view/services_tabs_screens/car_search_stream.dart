@@ -15,7 +15,7 @@ class CarSearchStream extends StatefulWidget {
   _CarSearchStreamState createState() => _CarSearchStreamState();
 }
 
-class _CarSearchStreamState extends State<CarSearchStream> {
+class _CarSearchStreamState extends State<CarSearchStream> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Cars>>.value(
@@ -26,29 +26,30 @@ class _CarSearchStreamState extends State<CarSearchStream> {
     );
   }
 
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
 
 }
 
-class CarSearch extends StatefulWidget {
+class CarSearch extends StatelessWidget {
 
   final List<Cars> carList;
 
   CarSearch({@required this.carList});
 
-  @override
-  _CarSearchState createState() => _CarSearchState();
-}
 
-class _CarSearchState extends State<CarSearch> {
   @override
   Widget build(BuildContext context) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return Expanded(
       child: ListView.builder(
-          itemCount: widget.carList != null && widget.carList.length > 0 ? widget.carList.length : 0,
+          cacheExtent: 9999,
+          itemCount: carList != null && carList.length > 0 ? carList.length : 0,
           itemBuilder: (context, index) {
-            Cars currentCar = widget.carList[index];
+            Cars currentCar = carList[index];
 
             var isFav = currentCar.favCars.contains(currentUser);
 

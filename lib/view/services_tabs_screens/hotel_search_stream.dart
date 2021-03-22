@@ -16,7 +16,8 @@ class HotelSearchStream extends StatefulWidget {
   _HotelSearchStreamState createState() => _HotelSearchStreamState();
 }
 
-class _HotelSearchStreamState extends State<HotelSearchStream> {
+class _HotelSearchStreamState extends State<HotelSearchStream> with AutomaticKeepAliveClientMixin{
+
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Hotel>>.value(
@@ -26,18 +27,16 @@ class _HotelSearchStreamState extends State<HotelSearchStream> {
       child: HotelsService(),
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }
 
-class HotelSearch extends StatefulWidget {
+class HotelSearch extends StatelessWidget {
   final List<Hotel> hotelList;
 
   HotelSearch({@required this.hotelList});
-
-  @override
-  _HotelSearchState createState() => _HotelSearchState();
-}
-
-class _HotelSearchState extends State<HotelSearch> {
 
   @override
   Widget build(BuildContext context) {
@@ -45,9 +44,10 @@ class _HotelSearchState extends State<HotelSearch> {
 
     return Expanded(
       child: ListView.builder(
-          itemCount: widget.hotelList != null && widget.hotelList.length > 0 ? widget.hotelList.length : 0,
+          cacheExtent: 9999,
+          itemCount: hotelList != null && hotelList.length > 0 ? hotelList.length : 0,
           itemBuilder: (context, index) {
-            final Hotel currentHotel = widget.hotelList[index];
+            final Hotel currentHotel = hotelList[index];
             var isFav = currentHotel.favHotels.contains(currentUser);
             return Padding(
               padding: const EdgeInsets.only(top: 15),

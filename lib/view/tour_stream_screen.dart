@@ -46,6 +46,7 @@ class _TourStreamState extends State<TourStream> {
             return Container(
               height: MediaQuery.of(context).size.height*0.80,
               child: StaggeredGridView.countBuilder(
+                  key: ObjectKey("${snapshot.data.length}"),
                   crossAxisCount: 2,
                   crossAxisSpacing: 10,
                   mainAxisSpacing: 10,

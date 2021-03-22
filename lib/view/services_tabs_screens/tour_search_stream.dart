@@ -15,7 +15,7 @@ class TourSearchStream extends StatefulWidget {
   _TourSearchStreamState createState() => _TourSearchStreamState();
 }
 
-class _TourSearchStreamState extends State<TourSearchStream> {
+class _TourSearchStreamState extends State<TourSearchStream> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
     return StreamProvider<List<Tour>>.value(
@@ -26,29 +26,28 @@ class _TourSearchStreamState extends State<TourSearchStream> {
     );
   }
 
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
+
 }
 
-class TourSearch extends StatefulWidget {
+class TourSearch extends StatelessWidget {
 
  final List<Tour> tourList;
 
   TourSearch({@required this.tourList});
 
   @override
-  _TourSearchState createState() => _TourSearchState();
-}
-
-class _TourSearchState extends State<TourSearch> {
-  @override
   Widget build(BuildContext context) {
     String currentUser = FirebaseAuth.instance.currentUser.uid;
 
     return Expanded(
       child: ListView.builder(
-          itemCount:
-              widget.tourList != null && widget.tourList.length > 0 ? widget.tourList.length : 0,
+          cacheExtent: 9999,
+          itemCount: tourList != null && tourList.length > 0 ? tourList.length : 0,
           itemBuilder: (context, index) {
-            final Tour currentTour = widget.tourList[index];
+            final Tour currentTour = tourList[index];
             var isFav = currentTour.favTours.contains(currentUser);
 
             return Padding(

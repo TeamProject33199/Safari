@@ -23,8 +23,10 @@ class HotelRatingStream extends StatefulWidget {
 class _HotelRatingStreamState extends State<HotelRatingStream> {
 
   getRating(){
-    return  AppLocalization.of(context).locale.languageCode == "ar" ? DataBase().getAllHotelCommentAr(widget.hotelId,)
+    return  AppLocalization.of(context).locale.languageCode == "ar"
+        ? DataBase().getAllHotelCommentAr(widget.hotelId,)
         : DataBase().getAllHotelComment(widget.hotelId,);
+
   }
 
   @override
