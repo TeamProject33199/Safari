@@ -27,43 +27,8 @@ class StripeService {
     );
   }
 
-  static Future<StripeTransactionResponse> payViaExistingCard({String amount, String currency, CreditCard card}) async{
-    try {
-      var paymentMethod = await StripePayment.createPaymentMethod(
-          PaymentMethodRequest(card: card)
-      );
-      var paymentIntent = await StripeService.createPaymentIntent(
-          amount,
-          currency
-      );
-      var response = await StripePayment.confirmPaymentIntent(
-          PaymentIntent(
-              clientSecret: paymentIntent['client_secret'],
-              paymentMethodId: paymentMethod.id
-          )
-      );
-      if (response.status == 'succeeded') {
-        return new StripeTransactionResponse(
-            message: 'Transaction successful',
-            success: true
-        );
-      } else {
-        return new StripeTransactionResponse(
-            message: 'Transaction failed',
-            success: false
-        );
-      }
-    } on PlatformException catch(err) {
-      return StripeService.getPlatformExceptionErrorResult(err);
-    } catch (err) {
-      return new StripeTransactionResponse(
-          message: 'Transaction failed: ${err.toString()}',
-          success: false
-      );
-    }
-  }
 
-  static Future<StripeTransactionResponse> payWithNewCard({String amount, String currency,String name,String phone,String email}) async {
+  static Future<StripeTransactionResponse> payWithNewCard({String amount, String currency,}) async {
     PaymentMethod paymentMethod=PaymentMethod();
     try {
        paymentMethod = await StripePayment.paymentRequestWithCardForm(

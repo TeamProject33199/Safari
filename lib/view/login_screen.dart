@@ -1,12 +1,10 @@
 import 'dart:async';
-
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:project/Controllers/authentication/provider_auth.dart';
-import 'package:project/Controllers/internet_connection/customfun.dart';
-import 'package:project/Controllers/internet_connection/locator.dart';
 import 'package:project/constants_colors.dart';
 import 'package:project/locale_language/localization_delegate.dart';
 import 'package:project/models/prograss_model_hud.dart';
@@ -14,8 +12,8 @@ import 'package:project/view/Forget_Screen.dart';
 import 'package:project/view/register.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'drawer_screens/animated_drawer_screen.dart';
+
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -23,20 +21,24 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  var _formKey = GlobalKey<FormState>();
+  TextEditingController _addressController = TextEditingController();
+  TextEditingController _phoneController = TextEditingController();
+  String currentUser ;
+  CollectionReference travelerCollection = FirebaseFirestore.instance.collection('Travelers');
+
+    var _formKey = GlobalKey<FormState>();
+ var  _formKey2 = GlobalKey<FormState>();
   var loginKey = GlobalKey<ScaffoldMessengerState>();
 
   bool keepMeLoggedIn = false;
   bool _obscureText = false;
 
-  var funcFile = locator<CustomFunction>();
-  bool sendMe=false;
-  bool connected=false;
-  int alreadyConnected=0;
-  Timer timer;
 
+
+  String genderValue;
   OutlineInputBorder borderE = OutlineInputBorder(
     borderSide: BorderSide(
       color: primary200Color,
@@ -51,13 +53,35 @@ class _LoginScreenState extends State<LoginScreen> {
     ),
     borderRadius: BorderRadius.circular(50),
   );
+  TextStyle _labelStyle = TextStyle(color: blackColor, inherit: true);
 
+  void radioButtonChanges(String value) {
+    setState(() {
+      genderValue = value;
+    });
+  }
+  // ignore: missing_return
+  Stream<DocumentSnapshot> passData()  {
+    try {
+      travelerCollection.doc(FirebaseAuth.instance.currentUser.uid).get().then((value) {
+        if(mounted==false){
+          return;
+        }
+        setState(() {
+          currentUser = value.data()["traveler_id"];
+        });
+      });
+    } catch (e) {
+      print("${e.toString()}");
+    }
+  }
 
   @override
   void initState() {
-    internetCheck();
-    checkMyInternet();
-    timer = Timer.periodic(Duration(seconds: 20), (Timer t) => internetCheck());
+    setState(() {
+      genderValue = "Male";
+    });
+    passData();
     super.initState();
   }
 
@@ -65,7 +89,8 @@ class _LoginScreenState extends State<LoginScreen> {
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    timer?.cancel();
+    _addressController.dispose();
+    _phoneController.dispose();
     super.dispose();
   }
 
@@ -79,7 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
       data: ThemeData(fontFamily: 'SFDisplay'),
       child: Stack(
         children: [
-          _background(context,screenWidth,screenHeight),
+          _background(context, screenWidth, screenHeight),
           Scaffold(
             backgroundColor: transparent,
             key: loginKey,
@@ -95,7 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(left: 35,right: 35),
+                            padding: const EdgeInsets.only(left: 35, right: 35),
                             child: Card(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(17),
@@ -111,7 +136,11 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 35, top: 10,right: 35,),
+                            padding: const EdgeInsets.only(
+                              left: 35,
+                              top: 10,
+                              right: 35,
+                            ),
                             child: Text(
                               "${AppLocalization.of(context).getTranslated("login_description1")}\n${AppLocalization.of(context).getTranslated("login_description2")}",
                               style: TextStyle(
@@ -151,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _background(BuildContext context,screenWidth,screenHeight) {
+  Widget _background(BuildContext context, screenWidth, screenHeight) {
     return CachedNetworkImage(
       fit: BoxFit.cover,
       width: screenWidth,
@@ -169,9 +198,12 @@ class _LoginScreenState extends State<LoginScreen> {
         Padding(
           padding: EdgeInsets.only(top: 20),
           child: Text(
-           AppLocalization.of(context).getTranslated("text_login"),
+            AppLocalization.of(context).getTranslated("text_login"),
             style: TextStyle(
-                fontSize: 32, color: primaryColor, fontWeight: FontWeight.bold,),
+              fontSize: 32,
+              color: primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
             textAlign: TextAlign.center,
           ),
         ),
@@ -190,7 +222,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     color: blackColor,
                   ),
                   decoration: InputDecoration(
-                      labelText:AppLocalization.of(context).getTranslated("text_username_login"),
+                      labelText: AppLocalization.of(context)
+                          .getTranslated("text_username_login"),
                       labelStyle: TextStyle(inherit: true, color: blackColor),
                       prefixIcon: Icon(
                         Icons.email_outlined,
@@ -203,11 +236,13 @@ class _LoginScreenState extends State<LoginScreen> {
                       border: borderE),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return AppLocalization.of(context).getTranslated("required_field_email_login");
+                      return AppLocalization.of(context)
+                          .getTranslated("required_field_email_login");
                     } else if (!RegExp(
                             "^[a-zA-Z0-9.!#%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*")
                         .hasMatch(value)) {
-                      return AppLocalization.of(context).getTranslated("validated_field_email_login");
+                      return AppLocalization.of(context)
+                          .getTranslated("validated_field_email_login");
                     } else {
                       return null;
                     }
@@ -227,7 +262,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       prefixStyle: TextStyle(
                         color: whiteColor,
                       ),
-                      labelText: AppLocalization.of(context).getTranslated("text_password_login"),
+                      labelText: AppLocalization.of(context)
+                          .getTranslated("text_password_login"),
                       labelStyle: TextStyle(inherit: true, color: blackColor),
                       prefixIcon: Icon(
                         Icons.lock_outlined,
@@ -253,9 +289,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       border: borderE),
                   validator: (value) {
                     if (value.isEmpty) {
-                      return AppLocalization.of(context).getTranslated("required_field_password_login");
+                      return AppLocalization.of(context)
+                          .getTranslated("required_field_password_login");
                     } else if (value.length < 6) {
-                      return AppLocalization.of(context).getTranslated("strength_field_password_login");
+                      return AppLocalization.of(context)
+                          .getTranslated("strength_field_password_login");
                     } else {
                       return null;
                     }
@@ -270,9 +308,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   child: InkWell(
                     child: Align(
-                      alignment: AppLocalization.of(context).locale.languageCode=="ar"?Alignment.centerLeft:Alignment.centerRight,
+                      alignment:
+                          AppLocalization.of(context).locale.languageCode ==
+                                  "ar"
+                              ? Alignment.centerLeft
+                              : Alignment.centerRight,
                       child: Text(
-                        AppLocalization.of(context).getTranslated("button_forget_password"),
+                        AppLocalization.of(context)
+                            .getTranslated("button_forget_password"),
                         style: TextStyle(
                           fontSize: 14,
                           color: primaryColor,
@@ -299,7 +342,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           });
                         }),
                     Text(
-                      AppLocalization.of(context).getTranslated("text_remember_me"),
+                      AppLocalization.of(context)
+                          .getTranslated("text_remember_me"),
                       style: TextStyle(color: blackColor, fontSize: 16),
                     ),
                   ],
@@ -313,13 +357,19 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 55,
                     padding: EdgeInsets.symmetric(horizontal: 20),
                     child: ElevatedButton(
-                      style: ButtonStyle(backgroundColor: MaterialStateProperty.all(primaryColor),shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(30),
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(primaryColor),
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(30),
+                            ),
+                          ),
                         ),
-                      ),),),
+                      ),
                       child: Text(
-                        AppLocalization.of(context).getTranslated("button_login"),
+                        AppLocalization.of(context)
+                            .getTranslated("button_login"),
                         style: TextStyle(
                           color: whiteColor,
                           fontWeight: FontWeight.bold,
@@ -336,8 +386,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (keepMeLoggedIn == true) {
                             keepUserLoggedIn();
                           }
-                          checkMyInternet();
-                          if (sendMe){
+
                             if (await authProvider.login(_emailController.text.trim(), _passwordController.text.trim()) != null) {
                               model.changeLoading(false);
                               Navigator.pushReplacement(
@@ -346,28 +395,16 @@ class _LoginScreenState extends State<LoginScreen> {
                                   builder: (context) => AnimatedDrawer(),
                                 ),
                               );
-                            }
-                            else {
+                            } else {
                               model.changeLoading(false);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
-                                  content: Text(authProvider.errorMessage.toString()),
+                                  content: Text(
+                                      authProvider.errorMessage.toString()),
                                   duration: Duration(seconds: 2),
                                 ),
                               );
                             }
-
-                          }else{
-                            model.changeLoading(false);
-                            Fluttertoast.showToast(msg: "YOU NOT CONNECTED TO INTERNET", toastLength: Toast.LENGTH_SHORT,
-                                gravity: ToastGravity.CENTER,
-                                timeInSecForIosWeb:2,
-                                backgroundColor: Colors.red,
-                                textColor: Colors.white,
-                                fontSize: 16.0
-                            );
-                            print("YOU NOT CONNECTED TO INTERNET");
-                          }
 
                         }
                       },
@@ -381,15 +418,17 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      AppLocalization.of(context).getTranslated("text_create_new_user"),
+                      AppLocalization.of(context)
+                          .getTranslated("text_create_new_user"),
                       style: TextStyle(
                           fontSize: 16,
                           color: grey600Color,
                           fontWeight: FontWeight.bold),
                     ),
                     TextButton(
-                     // minWidth: 0,
-                      style: ButtonStyle(minimumSize: MaterialStateProperty.all(Size.zero)),
+                      // minWidth: 0,
+                      style: ButtonStyle(
+                          minimumSize: MaterialStateProperty.all(Size.zero)),
                       onPressed: () {
                         Navigator.push(
                             context,
@@ -397,7 +436,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 builder: (context) => RegisterScreen()));
                       },
                       child: Text(
-                        AppLocalization.of(context).getTranslated("flat_button_register"),
+                        AppLocalization.of(context)
+                            .getTranslated("flat_button_register"),
                         style: TextStyle(
                           fontSize: 16,
                           color: primaryColor,
@@ -414,7 +454,8 @@ class _LoginScreenState extends State<LoginScreen> {
                 Align(
                   alignment: Alignment.center,
                   child: Text(
-                    AppLocalization.of(context).getTranslated("text_or_login_with"),
+                    AppLocalization.of(context)
+                        .getTranslated("text_or_login_with"),
                     style: TextStyle(
                         fontSize: 16,
                         color: grey500Color,
@@ -436,8 +477,8 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  Widget _bottom(BuildContext context, AuthProvider authProvider) {
-    final model = Provider.of<prograssHud>(context, listen: false);
+  Widget _bottom(BuildContext cox, AuthProvider authProvider) {
+    final model = Provider.of<prograssHud>(cox, listen: false);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -461,23 +502,18 @@ class _LoginScreenState extends State<LoginScreen> {
 
             if (await authProvider.signInWithGoogle() != null) {
               model.changeLoading(false);
-              await authProvider.saveGoogleUser();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AnimatedDrawer(),
-                ),
-              );
+
+              currentUser!=null?Navigator.pushReplacement(cox, MaterialPageRoute(builder: (cox) => AnimatedDrawer(),),
+            ) :otherDataGoogle(cox,authProvider);
             } else {
               model.changeLoading(false);
-              ScaffoldMessenger.of(context).showSnackBar(
+              ScaffoldMessenger.of(cox).showSnackBar(
                 SnackBar(
                   content: Text(authProvider.errorMessage),
                   duration: Duration(seconds: 2),
                 ),
               );
             }
-
           },
         ),
         SizedBox(
@@ -491,6 +527,8 @@ class _LoginScreenState extends State<LoginScreen> {
             height: 35,
           ),
           onTap: () async {
+           // model.changeLoading(true);
+
             setState(() {
               keepMeLoggedIn = true;
             });
@@ -498,16 +536,10 @@ class _LoginScreenState extends State<LoginScreen> {
               keepUserLoggedIn();
             }
             if (await authProvider.handleFacebookLogin() != null) {
-              model.changeLoading(false);
-              await authProvider.saveFaceBookUser();
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AnimatedDrawer(),
-                ),
-              );
+            //  model.changeLoading(false);
+              otherDataFb(cox,authProvider);
             } else {
-              model.changeLoading(false);
+            //  model.changeLoading(false);
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
                   content: Text(authProvider.errorMessage),
@@ -515,7 +547,6 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               );
             }
-
           },
         ),
       ],
@@ -523,62 +554,422 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
 
-  internetCheck() async {
-    var internet = await funcFile.isInternet();
-    var internet2 = await funcFile.checkInternetAccess();
+  void otherDataGoogle(BuildContext cx,AuthProvider authProvider) {
+    final model = Provider.of<prograssHud>(cx, listen: false);
 
-    if (internet && internet2) {
-      if(mounted==false){
-        return;
-      }
-      setState(() {
-        connected=true;
-      });
-      if(alreadyConnected==0&&connected==true){
-        funcFile.showInSnackBar(networkstate:connected,context: context);
-        if(mounted==false){
-          return;
-        }
-        setState(() {
-          alreadyConnected=1;
+    showModalBottomSheet(
+        context: cx,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+        ),
+        builder: (BuildContext bc) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) => Padding(
+              padding: EdgeInsets.only(
+                //  bottom: MediaQuery.of(context).viewInsets.bottom,
+                  left: 10,
+                  right: 10,
+                  top: 15
+              ),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey2,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text(
+                          AppLocalization.of(bc)
+                              .getTranslated("add_other_data"),
+                          style: TextStyle(
+                              color: blackColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        maxLines: 1,
+                        controller: _addressController,
+                        style: TextStyle(
+                          color: blackColor,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: AppLocalization.of(bc)
+                              .getTranslated("text_address"),
+                          labelStyle: _labelStyle,
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: primaryColor,
+                          ),
+                          fillColor: whiteColor,
+                          focusedBorder: borderF,
+                          enabledBorder: borderE,
+                          border: borderE,
+                          filled: true,
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return AppLocalization.of(bc)
+                                .getTranslated("required_field_address");
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        maxLines: 1,
+                        maxLength: 11,
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                        style: TextStyle(
+                          color: blackColor,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: AppLocalization.of(context)
+                              .getTranslated("text_phone"),
+                          labelStyle: _labelStyle,
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: primaryColor,
+                          ),
+                          fillColor: whiteColor,
+                          focusedBorder: borderF,
+                          enabledBorder: borderE,
+                          border: borderE,
+                          filled: true,
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return AppLocalization.of(context)
+                                .getTranslated("required_field_phone");
+                          } else if (value.length < 11) {
+                            return AppLocalization.of(context)
+                                .getTranslated("check_digits_field_phone");
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              Radio(
+                                value: AppLocalization.of(context)
+                                    .getTranslated("text_male"),
+                                groupValue: genderValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    genderValue = value;
+                                  });
+                                  radioButtonChanges(value);
+                                },
+                                activeColor: primaryColor,
+                              ),
+                              Text(
+                                AppLocalization.of(context)
+                                    .getTranslated("text_male"),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Radio(
+                                value: AppLocalization.of(context)
+                                    .getTranslated("text_female"),
+                                groupValue: genderValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    genderValue = value;
+                                  });
+                                  radioButtonChanges(value);
+                                },
+                                activeColor: primaryColor,
+                              ),
+                              Text(
+                                AppLocalization.of(context)
+                                    .getTranslated("text_female"),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width*0.25,
+                            child: TextButton(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(primaryColor),
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(30),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  if (_formKey2.currentState.validate()) {
+                                    model.changeLoading(true);
+                                    authProvider.saveGoogleUser(_addressController.text,_phoneController.text,genderValue);
+                                    model.changeLoading(false);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (bc) => AnimatedDrawer(),
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(bc).showSnackBar(SnackBar(
+                                        content: Text(
+                                            "You Added Data  Successful")));
+                                    print("You Added Data  Successful");
+                                  }
+                                },
+                                child: Text(
+                                  AppLocalization.of(bc)
+                                      .getTranslated("button_add_otherData"),
+                                  style: TextStyle(color: whiteColor),
+
+                                )),
+                          ),
+                        ],
+                      ),
+
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
         });
-      }
-    } else {
-      if(mounted==false){
-        return;
-      }
-      setState(() {
-        connected=false;
-        alreadyConnected=0;
-      });
-
-      funcFile.showInSnackBar(networkstate:connected,context: context);
-    }
   }
 
-  checkMyInternet(){
-    funcFile.isInternet().then((value) {
-      funcFile.checkInternetAccess().then((value2) {
+  void otherDataFb(BuildContext cox,AuthProvider authProvider) {
+    final model = Provider.of<prograssHud>(cox, listen: false);
 
-        if( value && value2){
-          if(mounted==false){
-            return;
-          }
-          setState(() {
-            sendMe= true;
-          });
-        }else{
-          if(mounted==false){
-            return;
-          }
-          setState(() {
-            sendMe= false;
-          });
-        }
-      });
-    });
+    showModalBottomSheet(
+        context: cox,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15)),
+        ),
+        builder: (BuildContext bc) {
+          return StatefulBuilder(
+            builder: (BuildContext context, StateSetter setState) => Padding(
+              padding: EdgeInsets.only(
+                //  bottom: MediaQuery.of(context).viewInsets.bottom,
+                  left: 10,
+                  right: 10,
+                  top: 15
+              ),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey2,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
 
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Text(
+                          AppLocalization.of(bc)
+                              .getTranslated("add_other_data"),
+                          style: TextStyle(
+                              color: blackColor,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        maxLines: 1,
+                        controller: _addressController,
+                        style: TextStyle(
+                          color: blackColor,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: AppLocalization.of(bc)
+                              .getTranslated("text_address"),
+                          labelStyle: _labelStyle,
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: primaryColor,
+                          ),
+                          fillColor: whiteColor,
+                          focusedBorder: borderF,
+                          enabledBorder: borderE,
+                          border: borderE,
+                          filled: true,
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return AppLocalization.of(bc)
+                                .getTranslated("required_field_address");
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextFormField(
+                        maxLines: 1,
+                        maxLength: 11,
+                        controller: _phoneController,
+                        keyboardType: TextInputType.phone,
+                        style: TextStyle(
+                          color: blackColor,
+                        ),
+                        decoration: InputDecoration(
+                          labelText: AppLocalization.of(bc)
+                              .getTranslated("text_phone"),
+                          labelStyle: _labelStyle,
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: primaryColor,
+                          ),
+                          fillColor: whiteColor,
+                          focusedBorder: borderF,
+                          enabledBorder: borderE,
+                          border: borderE,
+                          filled: true,
+                        ),
+                        validator: (value) {
+                          if (value.isEmpty) {
+                            return AppLocalization.of(bc)
+                                .getTranslated("required_field_phone");
+                          } else if (value.length < 11) {
+                            return AppLocalization.of(context)
+                                .getTranslated("check_digits_field_phone");
+                          } else {
+                            return null;
+                          }
+                        },
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: [
+                              Radio(
+                                value: AppLocalization.of(bc)
+                                    .getTranslated("text_male"),
+                                groupValue: genderValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    genderValue = value;
+                                  });
+                                  radioButtonChanges(value);
+                                },
+                                activeColor: primaryColor,
+                              ),
+                              Text(
+                                AppLocalization.of(bc)
+                                    .getTranslated("text_male"),
+                              ),
+                              SizedBox(
+                                width: 20,
+                              ),
+                              Radio(
+                                value: AppLocalization.of(bc)
+                                    .getTranslated("text_female"),
+                                groupValue: genderValue,
+                                onChanged: (value) {
+                                  setState(() {
+                                    genderValue = value;
+                                  });
+                                  radioButtonChanges(value);
+                                },
+                                activeColor: primaryColor,
+                              ),
+                              Text(
+                                AppLocalization.of(bc)
+                                    .getTranslated("text_female"),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width*0.25,
+                            child: TextButton(
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(primaryColor),
+                                  shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(30),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  if (_formKey2.currentState.validate()) {
+                                    model.changeLoading(true);
+                                    authProvider.saveFaceBookUser(_addressController.text,_phoneController.text,genderValue);
+                                    model.changeLoading(false);
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (bc) => AnimatedDrawer(),
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(bc).showSnackBar(SnackBar(
+                                        content: Text(
+                                            "You Added Data  Successful")));
+                                    print("You Added Data  Successful");
+                                  }
+                                },
+                                child: Text(
+                                  AppLocalization.of(bc)
+                                      .getTranslated("button_add_otherData"),
+                                  style: TextStyle(color: whiteColor),
+                                )),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        });
   }
+
 
 
   void keepUserLoggedIn() async {

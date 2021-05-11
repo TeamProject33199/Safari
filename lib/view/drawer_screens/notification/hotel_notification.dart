@@ -19,7 +19,12 @@ class HotelsNotifications extends StatelessWidget {
     return StreamBuilder(
       stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingHotel(Travelers(id: currentUser)):DataBase().getBookingHotel(Travelers(id: currentUser)),
       builder:(context,AsyncSnapshot<List<BookingHotel>>snapshot){
-        if(snapshot.hasData){
+
+        if(snapshot.hasError){
+          return Center(child: Text(snapshot.error.toString()));
+        }else if(snapshot?.data?.isEmpty ?? true){
+          return AppLocalization.of(context).locale.languageCode=="ar"?Center(child: Text("لا يوجد حجوزات")):Center(child: Text("No Booking"));
+        } else if(snapshot.hasData){
           return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
@@ -155,7 +160,7 @@ class HotelsNotifications extends StatelessWidget {
                             alignment: AppLocalization.of(context).locale.languageCode=="ar"?Alignment.bottomLeft:Alignment.bottomRight,
                             child: Padding(
                               padding: AppLocalization.of(context).locale.languageCode=="ar"?const EdgeInsets.only(
-                                  left: 12,bottom: 5, ):const EdgeInsets.only(right: 12,bottom: 5,),
+                                left: 12,bottom: 5, ):const EdgeInsets.only(right: 12,bottom: 5,),
                               child: SizedBox(
                                 height: 30,
                                 width: 80,
@@ -190,10 +195,9 @@ class HotelsNotifications extends StatelessWidget {
                   ),
                 );
               });
-        }else if(snapshot.hasError){
-          return Center(child: Text(snapshot.error.toString()));
-        }else
-          return Center(child: CircularProgressIndicator(),);
+        }
+        else
+          return null;
       },
     );
   }

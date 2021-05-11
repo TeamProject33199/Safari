@@ -27,11 +27,17 @@ class _FavoritesToursState extends State<FavoritesTours> {
     return StreamBuilder(
       stream: AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getFavoriteTourAr(Travelers(id: currentUser)):DataBase().getFavoriteTour(Travelers(id: currentUser)),
       builder:(context,AsyncSnapshot<dynamic>snapshot){
-        if(snapshot.hasData){
+        if(snapshot.hasError){
+          return Text(snapshot.error.toString());
+        }else if(snapshot?.data?.isEmpty ?? true){
+          return  AppLocalization.of(context).locale.languageCode=="ar"?Center(child: Text("لا يوجد مفضلات")):Center(child: Text("No Favorites"));
+        } else if(snapshot.hasData){
           return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 Tour tour=snapshot.data[index];
+                var isFav = tour.favTours.contains(currentUser);
+
                 return Padding(
                   padding: const EdgeInsets.only(
                     left: 15,
@@ -159,14 +165,23 @@ class _FavoritesToursState extends State<FavoritesTours> {
                                       .languageCode ==
                                       "ar"
                                       ? const EdgeInsets.only(
-                                      top: 12, bottom: 14, left: 12)
+                                       bottom: 14, left: 6)
                                       : const EdgeInsets.only(
-                                      top: 12, bottom: 16, right: 12),
+                                       bottom: 16, right: 6),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-
+                                      IconButton(
+                                        icon:Icon(Icons.favorite),
+                                        color: redAccentColor,
+                                        onPressed: (){
+                                          setState(() {
+                                            isFav = !isFav;
+                                            AppLocalization.of(context).locale.languageCode=="ar"?deleteFavorite(tour.tourId,currentUser)  :deleteFavorite(tour.tourId,currentUser);
+                                          });
+                                        },
+                                      ),
                                       Row(
                                         children: [
                                           Icon(
@@ -195,13 +210,23 @@ class _FavoritesToursState extends State<FavoritesTours> {
                 );
 
               });
-        }else if(snapshot.hasError){
-          return Text(snapshot.error.toString());
         }else
-          return Center(child: CircularProgressIndicator(),);
+          return null;
 
 
       },
     );
+  }
+  Future deleteFavorite(tourId,currentUser) async {
+
+    await DataBase().removeFavoritesTour(
+        tourId: tourId,
+        travellerId: currentUser
+    );
+    await DataBase().removeFavoritesTourAr(
+        tourId: tourId,
+        travellerId: currentUser
+    );
+
   }
 }

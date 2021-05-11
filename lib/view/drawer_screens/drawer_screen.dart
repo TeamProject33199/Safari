@@ -33,14 +33,11 @@ class _DrawerScreenState extends State<DrawerScreen> {
 
   // ignore: missing_return
   Stream<DocumentSnapshot> getData()  {
-
     try {
-
       if (_auth.currentUser != null) {
         firebaseUser = _auth.currentUser;
       }
       return DataBase().getTraveler(Travelers(id: firebaseUser.uid));
-
     } catch (e) {
       print("${e.toString()}");
     }
@@ -343,15 +340,12 @@ class _DrawerScreenState extends State<DrawerScreen> {
     var authProvider = Provider.of<AuthProvider>(context, listen: false);
     SharedPreferences preferences = await SharedPreferences.getInstance();
     await preferences.remove("KeepMeLoggedIn");
+    if(offset.isDrawerOpen){
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()),(Route<dynamic> route) => false);
+      AppLocalization.of(context).locale.languageCode=='ar'? offset.drawerCloseAR():offset.drawerClose();
+    }
     await authProvider.logout().whenComplete(() {
-      if(offset.isDrawerOpen){
-         Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen()),(Route<dynamic> route) => false);
-         AppLocalization.of(context).locale.languageCode=='ar'? offset.drawerCloseAR():offset.drawerClose();
-      }
       print("User signOut Success");
      }).catchError((error) => print(error.toString()));
-
-    AppLocalization.of(context).locale.languageCode=='ar'? offset.drawerCloseAR():offset.drawerClose();
-
   }
 }

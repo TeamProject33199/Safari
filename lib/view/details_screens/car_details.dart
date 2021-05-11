@@ -15,6 +15,7 @@ import 'package:project/models/rating_car.dart';
 import 'package:project/models/users.dart';
 import 'package:project/view/booking/booking_car.dart';
 import 'package:project/view/details_screens/car_stream_rating.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../constants_colors.dart';
 
 class CarsDetailsScreen extends StatefulWidget {
@@ -81,6 +82,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
   var isFav;
 
   String bookId;
+  double rate = 0.0;
   // ignore: missing_return
   Stream<DocumentSnapshot> getData()  {
     try {
@@ -126,6 +128,63 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     });
   }
 
+  Future<void> openMap() async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${widget.car.latitude},${widget.car.longitude}';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
+
+  void rateOfCar()async{
+
+    carCollection
+        .doc(widget.car.id)
+        .collection("CarRating")
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length == 1) {
+        data.docs.forEach((element) {
+          rate=element.data()['rate'];
+
+          if (mounted == false) {
+            return;
+          }
+          setState(() {
+            carCollection.doc(widget.car.id).update({
+              "CarRate": rate,
+            });
+          });
+        });
+
+      } else if (data.docs.length > 1) {
+        rate = data.docs.map((m) => m['rate']).reduce((a, b) => a + b) / data.docs.length;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          carCollection.doc(widget.car.id).update({
+            "CarRate": rate,
+          });
+        });
+
+      } else {
+        rate=0.0;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          carCollection.doc(widget.car.id).update({
+            "CarRate": rate,
+          });
+        });
+      }
+
+    });
+
+  }
+
   @override
   void initState() {
     super.initState();
@@ -152,6 +211,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     isFav = widget.car.favCars.contains(currentUser);
     getRate();
     getPaymentBook();
+    rateOfCar();
   }
 
   @override
@@ -326,7 +386,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                     ),
                     SizedBox(width: 2),
                     Text(
-                      widget.car.carRate.toString(),
+                     rate.toString(),
                       style: TextStyle(
                         color: grey700Color,
                         fontWeight: FontWeight.bold,
@@ -334,23 +394,28 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.location_on_sharp,
-                      color: deepPurpleColor,
-                      size: 18,
-                    ),
-                    SizedBox(
-                      width: 2,
-                    ),
-                    Text(
-                      "${widget.car.carCountry}, ${widget.car.carCity}",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, color: grey700Color),
-                    ),
-                  ],
+                InkWell(
+                  onTap: (){
+                    openMap();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.location_on_sharp,
+                        color: deepPurpleColor,
+                        size: 18,
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      Text(
+                        "${widget.car.carCountry}, ${widget.car.carCity}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: grey700Color),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -680,7 +745,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                     ),
                   ],
                 ),
-               bookId==null?
+               bookId!=widget.car.id?
                SizedBox(
                   height: 40,
                   width: 170,
@@ -896,6 +961,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     return dateEnd;
   }
 
+  // ignore: missing_return
   Stream<List<BookingCar>> getPaymentBook(){
     travelerCollection.doc(currentUser).collection("BookingCar").where("paid",isEqualTo: true)
         .snapshots()

@@ -16,8 +16,14 @@ class CarSearchStream extends StatefulWidget {
 }
 
 class _CarSearchStreamState extends State<CarSearchStream> with AutomaticKeepAliveClientMixin{
+
+
+
+
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StreamProvider<List<Cars>>.value(
       initialData: [],
       value:AppLocalization.of(context).locale.languageCode=="ar"? DataBase().getAllCarsAr:DataBase().getAllCars,

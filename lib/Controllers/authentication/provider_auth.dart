@@ -93,7 +93,7 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
- saveGoogleUser()async{
+ saveGoogleUser(address,phone,gender)async{
    final GoogleSignInAccount currentGoogleUser =  _googleSignIn.currentUser;
 
    await DataBase().addTraveler(Travelers(
@@ -101,9 +101,9 @@ class AuthProvider extends ChangeNotifier {
      username: currentGoogleUser.email,
      password: null,
      fullName:currentGoogleUser.displayName,
-     address:null,
-     phone: null,
-     gender: null,
+     address:address,
+     phone: phone,
+     gender: gender,
      image: currentGoogleUser.photoUrl,
      createdAt: DateTime.now(),
    ));
@@ -149,15 +149,15 @@ class AuthProvider extends ChangeNotifier {
   }
 
 
-  saveFaceBookUser()async{
+  saveFaceBookUser(address,phone,gender,)async{
     await DataBase().addTraveler(Travelers(
       id: fbUser.user.uid,
       username: fbUser.user.email,
       password: null,
       fullName: fbUser.user.displayName,
-      address: null,
-      phone: fbUser.user.phoneNumber,
-      gender: null,
+      address: address,
+      phone: phone,
+      gender: gender,
       image: fbUser.user.photoURL,
       createdAt: DateTime.now(),
     ));

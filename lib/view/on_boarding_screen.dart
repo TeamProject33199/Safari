@@ -39,6 +39,11 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     );
   }
 
+  void updateSeen() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool("seen", true);
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -313,8 +318,4 @@ class _OnBoardingScreenState extends State<OnBoardingScreen> {
     );
   }
 
-  void updateSeen() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setBool("seen", true);
-  }
 }

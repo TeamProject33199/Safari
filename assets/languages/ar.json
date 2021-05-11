@@ -98,6 +98,8 @@
     "text_Gender_profile": "النوع:",
     "button_cancel_profile": "الغاء",
     "button_update_profile": "تحديث",
+    "button_add_otherData": "اضافة",
+    "add_other_data": "أدخل بياناتك الاخري",
     "update_name": "أدخل أسمك",
     "update_address": "أدخل عنوانك",
     "update_password": "أدخل كلمة السر",

@@ -47,10 +47,7 @@ class _TourRatingStreamState extends State<TourRatingStream> {
         if(snapshot.hasError){
           return Text(snapshot.error.toString());
         }
-        else if (!snapshot.hasData) {
-          return Container();
-        }
-        else if(snapshot.data.isEmpty) {
+        else if(snapshot?.data?.isEmpty ?? true) {
           return Container(child: Center(child: Text(AppLocalization.of(context).getTranslated("no_reviews")),),);
         }else
           return Expanded(

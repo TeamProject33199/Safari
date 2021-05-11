@@ -194,11 +194,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     child: Hero(
                       tag: snapshot.data.id,
                       child: CachedNetworkImage(
-                        imageUrl: isLoading==false? data["image"] == null
+                        imageUrl:  data["image"] == null
                             ? "https://png.pngtree.com/png-clipart/20190516/original/pngtree-users-vector-icon-png-image_3723374.jpg"
-                            : data["image"] :"assets/images/loading.gif",
+                            : data["image"],
                         placeholder: (context, url) => Center(child: CircularProgressIndicator()),
-                        errorWidget: (context, url, error) => Icon(Icons.error),
+                        // errorWidget: (context, url, error) => Icon(Icons.error),
                         width: MediaQuery.of(context).size.width * 0.330,
                         height: MediaQuery.of(context).size.width * 0.330,
                         imageBuilder : (context,imageProvider)=>CircleAvatar(
@@ -693,15 +693,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
        await travelerCollection.doc(currentUser).update({
           "image": value,
         });
-       setState(() {
-         isLoading=false;
-       });
+
+      });
+      setState(() {
+        isLoading=false;
       });
     });
     setState(() {
       isLoading=false;
     });
-
 
   }
 
@@ -983,9 +983,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             )),
                       ],
                     ),
-                    // SizedBox(
-                    //   height: MediaQuery.of(bc).viewInsets.bottom,
-                    // ),
+
                   ],
                 ),
               ),
@@ -1165,6 +1163,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       maxLines: 1,
                       maxLength: 11,
                       controller: _phoneController,
+                      keyboardType: TextInputType.phone,
                       style: TextStyle(
                         color: blackColor,
                       ),

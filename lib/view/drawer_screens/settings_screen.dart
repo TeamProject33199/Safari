@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:project/Controllers/authentication/provider_auth.dart';
 import 'package:project/constants_colors.dart';
-import 'package:project/constants_languages.dart';
+import 'file:///D:/project/SafariProject-master/lib/locale_language/constants_languages.dart';
 import 'package:project/locale_language/dropdown_languages.dart';
 import 'package:project/locale_language/localization_delegate.dart';
 import 'package:project/main.dart';

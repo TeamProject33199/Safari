@@ -1,10 +1,6 @@
-import 'dart:async';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:project/Controllers/internet_connection/customfun.dart';
-import 'package:project/Controllers/internet_connection/locator.dart';
 import 'package:project/constants_colors.dart';
 import 'package:project/locale_language/localization_delegate.dart';
 import 'package:project/view/login_screen.dart';
@@ -17,7 +13,7 @@ class ForgetScreen extends StatefulWidget {
 class _ForgetScreenState extends State<ForgetScreen> {
   TextEditingController _emailController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
-  var registerKey = GlobalKey<ScaffoldMessengerState>();
+  var forgetKey = GlobalKey<ScaffoldMessengerState>();
   FirebaseAuth _auth = FirebaseAuth.instance;
 
   var _formKey = GlobalKey<FormState>();
@@ -36,25 +32,13 @@ class _ForgetScreenState extends State<ForgetScreen> {
     ),
     borderRadius: BorderRadius.circular(50),
   );
-  var funcFile = locator<CustomFunction>();
-  bool sendMe=false;
-  bool connected=false;
-  int alreadyConnected=0;
-  Timer timer;
 
-  @override
-  void initState() {
-    internetCheck();
-    checkMyInternet();
-    timer = Timer.periodic(Duration(seconds: 20), (Timer t) => internetCheck());
-    super.initState();
-  }
+
 
   @override
   void dispose() {
     _emailController.dispose();
     _passwordController.dispose();
-    timer?.cancel();
     super.dispose();
   }
 
@@ -69,7 +53,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
         children: [
           _background(context,screenHeight,screenWidth),
           Scaffold(
-            key: registerKey,
+            key: forgetKey,
             backgroundColor: transparent,
             body: SafeArea(
               child: Column(
@@ -230,12 +214,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                     onPressed: () async {
                       if (_formKey.currentState.validate()) {
                         try {
-                          checkMyInternet();
-                          if (sendMe) {
-                            await _auth
-                                .sendPasswordResetEmail(
-                              email: _emailController.text.trim(),
-                            )
+                            await _auth.sendPasswordResetEmail(email: _emailController.text.trim(),)
                                 .catchError((onError) =>
                                 print(
                                     'Error sending email verification $onError'))
@@ -246,16 +225,7 @@ class _ForgetScreenState extends State<ForgetScreen> {
                                     context,
                                     MaterialPageRoute(
                                         builder: (context) => LoginScreen())));
-                          } else{
-                        Fluttertoast.showToast(msg: "YOU NOT CONNECTED TO INTERNET", toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb:2,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0
-                        );
-                        print("YOU NOT CONNECTED TO INTERNET");
-                      }
+
 
                         }catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -311,63 +281,6 @@ class _ForgetScreenState extends State<ForgetScreen> {
         ),
       ],
     );
-  }
-
-  internetCheck() async {
-    var internet = await funcFile.isInternet();
-    var internet2 = await funcFile.checkInternetAccess();
-
-    if (internet && internet2) {
-      if(mounted==false){
-        return;
-      }
-      setState(() {
-        connected=true;
-      });
-      if(alreadyConnected==0&&connected==true){
-        funcFile.showInSnackBar(networkstate:connected,context: context);
-        if(mounted==false){
-          return;
-        }
-        setState(() {
-          alreadyConnected=1;
-        });
-      }
-    } else {
-      if(mounted==false){
-        return;
-      }
-      setState(() {
-        connected=false;
-        alreadyConnected=0;
-      });
-
-      funcFile.showInSnackBar(networkstate:connected,context: context);
-    }
-  }
-
-  checkMyInternet(){
-    funcFile.isInternet().then((value) {
-      funcFile.checkInternetAccess().then((value2) {
-
-        if( value && value2){
-          if(mounted==false){
-            return;
-          }
-          setState(() {
-            sendMe= true;
-          });
-        }else{
-          if(mounted==false){
-            return;
-          }
-          setState(() {
-            sendMe= false;
-          });
-        }
-      });
-    });
-
   }
 
 }

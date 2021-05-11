@@ -6,7 +6,7 @@ class Tour{
   double tourRate,tourPrice;
   List<String> tourPhotos;
   List<String> favTours;
-
+  double latitude, longitude;
 
   Tour({
     this.tourId,
@@ -20,6 +20,8 @@ class Tour{
       this.tourPrice,
       this.tourPhotos,
       this.favTours,
+    this.longitude,
+    this.latitude
   });
 
   List<Tour> fromQuery(QuerySnapshot snapshot) {
@@ -45,7 +47,20 @@ class Tour{
         categoryName: doc.get('CategoryName') ?? '',
         tourPhotos: List.from(doc.get('TourPhotos')) ?? [],
         favTours:List.from(doc.get('user_fav')) ?? [] ,
-
+        latitude: doc.get('latitude') != null
+            ? doc.get('latitude') is double
+            ? doc.get('latitude')
+            : doc.get('latitude') is String
+            ? double.parse(doc.get('latitude'))
+            : doc.get('latitude').toDouble()
+            : '',
+        longitude: doc.get('longitude') != null
+            ? doc.get('longitude') is double
+            ? doc.get('longitude')
+            : doc.get('longitude') is String
+            ? double.parse(doc.get('longitude'))
+            : doc.get('longitude').toDouble()
+            : '',
       );
     }).toList();
   }
@@ -64,7 +79,8 @@ class Tour{
       'CategoryName': categoryName,
       'TourPhotos': tourPhotos,
       'user_fav':favTours,
-
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }

@@ -18,8 +18,10 @@ class HotelSearchStream extends StatefulWidget {
 
 class _HotelSearchStreamState extends State<HotelSearchStream> with AutomaticKeepAliveClientMixin{
 
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StreamProvider<List<Hotel>>.value(
       initialData: [],
       value: AppLocalization.of(context).locale.languageCode=="ar"? DataBase().getAllHotelsAr:DataBase().getAllHotels,

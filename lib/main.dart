@@ -1,20 +1,18 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:project/Controllers/internet_connection/locator.dart';
 import 'package:project/models/Provider_Offset.dart';
 import 'package:project/view/on_boarding_screen.dart';
 import 'package:project/view/splash_screen.dart';
 import 'package:provider/provider.dart';
 import 'Controllers/authentication/provider_auth.dart';
-import 'constants_languages.dart';
+import 'locale_language/constants_languages.dart';
 import 'locale_language/localization_delegate.dart';
 import 'models/prograss_model_hud.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  setupLocator();
       runApp(
         MultiProvider(
           providers:[

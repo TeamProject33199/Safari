@@ -5,6 +5,7 @@ class Cars {
   double carRate, priceOfDay;
   List<String> carPhotos;
   List<String> favCars;
+  double latitude, longitude;
 
   Cars(
       {this.id,
@@ -17,7 +18,10 @@ class Cars {
         this.carRate,
         this.favCars,
         this.priceOfDay,
-        this.carPhotos});
+        this.carPhotos,
+        this.longitude,
+        this.latitude
+      });
 
   List<Cars> fromQuery(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
@@ -45,6 +49,20 @@ class Cars {
         categoryName: doc.get('CategoryName') ?? '',
         carPhotos: List.from(doc.get('CarPhotos')) ?? [],
         carType: doc.get('CarType') ?? '',
+        latitude: doc.get('latitude') != null
+            ? doc.get('latitude') is double
+            ? doc.get('latitude')
+            : doc.get('latitude') is String
+            ? double.parse(doc.get('latitude'))
+            : doc.get('latitude').toDouble()
+            : '',
+        longitude: doc.get('longitude') != null
+            ? doc.get('longitude') is double
+            ? doc.get('longitude')
+            : doc.get('longitude') is String
+            ? double.parse(doc.get('longitude'))
+            : doc.get('longitude').toDouble()
+            : '',
       );
     }).toList();
   }
@@ -62,6 +80,8 @@ class Cars {
       'CategoryName': categoryName,
       'CarPhotos': carPhotos,
       'CarType': carType,
+      'latitude': latitude,
+      'longitude': longitude,
     };
   }
 }

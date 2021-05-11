@@ -568,7 +568,7 @@ class _BookingHotelScreenState extends State<BookingHotelScreen> {
    }
 
    Future<void> scheduleNotification( String title, String content) async {
-     var scheduledNotificationDateTime = tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5));
+     var scheduledNotificationDateTime = tz.TZDateTime.now(tz.local).add(const Duration(seconds: 10));
      var androidPlatformChannelSpecifics = AndroidNotificationDetails(
        'channel id',
        'channel name',

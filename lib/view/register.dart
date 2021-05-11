@@ -8,8 +8,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:project/Controllers/authentication/provider_auth.dart';
 import 'package:project/Controllers/firestore/DataBase.dart';
-import 'package:project/Controllers/internet_connection/customfun.dart';
-import 'package:project/Controllers/internet_connection/locator.dart';
 import 'package:project/constants_colors.dart';
 import 'package:project/locale_language/localization_delegate.dart';
 import 'package:project/models/prograss_model_hud.dart';
@@ -60,12 +58,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   String genderValue;
   String choice;
-
-  var funcFile = locator<CustomFunction>();
-  bool sendMe = false;
-  bool connected = false;
-  int alreadyConnected = 0;
-  Timer timer;
   bool isLoading=false;
 
   void radioButtonChanges(String value) {
@@ -92,9 +84,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
       choice = "Male";
       genderValue = "Male";
     });
-    internetCheck();
-    checkMyInternet();
-    timer = Timer.periodic(Duration(seconds: 20), (Timer t) => internetCheck());
     super.initState();
   }
 
@@ -106,7 +95,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _fullNameController.dispose();
     _addressController.dispose();
     _phoneController.dispose();
-    timer?.cancel();
     super.dispose();
   }
 
@@ -577,19 +565,25 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   onPressed: () async {
-                    final model =
-                    Provider.of<prograssHud>(context, listen: false);
+                    final model = Provider.of<prograssHud>(context, listen: false);
 
                     if (_formKey.currentState.validate() && _image != null) {
                       model.changeLoading(true);
-                      checkMyInternet();
-                      if (sendMe) {
                         if (await authProvider.signUp(
                             _emailController.text.trim(),
                             _passwordController.text.trim()) !=
                             null) {
                           model.changeLoading(false);
-
+                          await _uploadImage(_image);
+                          await storeData(context, authProvider);
+                          Fluttertoast.showToast(
+                              msg: "USER IS CREATED",
+                              toastLength: Toast.LENGTH_SHORT,
+                              gravity: ToastGravity.CENTER,
+                              timeInSecForIosWeb: 2,
+                              backgroundColor: Colors.grey,
+                              textColor: Colors.white,
+                              fontSize: 16.0);
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
@@ -606,20 +600,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           );
                         }
-                        await _uploadImage(_image);
-                        await storeData(context, authProvider);
-                      } else {
-                        model.changeLoading(false);
-                        Fluttertoast.showToast(
-                            msg: "YOU NOT CONNECTED TO INTERNET",
-                            toastLength: Toast.LENGTH_SHORT,
-                            gravity: ToastGravity.CENTER,
-                            timeInSecForIosWeb: 2,
-                            backgroundColor: Colors.red,
-                            textColor: Colors.white,
-                            fontSize: 16.0);
-                        print("YOU NOT CONNECTED TO INTERNET");
-                      }
+
+
                     }
                   },
                 ),
@@ -670,10 +652,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future _uploadImage(File image) async {
-    FirebaseStorage storage =
-        FirebaseStorage.instanceFor(bucket: "gs://safari-726f0.appspot.com");
-    final Reference storageReference =
-        storage.ref().child(p.basename(image.path));
+    FirebaseStorage storage = FirebaseStorage.instanceFor(bucket: "gs://safari-726f0.appspot.com");
+    final Reference storageReference = storage.ref().child(p.basename(image.path));
     await storageReference.putFile(image).whenComplete(() async {
       await storageReference.getDownloadURL().then((value) {
         _url = value;
@@ -787,63 +767,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ),
           );
         });
-  }
-
-  internetCheck() async {
-    var internet = await funcFile.isInternet();
-    var internet2 = await funcFile.checkInternetAccess();
-
-    if (internet && internet2) {
-      if (mounted == false) {
-        return;
-      }
-      setState(() {
-        connected = true;
-      });
-      if (alreadyConnected == 0 && connected == true) {
-        funcFile.showInSnackBar(
-            networkstate: connected, context: context);
-        if (mounted == false) {
-          return;
-        }
-        setState(() {
-          alreadyConnected = 1;
-        });
-      }
-    } else {
-      if (mounted == false) {
-        return;
-      }
-      setState(() {
-        connected = false;
-        alreadyConnected = 0;
-      });
-
-      funcFile.showInSnackBar(
-          networkstate: connected,context: context);
-    }
-  }
-
-  checkMyInternet() {
-    funcFile.isInternet().then((value) {
-      funcFile.checkInternetAccess().then((value2) {
-        if (value && value2) {
-          if (mounted == false) {
-            return;
-          }
-          setState(() {
-            sendMe = true;
-          });
-        } else {
-          if (mounted == false) {
-            return;
-          }
-          setState(() {
-            sendMe = false;
-          });
-        }
-      });
-    });
   }
 }
 

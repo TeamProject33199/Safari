@@ -44,9 +44,7 @@ class _CarRatingStreamState extends State<CarRatingStream> {
       builder: (context, AsyncSnapshot<List<CarRating>> snapshot) {
         if (snapshot.hasError) {
           return Text(snapshot.error.toString());
-        } else if (!snapshot.hasData) {
-          return Container();
-        } else if (snapshot.data.isEmpty) {
+        } else if (snapshot?.data?.isEmpty ?? true) {
           return Container(
             child: Center(
               child: Text(AppLocalization.of(context).getTranslated("no_reviews")),

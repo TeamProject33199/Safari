@@ -23,7 +23,11 @@ class _CarsNotificationsState extends State<CarsNotifications> {
     return StreamBuilder(
       stream:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getBookingCar(Travelers(id: currentUser)) :DataBase().getBookingCar(Travelers(id: currentUser)),
       builder:(context,AsyncSnapshot<List<BookingCar>>snapshot){
-        if(snapshot.hasData){
+        if(snapshot.hasError){
+          return Text(snapshot.error.toString());
+        }else if(snapshot?.data?.isEmpty ?? true){
+          return AppLocalization.of(context).locale.languageCode=="ar"?Center(child: Text("لا يوجد حجوزات")):Center(child: Text("No Booking"));
+        }else if(snapshot.hasData){
           return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
@@ -186,10 +190,8 @@ class _CarsNotificationsState extends State<CarsNotifications> {
                   ),
                 );
               });
-        }else if(snapshot.hasError){
-          return Text(snapshot.error.toString());
         }else
-          return Center(child: CircularProgressIndicator(),);
+          return null;
       },
     );
   }

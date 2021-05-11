@@ -17,6 +17,7 @@ import 'package:project/models/rating_hotel.dart';
 import 'package:project/models/users.dart';
 import 'package:project/view/booking/booking_hotel.dart';
 import 'package:project/view/details_screens/hotel_stream_rating.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HotelsDetailsScreen extends StatefulWidget {
   final Hotel hotel;
@@ -83,6 +84,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
   String rateId;
   int counterRooms=1;
   String bookId;
+  double rate = 0.0;
   // ignore: missing_return
   Stream<List<HotelRating>> getRate() {
     hotelCollection
@@ -171,6 +173,63 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
     }
   }
 
+  Future<void> openMap() async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${widget.hotel.latitude},${widget.hotel.longitude}';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
+
+  void rateOfHotel()async{
+
+    hotelCollection
+        .doc(widget.hotel.hotelId)
+        .collection("HotelRating")
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length == 1) {
+        data.docs.forEach((element) {
+          rate=element.data()['rate'];
+
+          if (mounted == false) {
+            return;
+          }
+          setState(() {
+            hotelCollection.doc(widget.hotel.hotelId).update({
+              "hotelRate": rate,
+            });
+          });
+        });
+
+      } else if (data.docs.length > 1) {
+         rate = data.docs.map((m) => m['rate']).reduce((a, b) => a + b) / data.docs.length;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          hotelCollection.doc(widget.hotel.hotelId).update({
+            "hotelRate": rate,
+          });
+        });
+
+      } else {
+        rate=0.0;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          hotelCollection.doc(widget.hotel.hotelId).update({
+            "hotelRate": rate,
+          });
+        });
+      }
+
+      });
+
+  }
+
   @override
   void initState() {
     super.initState();
@@ -196,6 +255,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
     isFav = widget.hotel.favHotels.contains(currentUser);
     getRate();
     getPaymentBook();
+    rateOfHotel();
   }
 
   @override
@@ -229,7 +289,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
               leading: IconButton(
                 icon: Icon(Icons.arrow_back_ios, color: whiteColor),
                 onPressed: () {
-                  Navigator.pop(context, isFav);
+                  Navigator.pop(context,);
                 },
               ),
             ),
@@ -369,7 +429,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                     ),
                     SizedBox(width: 2),
                     Text(
-                      widget.hotel.hotelRate.toString(),
+                      rate.toString(),
                       style: TextStyle(
                         color: grey700Color,
                         fontWeight: FontWeight.bold,
@@ -377,23 +437,28 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.location_on_sharp,
-                      color: deepPurpleColor,
-                      size: 18,
-                    ),
-                    SizedBox(
-                      width: 2,
-                    ),
-                    Text(
-                      "${widget.hotel.hotelCountry}, ${widget.hotel.hotelCity}",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, color: grey700Color),
-                    ),
-                  ],
+                InkWell(
+                  onTap: (){
+                    openMap();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.location_on_sharp,
+                        color: deepPurpleColor,
+                        size: 18,
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      Text(
+                        "${widget.hotel.hotelCountry}, ${widget.hotel.hotelCity}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: grey700Color),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -796,8 +861,8 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                     ),
                   ],
                 ),
-              bookId==null
-              ?SizedBox(
+              bookId!=widget.hotel.hotelId
+                  ?SizedBox(
                   height: 40,
                   width: 170,
                   child: ElevatedButton(

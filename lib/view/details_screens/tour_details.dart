@@ -16,6 +16,7 @@ import 'package:project/models/tour.dart';
 import 'package:project/models/users.dart';
 import 'package:project/view/booking/booking_tour.dart';
 import 'package:project/view/details_screens/tour_stream_rating.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ToursDetailsScreen extends StatefulWidget {
   final Tour tour;
@@ -79,8 +80,8 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
   String currentUser = FirebaseAuth.instance.currentUser.uid;
   var isFav;
   String rateId;
-
   String bookId;
+  double rate = 0.0;
   // ignore: missing_return
   Stream<DocumentSnapshot> getData()  {
     try {
@@ -127,6 +128,63 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
     });
   }
 
+  Future<void> openMap() async {
+    String googleUrl = 'https://www.google.com/maps/search/?api=1&query=${widget.tour.latitude},${widget.tour.longitude}';
+    if (await canLaunch(googleUrl)) {
+      await launch(googleUrl);
+    } else {
+      throw 'Could not open the map.';
+    }
+  }
+
+  void rateOfTour()async{
+
+     tourCollection
+        .doc(widget.tour.tourId)
+        .collection("TourRating")
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length == 1) {
+        data.docs.forEach((element) {
+          rate=element.data()['rate'];
+
+          if (mounted == false) {
+            return;
+          }
+          setState(() {
+            tourCollection.doc(widget.tour.tourId).update({
+              "TourRate": rate,
+            });
+          });
+        });
+
+      } else if (data.docs.length > 1) {
+        rate = data.docs.map((m) => m['rate']).reduce((a, b) => a + b) / data.docs.length;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          tourCollection.doc(widget.tour.tourId).update({
+            "TourRate": rate,
+          });
+        });
+
+      } else {
+        rate=0.0;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          tourCollection.doc(widget.tour.tourId).update({
+            "TourRate": rate,
+          });
+        });
+      }
+
+    });
+
+  }
+
   @override
   void initState() {
     super.initState();
@@ -149,6 +207,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
     isFav = widget.tour.favTours.contains(currentUser);
     getRate();
     getPaymentBook();
+    rateOfTour();
   }
 
   @override
@@ -323,7 +382,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                     ),
                     SizedBox(width: 2),
                     Text(
-                      widget.tour.tourRate.toString(),
+                      rate.toString(),
                       style: TextStyle(
                         color: grey700Color,
                         fontWeight: FontWeight.bold,
@@ -331,23 +390,28 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                     ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Icon(
-                      Icons.location_on_sharp,
-                      color: deepPurpleColor,
-                      size: 18,
-                    ),
-                    SizedBox(
-                      width: 2,
-                    ),
-                    Text(
-                      "${widget.tour.tourCountry}, ${widget.tour.tourCity}",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w600, color: grey700Color),
-                    ),
-                  ],
+                InkWell(
+                  onTap: (){
+                    openMap();
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.location_on_sharp,
+                        color: deepPurpleColor,
+                        size: 18,
+                      ),
+                      SizedBox(
+                        width: 2,
+                      ),
+                      Text(
+                        "${widget.tour.tourCountry}, ${widget.tour.tourCity}",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, color: grey700Color),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -654,7 +718,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                     ),
                   ],
                 ),
-               bookId==null
+               bookId!=widget.tour.tourId
                    ?SizedBox(
                   height: 40,
                   width: 170,

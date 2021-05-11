@@ -14,14 +14,14 @@ class CarStream extends StatefulWidget {
 }
 
 class _CarStreamState extends State<CarStream> {
-  getRating(){
+  getData(){
     return AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getCarsAr:DataBase().getCars;
   }
 
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      getRating();
+      getData();
     });
     super.initState();
   }
@@ -29,21 +29,19 @@ class _CarStreamState extends State<CarStream> {
   Widget build(BuildContext context) {
 
     return StreamBuilder(
-      stream: getRating(),
+      stream: getData(),
         builder:(context,AsyncSnapshot<List<Cars>>snapshot) {
           if(snapshot.hasError){
             return Text(snapshot.error.toString());
           }
-          else if (!snapshot.hasData) {
-            return Container();
-          }
-          else if(snapshot.data.isEmpty) {
+          else if(snapshot?.data?.isEmpty ?? true) {
             return Container(child: Center(child: Text('No Data'),),);
           }else
           return Container(
-            height: MediaQuery.of(context).size.height*0.80,
+            height: MediaQuery.of(context).size.height*0.75,
             child: StaggeredGridView.countBuilder(
                 key: ObjectKey("${snapshot.data.length}"),
+                physics: NeverScrollableScrollPhysics(),
                 crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,

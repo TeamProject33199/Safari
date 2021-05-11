@@ -16,8 +16,12 @@ class TourSearchStream extends StatefulWidget {
 }
 
 class _TourSearchStreamState extends State<TourSearchStream> with AutomaticKeepAliveClientMixin{
+
+
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return StreamProvider<List<Tour>>.value(
       initialData: [],
       value:AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getAllToursAr :DataBase().getAllTours,
