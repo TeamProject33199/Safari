@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:project/constants_colors.dart';
 import 'package:project/locale_language/localization_delegate.dart';
 import 'package:project/view/login_screen.dart';
@@ -220,12 +221,20 @@ class _ForgetScreenState extends State<ForgetScreen> {
                                     'Error sending email verification $onError'))
                                 .then((value) =>
                                 print('Successfully sent email verification'))
-                                .then((_) =>
+                                .then((_) {
+                                Fluttertoast.showToast(
+                                    msg: "MESSAGE IS SENT",
+                                    toastLength: Toast.LENGTH_SHORT,
+                                    gravity: ToastGravity.CENTER,
+                                    timeInSecForIosWeb: 3,
+                                    backgroundColor: Colors.grey,
+                                    textColor: Colors.white,
+                                    fontSize: 16.0);
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => LoginScreen())));
-
+                                        builder: (context) => LoginScreen()));
+                            });
 
                         }catch (e) {
                           ScaffoldMessenger.of(context).showSnackBar(

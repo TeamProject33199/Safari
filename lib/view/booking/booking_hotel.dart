@@ -25,13 +25,14 @@ class BookingHotelScreen extends StatefulWidget {
   final DateTime startOfBooking;
   final int duration,totalPrice,counterRooms;
   final String roomType;
+  final double rate;
 
 
   BookingHotelScreen({this.hotel, this.startOfBooking, this.duration,
-      this.totalPrice, this.roomType,this.counterRooms});
+      this.totalPrice, this.roomType,this.counterRooms, this.rate});
 
   @override
-  _BookingHotelScreenState createState() => _BookingHotelScreenState(hotel: hotel,startOfBooking: startOfBooking,duration: duration,totalPrice: totalPrice,roomType: roomType,counterRooms:counterRooms);
+  _BookingHotelScreenState createState() => _BookingHotelScreenState(hotel: hotel,startOfBooking: startOfBooking,duration: duration,totalPrice: totalPrice,roomType: roomType,counterRooms:counterRooms,rate:rate);
 }
 
 class _BookingHotelScreenState extends State<BookingHotelScreen> {
@@ -40,8 +41,9 @@ class _BookingHotelScreenState extends State<BookingHotelScreen> {
    DateTime startOfBooking;
    int duration,totalPrice,counterRooms;
    String roomType;
+   final double rate;
 
-   _BookingHotelScreenState({this.hotel, this.startOfBooking, this.duration,
+   _BookingHotelScreenState( {this.rate,this.hotel, this.startOfBooking, this.duration,
       this.totalPrice, this.roomType,this.counterRooms});
 
    DateFormat formatDate = DateFormat("yyyy-MM-dd");
@@ -207,7 +209,7 @@ class _BookingHotelScreenState extends State<BookingHotelScreen> {
                       ),
                       SizedBox(width: 2),
                       Text(
-                        "${hotel.hotelRate}",
+                        "$rate",
                         style: TextStyle(
                           color: grey700Color,
                           fontWeight: FontWeight.bold,

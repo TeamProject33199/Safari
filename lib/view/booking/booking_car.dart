@@ -26,13 +26,13 @@ class BookingCarScreen extends StatefulWidget {
   final DateTime startOfBooking;
   final int duration,totalPrice;
   final String carType;
-
+  final double rate;
 
   BookingCarScreen({this.car, this.startOfBooking, this.duration,
-    this.totalPrice, this.carType});
+    this.totalPrice, this.carType, this.rate});
 
   @override
-  _BookingCarScreenState createState() => _BookingCarScreenState(car: car,startOfBooking: startOfBooking,duration: duration,totalPrice: totalPrice,carType: carType);
+  _BookingCarScreenState createState() => _BookingCarScreenState(car: car,startOfBooking: startOfBooking,duration: duration,totalPrice: totalPrice,carType: carType,rate:rate);
 }
 
 class _BookingCarScreenState extends State<BookingCarScreen> {
@@ -41,8 +41,9 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
   DateTime startOfBooking;
   int duration,totalPrice;
   String carType;
+  final double rate;
 
-  _BookingCarScreenState({this.car, this.startOfBooking, this.duration,
+  _BookingCarScreenState({this.rate,this.car, this.startOfBooking, this.duration,
     this.totalPrice, this.carType});
 
   DateFormat format = DateFormat("yyyy-MM-dd");
@@ -207,7 +208,7 @@ class _BookingCarScreenState extends State<BookingCarScreen> {
                       ),
                       SizedBox(width: 2),
                       Text(
-                        "${car.carRate}",
+                        "$rate",
                         style: TextStyle(
                           color: grey700Color,
                           fontWeight: FontWeight.bold,

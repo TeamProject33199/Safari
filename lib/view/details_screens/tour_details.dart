@@ -75,6 +75,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
 
   CollectionReference travelerCollection = FirebaseFirestore.instance.collection('Travelers');
   final CollectionReference tourCollection = FirebaseFirestore.instance.collection("Tours");
+  final CollectionReference tourCollectionAr = FirebaseFirestore.instance.collection("ToursAr");
 
   String username, photoUrl;
   String currentUser = FirebaseAuth.instance.currentUser.uid;
@@ -137,7 +138,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
     }
   }
 
-  void rateOfTour()async{
+   rateOfTour(){
 
      tourCollection
         .doc(widget.tour.tourId)
@@ -184,6 +185,54 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
     });
 
   }
+   rateOfTourAr(){
+
+    tourCollectionAr
+        .doc(widget.tour.tourId)
+        .collection("TourRatingAr")
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length == 1) {
+        data.docs.forEach((element) {
+          rate=element.data()['rate'];
+
+          if (mounted == false) {
+            return;
+          }
+          setState(() {
+            tourCollectionAr.doc(widget.tour.tourId).update({
+              "TourRate": rate,
+            });
+          });
+        });
+
+      } else if (data.docs.length > 1) {
+        rate = data.docs.map((m) => m['rate']).reduce((a, b) => a + b) / data.docs.length;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          tourCollectionAr.doc(widget.tour.tourId).update({
+            "TourRate": rate,
+          });
+        });
+
+      } else {
+        rate=0.0;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          tourCollectionAr.doc(widget.tour.tourId).update({
+            "TourRate": rate,
+          });
+        });
+      }
+
+    });
+
+  }
+
 
   @override
   void initState() {
@@ -208,6 +257,9 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
     getRate();
     getPaymentBook();
     rateOfTour();
+    Future.delayed(Duration(milliseconds: 500),(){
+      rateOfTourAr();
+    });
   }
 
   @override
@@ -382,7 +434,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                     ),
                     SizedBox(width: 2),
                     Text(
-                      rate.toString(),
+                      "$rate",
                       style: TextStyle(
                         color: grey700Color,
                         fontWeight: FontWeight.bold,
@@ -754,7 +806,7 @@ class _ToursDetailsScreenState extends State<ToursDetailsScreen>
                                 duration: duration,
                                 totalPrice: totalPrice,
                                 persons: currentSliderValue.toInt(),
-
+                                rate: rate,
                               ),
                             ),
                           );

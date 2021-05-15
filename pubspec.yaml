@@ -63,7 +63,6 @@ dependencies:
   lottie: ^1.0.0
   flutter_local_notifications: ^5.0.0-nullsafety.0
   timezone: ^0.7.0-nullsafety.0
-  get_it: ^6.0.0
   fluttertoast: ^8.0.1-nullsafety.0
   flutter_slidable: ^0.6.0-nullsafety.0
 

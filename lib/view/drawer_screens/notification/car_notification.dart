@@ -69,7 +69,7 @@ class _CarsNotificationsState extends State<CarsNotifications> {
                                       : Radius.circular(0),
                                 ),
                                 image: DecorationImage(
-                                  image: NetworkImage(car.carPhoto),
+                                  image: NetworkImage(car.carPhotos[0]),
                                   fit: BoxFit.cover,
                                 ),
                               ),

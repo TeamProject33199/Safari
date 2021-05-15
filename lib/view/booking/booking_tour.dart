@@ -25,13 +25,14 @@ class BookingTourScreen extends StatefulWidget {
   final DateTime startOfBooking;
   final int duration, totalPrice;
   final int persons;
+  final double rate;
 
   BookingTourScreen(
       {this.tour,
       this.startOfBooking,
       this.duration,
       this.totalPrice,
-      this.persons});
+      this.persons, this.rate});
 
   @override
   _BookingTourScreenState createState() => _BookingTourScreenState(
@@ -39,7 +40,7 @@ class BookingTourScreen extends StatefulWidget {
       startOfBooking: startOfBooking,
       duration: duration,
       totalPrice: totalPrice,
-      persons: persons);
+      persons: persons,rate:rate);
 }
 
 class _BookingTourScreenState extends State<BookingTourScreen> {
@@ -47,9 +48,10 @@ class _BookingTourScreenState extends State<BookingTourScreen> {
   DateTime startOfBooking;
   int duration, totalPrice;
   int persons;
+  final double rate;
 
   _BookingTourScreenState(
-      {this.tour,
+      {this.rate,this.tour,
       this.startOfBooking,
       this.duration,
       this.totalPrice,
@@ -217,7 +219,7 @@ class _BookingTourScreenState extends State<BookingTourScreen> {
                       ),
                       SizedBox(width: 2),
                       Text(
-                        "${tour.tourRate}",
+                        "$rate",
                         style: TextStyle(
                           color: grey700Color,
                           fontWeight: FontWeight.bold,

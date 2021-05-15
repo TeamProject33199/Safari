@@ -14,7 +14,7 @@ import '../locale_language/localization_delegate.dart';
   _HotelStreamState createState() => _HotelStreamState();
 }
 
-class _HotelStreamState extends State<HotelStream> {
+class _HotelStreamState extends State<HotelStream> with AutomaticKeepAliveClientMixin{
   getData(){
     return   AppLocalization.of(context).locale.languageCode == "ar"
         ? DataBase().getHotelsAr
@@ -144,4 +144,8 @@ class _HotelStreamState extends State<HotelStream> {
       },
     );
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

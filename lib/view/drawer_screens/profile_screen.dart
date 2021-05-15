@@ -47,13 +47,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
   var _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
-  String currentUser = FirebaseAuth.instance.currentUser.uid;
+  String currentUserUid = FirebaseAuth.instance.currentUser.uid;
   String providerId = FirebaseAuth.instance.currentUser.providerData[0].providerId;
 
   // ignore: missing_return
   Stream<DocumentSnapshot> getData()  {
     try {
-     return DataBase().getTraveler(Travelers(id: currentUser));
+     return DataBase().getTraveler(Travelers(id: currentUserUid));
     } catch (e) {
       print("${e.toString()}");
     }
@@ -62,7 +62,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // ignore: missing_return
   Stream<DocumentSnapshot> passData()  {
     try {
-      travelerCollection.doc(currentUser).get().then((value) {
+      travelerCollection.doc(currentUserUid).get().then((value) {
         if(mounted==false){
           return;
         }
@@ -89,9 +89,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   void initState() {
-    setState(() {
-      genderValue = "Male";
-    });
+
+
     getData();
     passData();
     super.initState();
@@ -109,6 +108,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
 
+    genderValue=AppLocalization.of(context).locale.languageCode=="ar"?"ذكر" :"Male";
     return Stack(
       children: [
         Container(
@@ -690,7 +690,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     final Reference storageReference = storage.ref().child(p.basename(image.path));
     await storageReference.putFile(image).whenComplete(()async{
       await storageReference.getDownloadURL().then((value)async{
-       await travelerCollection.doc(currentUser).update({
+       await travelerCollection.doc(currentUserUid).update({
           "image": value,
         });
 
@@ -835,7 +835,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 await travelerCollection.doc(user).update({
                                   "fullName": _fullNameController.text.trim(),
                                 }).then((value) {
-                                  _fullNameController.clear();
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text(
@@ -961,7 +960,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 await travelerCollection.doc(user).update({
                                   "address": _addressController.text.trim(),
                                 }).then((value) {
-                                  _addressController.clear();
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text(
@@ -1081,15 +1079,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               if (_formKey.currentState.validate()) {
                                 var user = FirebaseAuth.instance.currentUser;
                                 await user
-                                    .updatePassword(_passwordController.text)
+                                    .updatePassword(_passwordController.text.trim())
                                     .then((_) {
-                                  print("success");
-                                }).catchError((error) =>
-                                        print("${error.toString()}"));
-                                await travelerCollection.doc(user.uid).update({
+                                  print("Success");
+                                }).catchError((error) => print("${error.toString()}"));
+                               await travelerCollection.doc(user.uid).update({
                                   "password": _passwordController.text.trim(),
                                 }).then((value) {
-                                  _passwordController.clear();
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       content: Text(
@@ -1216,7 +1212,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 await travelerCollection.doc(user).update({
                                   "phone": _phoneController.text.trim(),
                                 }).then((value) {
-                                  _phoneController.clear();
                                   Navigator.pop(context);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                       SnackBar(

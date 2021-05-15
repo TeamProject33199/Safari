@@ -18,10 +18,12 @@ import 'package:project/view/details_screens/car_stream_rating.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../constants_colors.dart';
 
+
 class CarsDetailsScreen extends StatefulWidget {
   final Cars car;
 
-  CarsDetailsScreen({this.car});
+
+  CarsDetailsScreen({this.car, });
 
   @override
   _CarsDetailsScreenState createState() => _CarsDetailsScreenState();
@@ -75,6 +77,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
 
   CollectionReference travelerCollection = FirebaseFirestore.instance.collection('Travelers');
   CollectionReference carCollection = FirebaseFirestore.instance.collection("Cars");
+  CollectionReference carCollectionAr = FirebaseFirestore.instance.collection("CarsAr");
   String username, photoUrl;
   String rateId;
 
@@ -137,7 +140,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     }
   }
 
-  void rateOfCar()async{
+  rateOfCar(){
 
     carCollection
         .doc(widget.car.id)
@@ -184,6 +187,53 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     });
 
   }
+  rateOfCarAr(){
+
+    carCollectionAr
+        .doc(widget.car.id)
+        .collection("CarRatingAr")
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length == 1) {
+        data.docs.forEach((element) {
+          rate=element.data()['rate'];
+
+          if (mounted == false) {
+            return;
+          }
+          setState(() {
+            carCollectionAr.doc(widget.car.id).update({
+              "CarRate": rate,
+            });
+          });
+        });
+
+      } else if (data.docs.length > 1) {
+        rate = data.docs.map((m) => m['rate']).reduce((a, b) => a + b) / data.docs.length;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          carCollectionAr.doc(widget.car.id).update({
+            "CarRate": rate,
+          });
+        });
+
+      } else {
+        rate=0.0;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          carCollectionAr.doc(widget.car.id).update({
+            "CarRate": rate,
+          });
+        });
+      }
+
+    });
+
+  }
 
   @override
   void initState() {
@@ -212,6 +262,9 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
     getRate();
     getPaymentBook();
     rateOfCar();
+    Future.delayed(Duration(milliseconds: 500),(){
+      rateOfCarAr();
+    });
   }
 
   @override
@@ -386,7 +439,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                     ),
                     SizedBox(width: 2),
                     Text(
-                     rate.toString(),
+                      "$rate",
                       style: TextStyle(
                         color: grey700Color,
                         fontWeight: FontWeight.bold,
@@ -781,6 +834,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
                                       duration: duration,
                                       carType: carType,
                                       totalPrice: totalPrice,
+                                      rate: rate,
                                     )));
                           },
                   ),
@@ -833,7 +887,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
           startOfLease: startLease,
           endOfLease: endLease,
           carName: widget.car.carName,
-          carPhoto: widget.car.carPhotos[0],
+          carPhotos: widget.car.carPhotos,
           paid: false,
         ),
         Travelers(

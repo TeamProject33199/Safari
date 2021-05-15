@@ -78,8 +78,10 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void initState() {
-    setState(() {
-      genderValue = "Male";
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        AppLocalization.of(context).locale.languageCode=="ar"?genderValue = "ذكر" :genderValue = "Male";
+      });
     });
     passData();
     super.initState();
@@ -536,7 +538,7 @@ class _LoginScreenState extends State<LoginScreen> {
               keepUserLoggedIn();
             }
             if (await authProvider.handleFacebookLogin() != null) {
-            //  model.changeLoading(false);
+
               otherDataFb(cox,authProvider);
             } else {
             //  model.changeLoading(false);

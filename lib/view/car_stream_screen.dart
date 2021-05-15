@@ -13,7 +13,7 @@ class CarStream extends StatefulWidget {
   _CarStreamState createState() => _CarStreamState();
 }
 
-class _CarStreamState extends State<CarStream> {
+class _CarStreamState extends State<CarStream> with AutomaticKeepAliveClientMixin{
   getData(){
     return AppLocalization.of(context).locale.languageCode=="ar"?DataBase().getCarsAr:DataBase().getCars;
   }
@@ -111,4 +111,8 @@ class _CarStreamState extends State<CarStream> {
     );
 
   }
+
+  @override
+  // TODO: implement wantKeepAlive
+  bool get wantKeepAlive => true;
 }

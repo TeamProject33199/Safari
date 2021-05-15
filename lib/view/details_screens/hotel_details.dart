@@ -4,6 +4,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:full_screen_image/full_screen_image.dart';
@@ -78,6 +79,8 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
       FirebaseFirestore.instance.collection('Travelers');
   final CollectionReference hotelCollection =
       FirebaseFirestore.instance.collection("Hotels");
+  final CollectionReference hotelCollectionAr =
+  FirebaseFirestore.instance.collection("HotelAr");
   String currentUser = FirebaseAuth.instance.currentUser.uid;
   var isFav;
   String username, photoUrl;
@@ -182,9 +185,9 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
     }
   }
 
-  void rateOfHotel()async{
+   rateOfHotel(){
 
-    hotelCollection
+ hotelCollection
         .doc(widget.hotel.hotelId)
         .collection("HotelRating")
         .snapshots()
@@ -230,6 +233,52 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
 
   }
 
+  rateOfHotelAr(){
+    hotelCollectionAr
+        .doc(widget.hotel.hotelId)
+        .collection("HotelRatingAr")
+        .snapshots()
+        .listen((data) {
+      if (data.docs.length == 1) {
+        data.docs.forEach((element) {
+          rate=element.data()['rate'];
+
+          if (mounted == false) {
+            return;
+          }
+          setState(() {
+            hotelCollectionAr.doc(widget.hotel.hotelId).update({
+              "hotelRate": rate,
+            });
+          });
+        });
+
+      } else if (data.docs.length > 1) {
+        rate = data.docs.map((m) => m['rate']).reduce((a, b) => a + b) / data.docs.length;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          hotelCollectionAr.doc(widget.hotel.hotelId).update({
+            "hotelRate": rate,
+          });
+        });
+
+      } else {
+        rate=0.0;
+        if (mounted == false) {
+          return;
+        }
+        setState(() {
+          hotelCollectionAr.doc(widget.hotel.hotelId).update({
+            "hotelRate": rate,
+          });
+        });
+      }
+
+    });
+  }
+
   @override
   void initState() {
     super.initState();
@@ -256,6 +305,12 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
     getRate();
     getPaymentBook();
     rateOfHotel();
+    Future.delayed(Duration(milliseconds: 500),(){
+      rateOfHotelAr();
+    });
+
+
+
   }
 
   @override
@@ -898,6 +953,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
                                           roomType: roomType,
                                           totalPrice: totalPrice,
                                           counterRooms: counterRooms,
+                                      rate: rate,
                                         )));
                           },
                   ),

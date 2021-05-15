@@ -5,7 +5,7 @@ class BookingCar{
   String bookingId,carType,carName;
   int totalPrice,duration;
   String  startOfLease, endOfLease;
-  String carPhoto;
+  List<String> carPhotos;
   bool paid;
 
   BookingCar({
@@ -16,7 +16,7 @@ class BookingCar{
     this.startOfLease,
     this.endOfLease,
     this.carName,
-    this.carPhoto,
+    this.carPhotos,
     this.paid
   });
 
@@ -33,7 +33,7 @@ class BookingCar{
         startOfLease: doc.get('startOfLease') ?? '',
         endOfLease: doc.get('endOfLease') ?? '',
         carName: doc.get('CarName') ?? '',
-        carPhoto: doc.get('CarPhotos') ?? "",
+        carPhotos: List.from(doc.get('CarPhotos')) ?? [],
         paid: doc.get('paid') ?? false,
       );
     }).toList();
@@ -50,7 +50,7 @@ class BookingCar{
       'startOfLease': startOfLease,
       'endOfLease': endOfLease,
       'CarName': carName,
-      'CarPhotos': carPhoto,
+      'CarPhotos': carPhotos,
       'paid':paid,
     };
   }
