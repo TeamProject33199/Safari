@@ -4,7 +4,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:full_screen_image/full_screen_image.dart';
@@ -1006,7 +1005,7 @@ class _HotelsDetailsScreenState extends State<HotelsDetailsScreen>
           startOfStay: startStay,
           endOfStay: endStay,
           hotelName: widget.hotel.hotelName,
-          images: widget.hotel.images[0],
+          image: widget.hotel.images[0],
           paid: false,
           numRooms: counterRooms,
         ),

@@ -887,7 +887,7 @@ class _CarsDetailsScreenState extends State<CarsDetailsScreen>
           startOfLease: startLease,
           endOfLease: endLease,
           carName: widget.car.carName,
-          carPhotos: widget.car.carPhotos,
+          carPhoto: widget.car.carPhotos[0],
           paid: false,
         ),
         Travelers(

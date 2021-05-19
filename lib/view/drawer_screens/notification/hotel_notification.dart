@@ -29,6 +29,7 @@ class HotelsNotifications extends StatelessWidget {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 BookingHotel hotel=snapshot.data[index];
+
                 return Padding(
                   padding: const EdgeInsets.only(
                     left: 15,
@@ -73,7 +74,7 @@ class HotelsNotifications extends StatelessWidget {
                                         : Radius.circular(0),
                                   ),
                                   image: DecorationImage(
-                                    image: NetworkImage(hotel.images),
+                                    image: NetworkImage(hotel.image),
                                     fit: BoxFit.cover,
                                   ),
                                 ),

@@ -5,7 +5,7 @@ class BookingHotel{
   String bookingId,roomType,hotelName;
   int totalPrice,duration,numRooms;
   String  startOfStay, endOfStay;
-  String images;
+  String image;
   bool paid;
 
 
@@ -15,7 +15,7 @@ class BookingHotel{
       this.roomType,
       this.totalPrice,
       this.startOfStay,
-      this.endOfStay,this.hotelName,this.images,this.paid,this.numRooms});
+      this.endOfStay,this.hotelName,this.image,this.paid,this.numRooms});
 
   List<BookingHotel> fromQuery(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
@@ -30,7 +30,7 @@ class BookingHotel{
         startOfStay: doc.get('startOfStay') ?? '',
         endOfStay: doc.get('endOfStay') ?? '',
         hotelName: doc.get('hotelName') ?? '',
-        images: doc.get('images') ?? "",
+        image: doc.get('images') ?? "",
         paid: doc.get('paid') ?? false,
         numRooms:doc.get('Rooms')??'',
       );
@@ -48,7 +48,7 @@ class BookingHotel{
       'startOfStay': startOfStay,
       'endOfStay': endOfStay,
       'hotelName': hotelName,
-      'images': images,
+      'images': image,
       'paid':paid,
       'Rooms':numRooms,
     };

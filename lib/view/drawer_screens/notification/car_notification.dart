@@ -6,7 +6,9 @@ import 'package:project/Controllers/firestore/DataBase.dart';
 import 'package:project/constants_colors.dart';
 import 'package:project/locale_language/localization_delegate.dart';
 import 'package:project/models/booking_car.dart';
+import 'package:project/models/car.dart';
 import 'package:project/models/users.dart';
+import 'package:project/view/details_screens/car_details.dart';
 
 class CarsNotifications extends StatefulWidget {
 
@@ -32,6 +34,7 @@ class _CarsNotificationsState extends State<CarsNotifications> {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 BookingCar car=snapshot.data[index];
+
                 return Padding(
                   padding: const EdgeInsets.only(
                     left: 15,
@@ -69,7 +72,7 @@ class _CarsNotificationsState extends State<CarsNotifications> {
                                       : Radius.circular(0),
                                 ),
                                 image: DecorationImage(
-                                  image: NetworkImage(car.carPhotos[0]),
+                                  image: NetworkImage(car.carPhoto),
                                   fit: BoxFit.cover,
                                 ),
                               ),
